@@ -1,11 +1,14 @@
 /// <reference types="types-for-adobe/InDesign/2021" />
 
-class Main {
-  showBuildname() {
-    let foo = "hogehoge";
-    alert(`App version is ${foo}`);
+class Infomation {
+  showOBjType() {
+    selObj = app.activeDocument.selection;
+    for (i = 0; i < selObj.length; i++) {
+      dType = selObj[i].constructor.name;
+      alert(dType);
+    }
   }
 }
 
-const main = new Main();
-main.showBuildname();
+const infomation = new Infomation();
+infomation.showOBjType();
