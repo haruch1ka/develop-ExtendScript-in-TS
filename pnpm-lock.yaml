@@ -1,0 +1,25 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  types-for-adobe:
+    specifier: ^7.2.0
+    version: 7.2.0
+  typescript:
+    specifier: ^5.4.3
+    version: 5.4.3
+
+packages:
+
+  /types-for-adobe@7.2.0:
+    resolution: {integrity: sha512-dUkunVBLzO5zeghr3HMA+ueNez5TK/FBD0rgePIDGGIqLLkCeCCdSrrET1VKnq/ObEPBjkMLRNC21+yCCEpewg==}
+    dev: false
+
+  /typescript@5.4.3:
+    resolution: {integrity: sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: false

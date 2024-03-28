@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "strict": true,
+    "noLib": true,
+    "types": ["types-for-adobe/InDesign/2021"],
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "exclude": ["node_modules"]
+}
