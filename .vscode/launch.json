@@ -9,9 +9,9 @@
       "request": "launch",
       "name": "スクリプト名を求める",
       "program": "${workspaceFolder}/dist/foo.js",
-
       "stopOnEntry": false
     }
   ]
   //"program": "${file}",
+  //
 }
