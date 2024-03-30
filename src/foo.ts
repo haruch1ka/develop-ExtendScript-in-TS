@@ -14,13 +14,9 @@ class myDialog {
   }
   arrangeInput() {
     let input = this.textObj.editContents;
+    input = input.replace(new RegExp(/^[\r\n]+/gm), "");
     const regex = new RegExp(/[\r\n]+/);
     let inputArr: string[] = input.split(regex); //入力を改行文字で分割
-    for (let i = 0; i < inputArr.length; i++) {
-      if (inputArr[i].length == 0) {
-        inputArr.splice(i, 1);
-      }
-    }
     this.inputArray = inputArr;
   }
 }
