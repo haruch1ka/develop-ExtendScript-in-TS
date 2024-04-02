@@ -8,11 +8,11 @@
       "type": "extendscript-debug",
       "request": "launch",
       "name": "スクリプト名を求める",
-      "program": "${file}",
+      "program": "${workspaceFolder}/dist/foo.js",
       "stopOnEntry": false
     }
   ]
 
-  // "program": "${workspaceFolder}/dist/foo.js",
+  //"program": "${file}",
   //
 }
