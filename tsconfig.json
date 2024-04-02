@@ -7,6 +7,6 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "include": ["./src/foo.ts"],
+  "include": ["./src/fill_in_the_anchors.ts"],
   "exclude": ["node_modules"]
 }
