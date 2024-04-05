@@ -140,7 +140,8 @@ function main() {
     return;
   }
 
-  const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
+  const active_folder_path: string = decodeURI(String(app.activeDocument.filePath)); ///ここをどうにかする。
+  // const save_folder = Folder(active_folder_path).selectDlg("フォルダを選択してください。");
 
   const file = <File>File(active_folder_path).openDlg("ファイルを選択してください", "*.xlsx");
   if (!file) {
