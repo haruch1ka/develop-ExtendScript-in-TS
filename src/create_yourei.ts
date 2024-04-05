@@ -229,22 +229,22 @@ function hoge(text: string, tarlen: number) {
       }
     }
   }
-  function getAllIndexes(string: string, val: string) {
-    let indexes = [],
-      i;
-    for (i = 0; i < string.length; i++) {
-      if (string.charAt(i) === val) indexes.push(i);
-    }
-    return indexes;
+}
+function getAllIndexes(string: string, val: string) {
+  let indexes = [],
+    i;
+  for (i = 0; i < string.length; i++) {
+    if (string.charAt(i) === val) indexes.push(i);
   }
-  function anchoredIn(story: any): any {
-    let ancObj: any;
-    ancObj = story.add();
-    ancObj.visibleBounds = ["0 mm", "0 mm", "4mm", "4 mm"];
-    //ancObj.rotationAngle = 90;
-    // ancObj.place(Item);
-    ancObj.appliedObjectStyle = app.activeDocument.objectStyles.item("インライン基本");
-    return ancObj;
-  }
+  return indexes;
+}
+function anchoredIn(story: any): any {
+  let ancObj: any;
+  ancObj = story.add();
+  ancObj.visibleBounds = ["0 mm", "0 mm", "4mm", "4 mm"];
+  //ancObj.rotationAngle = 90;
+  // ancObj.place(Item);
+  ancObj.appliedObjectStyle = app.activeDocument.objectStyles.item("インライン基本");
+  return ancObj;
 }
 main();
