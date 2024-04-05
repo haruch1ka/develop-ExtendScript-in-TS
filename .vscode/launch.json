@@ -8,11 +8,10 @@
       "type": "extendscript-debug",
       "request": "launch",
       "name": "スクリプト名を求める",
-      "program": "${file}",
+      "program": "${workspaceFolder}/dist/create_yourei copy.js",
       "stopOnEntry": false
     }
   ]
 
-  //"program":"${workspaceFolder}/dist/fill_in_the_anchors.js",
-  //
+  // "program": "${file}",
 }

@@ -7,6 +7,6 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "include": ["./src/fill_in_the_anchors_yomi.ts"],
+  "include": ["./src/create_yourei copy.ts"],
   "exclude": ["node_modules"]
 }
