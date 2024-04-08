@@ -134,7 +134,7 @@ class textFrames {
   }
 }
 function main() {
-  const mydialog = new myDialog("poi");
+  const mydialog = new myDialog("ここに対象の漢字一字を入力してください");
   const input = mydialog.textObj.editContents;
   if (input == "" || input.length != 1) {
     return;
@@ -188,6 +188,7 @@ function main() {
       insertText = replaceYourei;
       $.writeln(insertText);
       $.writeln(insertTar);
+      if (insertTar) alert(String(insertTar));
       break;
     }
   }
