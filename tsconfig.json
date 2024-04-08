@@ -7,6 +7,6 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "include": ["./src/create_yourei.ts"],
+  "include": ["./src/reibun_rubi.ts"],
   "exclude": ["node_modules"]
 }
