@@ -1,3 +1,4 @@
+
 class myExcel {
   excelFilePath: string;
   splitChar: string;
@@ -92,31 +93,42 @@ class myDialog {
   obj: any;
   temp: any;
   textObj: any;
+  input: any;
   constructor(title: string) {
     this.obj = app.dialogs.add({ name: `${title}` });
     this.temp = this.obj.dialogColumns.add();
     this.textObj = this.temp.textEditboxes.add({ editContents: "", minWidth: 200, multilene: true });
     this.obj.show();
+    this.input = this.textObj.editContents;
   }
 }
-
 class Input {
-  mySelection: any;
-  constructor(selection: any) {
-    this.mySelection = selection;
+  inputDataArray: string[];
+  constructor(myinput: string) {
+    let input = myinput;
+    input = input.replace(new RegExp(/^[\r\n]+/gm), "");
+    const regex = new RegExp(/[\r\n]+/);
+    let inputArr: string[] = input.split(regex); //入力を改行文字で分割
+    this.inputDataArray = inputArr;
   }
-  showObjType() {
-    let selObj: any = this.mySelection;
-    for (let i: number = 0; i < selObj.length; i++) {
-      let dType: string = selObj[i].constructor.name;
+  trimkanji(str: string): string[] {
+    let mystr = str;
+    const res: string[] = [];
 
-      $.writeln(`${dType}`);
+    for (let num = 4; num > 0; num--) {
+      const reg = new RegExp("[\u4E00-\u9FFF]{" + num + "}", "g");
+      do {
+        const strindex = mystr.search(reg);
+        if (strindex == -1) {
+          break;
+        }
+        let pickupStr = mystr.slice(strindex, strindex + num);
+        res.push(pickupStr);
+        // $.writeln(pickupStr + " :target");
+        mystr = mystr.replace(pickupStr, "");
+      } while (mystr.search(reg) != -1);
     }
-  }
-  showInputObjType(input: any) {
-    let dType: string = input.constructor.name;
-
-    $.writeln(`${dType}`);
+    return res;
   }
 }
 class textFrames {
@@ -162,7 +174,6 @@ class Selection {
 }
 function main() {
   const s = new Selection();
-  //選択しているか？
   $.writeln(s.is_selected);
   if (!s.is_selected) {
     alert("選択してください");
@@ -187,4 +198,11 @@ function main() {
   $.writeln(mystory.characters[11].rubyString);
 }
 
-main();
+// main();
+
+function inputTest() {
+  let dialog = new myDialog("test");
+  let input = new Input(dialog.input);
+  $.writeln(input.inputDataArray);
+}
+inputTest();
