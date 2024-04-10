@@ -1,4 +1,3 @@
-
 class myExcel {
   excelFilePath: string;
   splitChar: string;
@@ -111,6 +110,7 @@ class Input {
     let inputArr: string[] = input.split(regex); //入力を改行文字で分割
     this.inputDataArray = inputArr;
   }
+
   trimkanji(str: string): string[] {
     let mystr = str;
     const res: string[] = [];
@@ -128,6 +128,10 @@ class Input {
         mystr = mystr.replace(pickupStr, "");
       } while (mystr.search(reg) != -1);
     }
+    return res;
+  }
+  splitString(str: string, splitChar: string): string[] {
+    let res = str.split(splitChar);
     return res;
   }
 }
@@ -172,6 +176,53 @@ class Selection {
     return this.obj.length === 1;
   }
 }
+class Brakets {
+  input: string = "";
+  replaced: string = "";
+  getBracketsItem(string: string, braketType: string): string[] | null {
+    const reg = this.makeBraketReg(braketType);
+    const match = string.match(reg);
+    if (match == null) {
+      return null;
+    }
+    let res: string[] = [];
+    for (let i = 0; i < match.length; i++) {
+      res.push(this.removeBrackets(match[i]));
+    }
+    return res;
+  }
+  removeBrackets(string: string): string {
+    let reg = new RegExp(/[\(\)\[\]\《\》]/g);
+    return string.replace(reg, "");
+  }
+  makeBraketReg(BraketsType: string): RegExp {
+    switch (BraketsType) {
+      case "round":
+        return new RegExp(/\(.*?\)/g);
+      case "kagi":
+        return new RegExp(/\「.*?\」/g);
+      case "dAngle":
+        return new RegExp(/\《.*?\》/g);
+      default:
+        throw new Error("no Brakets Type");
+    }
+  }
+  getBracketsItemIndex(input: string): number[][] {
+    let targetIndexArray = [];
+    let start_index: number;
+    let end_index: number;
+    let reg1 = new RegExp(/[\(\[\《\<]/);
+    let reg2 = new RegExp(/[\)\]\》\>]/);
+    while (input.search(reg1) != -1) {
+      start_index = input.search(reg1) + 1 - 1;
+      end_index = input.search(reg2) - 1 - 1;
+      input = input.replace(reg1, "");
+      input = input.replace(reg2, "");
+      targetIndexArray.push([start_index, end_index]);
+    }
+    return targetIndexArray;
+  }
+}
 function main() {
   const s = new Selection();
   $.writeln(s.is_selected);
@@ -200,9 +251,32 @@ function main() {
 
 // main();
 
-function inputTest() {
+function inputTest(input: string) {
   let dialog = new myDialog("test");
-  let input = new Input(dialog.input);
-  $.writeln(input.inputDataArray);
+  let _input = new Input(dialog.input);
+  for (let i = 0; i < _input.inputDataArray.length; i++) {
+    let item = _input.inputDataArray[i];
+    let res = _input.splitString(item, "	");
+    $.writeln(res);
+  }
+
+  // let _bracket = new Brakets();
+  // let _input = new Input(testinput);
+  // for (let i = 0; i < _input.inputDataArray.length; i++) {
+  //   const element = _input.inputDataArray[i];
+  //   let _bracket = new Brakets();
+  //   let res = _bracket.getBracketsItemIndex(element);
+  //   $.writeln(res);
+  // }
 }
-inputTest();
+
+let testinput = `知恵を《絞る》。
+協力を《要請》する。
+何の《変哲》もない。
+市場を《独占》する。
+《屈辱》を味わう。
+《選抜》チーム。
+《彫刻刀》でけずる。
+《遵法》精神を持つ。
+`;
+inputTest(testinput);
