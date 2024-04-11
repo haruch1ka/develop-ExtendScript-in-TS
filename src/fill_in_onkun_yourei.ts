@@ -268,7 +268,7 @@ function main() {
   // 《滑落》	かつ/らく	《滑稽》	こっ/けい	《滑る》	すべ	《滑らか》	なめ
   // `;
 
-  let dialog = new myDialog("test");
+  let dialog = new myDialog("エクセルの内容をコピーしてそのまま貼り付けてください");
   if (!(typeof dialog.input == "string")) {
     return;
   }
@@ -277,9 +277,10 @@ function main() {
   forloop(baseTexts.length, (i) => {
     const len = baseTexts[i].length; //文字数
     mystory.insertionPoints[-1].contents = baseTexts[i]; //textを挿入
+
     forloop(positionIndex[i].length, (j) => {
       let styledindex = len * -1 + positionIndex[i][j];
-      // $.writeln(mystory.characters[styledindex].contents);
+      $.writeln(mystory.characters[styledindex].contents);
       mystory.characters[styledindex].appliedCharacterStyle = app.activeDocument.characterStyles.item("漢字表_用例太字");
     });
     forloop(rubyPositionIndex[i].length, (j) => {
@@ -287,6 +288,9 @@ function main() {
       mystory.characters[styledindex].rubyFlag = true;
       mystory.characters[styledindex].rubyString = rubyIndex[i][j];
     });
+    // forloop(rubyPositionIndex[i].length, (j) => {
+    //   $.writeln(rubyIndex[i][j]);
+    // });
     $.writeln("------------------");
     switch (InsertEnd[i]) {
       case "break":
