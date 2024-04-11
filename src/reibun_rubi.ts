@@ -201,6 +201,10 @@ class Brakets {
     let reg = new RegExp(/[\(\)\[\]\《\》]/g);
     return string.replace(reg, "");
   }
+  removeBracketsAndItem(string: string, BraketsType: string): string {
+    let reg = this.makeBraketReg(BraketsType);
+    return string.replace(reg, "");
+  }
   makeBraketReg(BraketsType: string): RegExp {
     switch (BraketsType) {
       case "round":
