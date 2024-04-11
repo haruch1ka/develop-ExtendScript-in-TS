@@ -254,39 +254,58 @@ function main() {
 
   const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
   const mystory: Story = _textFrames.getStory();
-  $.writeln(mystory.characters[0].rubyString);
-  $.writeln(mystory.characters[1].rubyString);
-  $.writeln(mystory.characters[11].rubyString);
+
+  let testinput: string = `《架空》の話をする。	か/くう	東西の《架け橋》。	か(け)/はし				
+`;
+  const baseTexts = inputTest(testinput);
+
+  forloop(baseTexts.length, (i) => {
+    mystory.insertionPoints[-1].contents = baseTexts[i];
+  });
+  // $.writeln(mystory.characters[0].rubyString);
+  // $.writeln(mystory.characters[1].rubyString);
+  // $.writeln(mystory.characters[11].rubyString);
 }
 
-// main();
+main();
 
-function inputTest(input: string) {
-  let dialog = new myDialog("test");
-  let _input = new Input(dialog.input);
-  for (let i = 0; i < _input.inputDataArray.length; i++) {
+function inputTest(input: string): string[] {
+  // let dialog = new myDialog("test");
+  let mytest = input;
+  let _input = new Input(input);
+  // let _input = new Input(dialog.input);
+  let _bracket = new Brakets();
+
+  let baseTexts: string[] = []; //挿入される本文
+  let positionIndex: number[][] = []; //スタイルを変える位置
+  let rubyPositionIndex: number[][] = []; //ルビの挿入位置
+  forloop(_input.inputDataArray.length, (i) => {
     let item = _input.inputDataArray[i];
     let res = _input.splitString(item, "	");
-    $.writeln(res);
-  }
-
-  // let _bracket = new Brakets();
-  // let _input = new Input(testinput);
-  // for (let i = 0; i < _input.inputDataArray.length; i++) {
-  //   const element = _input.inputDataArray[i];
-  //   let _bracket = new Brakets();
-  //   let res = _bracket.getBracketsItemIndex(element);
-  //   $.writeln(res);
-  // }
+    forloop(res.length, (i) => {
+      //空要素を発見し次第処理を終了する。
+      if (res[i] == "") {
+        return;
+      }
+      //挿入される文についての処理
+      if (i % 2 == 0) {
+        let textRemovedBraket = _bracket.removeBrackets(res[i]);
+        baseTexts.push(_bracket.removeBrackets(res[i]) + "\r");
+        let monoPosIndex = _bracket.getBracketsItemIndex(res[i]); //"あ(いうえ)お"のようなstringから、"い"と"え"のindexを抽出する
+        let monorubyPosIndex: number[] = [];
+        // $.writeln(_bracket.getBracketsItemIndex(res[i]));
+        for (let i = monoPosIndex[0][0]; i < monoPosIndex[0][1] + 1; i++) {
+          let reg = new RegExp(/[\u4E00-\u9FFF]/); //漢字の正規表現
+          if (reg.test(textRemovedBraket[i])) monorubyPosIndex.push(i);
+        }
+        if (monoPosIndex.length != 0) rubyPositionIndex.push(monorubyPosIndex);
+      }
+      //ルビ文字配列についての処理
+      if (i % 2 == 1) $.writeln(_bracket.removeBracketsAndItem(res[i], "round"));
+    });
+  });
+  // forloop(rubyPositionIndex.length, (j) => {
+  //   $.writeln(rubyPositionIndex[j]);
+  // });
+  return baseTexts;
 }
-
-let testinput = `知恵を《絞る》。
-協力を《要請》する。
-何の《変哲》もない。
-市場を《独占》する。
-《屈辱》を味わう。
-《選抜》チーム。
-《彫刻刀》でけずる。
-《遵法》精神を持つ。
-`;
-inputTest(testinput);
