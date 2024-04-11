@@ -235,7 +235,7 @@ class Brakets {
 }
 function main() {
   const s = new Selection();
-  $.writeln(s.is_selected);
+  // $.writeln(s.is_selected); //選択されているか？
   if (!s.is_selected) {
     alert("選択してください");
     return;
@@ -249,18 +249,52 @@ function main() {
     alert("テキストフレームを選択してください");
     return;
   } else {
-    $.writeln(s.type);
+    // $.writeln(s.type);
   }
 
   const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
   const mystory: Story = _textFrames.getStory();
 
-  let testinput: string = `《架空》の話をする。	か/くう	東西の《架け橋》。	か(け)/はし				
+  let testinput: string = `協力を《要請》する。	よう/せい	《安請け合い》する。	やす/う(け)/あ		
+何の《変哲》もない。	へん/てつ				
+市場を《独占》する。	どく/せん	《占める》。	し	《占う》。	うらな
+《屈辱》を味わう。	くつ/じょく				
+《選抜》チーム。	せん/ばつ	相手を追い《抜く》。	ぬ		
+《彫刻刀》でけずる。	ちょう/こく/とう	版画を《彫る》。	ほ		
 `;
-  const baseTexts = inputTest(testinput);
+  const [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, InsertEnd] = inputTest(testinput);
 
   forloop(baseTexts.length, (i) => {
-    mystory.insertionPoints[-1].contents = baseTexts[i];
+    const len = baseTexts[i].length;
+    $.writeln(len);
+    mystory.insertionPoints[-1].contents = baseTexts[i]; //textを挿入
+    switch (InsertEnd[i]) {
+      case "break":
+        if (len < 8) mystory.insertionPoints[-1].contents = "\r";
+        break;
+      case "space":
+        mystory.insertionPoints[-1].contents = " ";
+        break;
+      case "special":
+        if (len < 8) mystory.insertionPoints[-1].contents = SpecialCharacters.FRAME_BREAK;
+        break;
+      default:
+        throw new Error("insert end error");
+        break;
+    }
+
+    $.writeln(InsertEnd[i]);
+
+    // let styledindex = len * -1 + positionIndex[i][0];
+    // $.writeln(mystory.characters[styledindex].contents);
+    // styledindex = len * -1 + positionIndex[i][1];
+    // $.writeln(mystory.characters[styledindex].contents);
+
+    // forloop(positionIndex[i].length, (j) => {
+
+    // });
+    // $.writeln(positionIndex[i]);
+    // $.writeln(rubyPositionIndex[i]);
   });
   // $.writeln(mystory.characters[0].rubyString);
   // $.writeln(mystory.characters[1].rubyString);
@@ -269,7 +303,7 @@ function main() {
 
 main();
 
-function inputTest(input: string): string[] {
+function inputTest(input: string): [string[], number[][], string[][], number[][], string[]] {
   // let dialog = new myDialog("test");
   let mytest = input;
   let _input = new Input(input);
@@ -278,34 +312,74 @@ function inputTest(input: string): string[] {
 
   let baseTexts: string[] = []; //挿入される本文
   let positionIndex: number[][] = []; //スタイルを変える位置
+  let rubyIndex: string[][] = []; //ルビ
   let rubyPositionIndex: number[][] = []; //ルビの挿入位置
+  let youreiInsertEnd: string[] = [];
+
   forloop(_input.inputDataArray.length, (i) => {
     let item = _input.inputDataArray[i];
     let res = _input.splitString(item, "	");
+
+    let countNumOfExe = 0;
     forloop(res.length, (i) => {
       //空要素を発見し次第処理を終了する。
       if (res[i] == "") {
+        // $.writeln(i);
         return;
       }
+      countNumOfExe++;
       //挿入される文についての処理
       if (i % 2 == 0) {
         let textRemovedBraket = _bracket.removeBrackets(res[i]);
-        baseTexts.push(_bracket.removeBrackets(res[i]) + "\r");
-        let monoPosIndex = _bracket.getBracketsItemIndex(res[i]); //"あ(いうえ)お"のようなstringから、"い"と"え"のindexを抽出する
+        baseTexts.push(_bracket.removeBrackets(res[i]));
+        let posStartAndEndArr = _bracket.getBracketsItemIndex(res[i]); //"あ(いうえ)お"のようなstringから、"い"と"え"のindexを抽出する
         let monorubyPosIndex: number[] = [];
+        let monoPosIndex: number[] = [];
         // $.writeln(_bracket.getBracketsItemIndex(res[i]));
-        for (let i = monoPosIndex[0][0]; i < monoPosIndex[0][1] + 1; i++) {
+        for (let i = posStartAndEndArr[0][0]; i < posStartAndEndArr[0][1] + 1; i++) {
           let reg = new RegExp(/[\u4E00-\u9FFF]/); //漢字の正規表現
           if (reg.test(textRemovedBraket[i])) monorubyPosIndex.push(i);
+          monoPosIndex.push(i);
         }
-        if (monoPosIndex.length != 0) rubyPositionIndex.push(monorubyPosIndex);
+        if (posStartAndEndArr.length != 0) rubyPositionIndex.push(monorubyPosIndex);
+        if (monoPosIndex.length != 0) positionIndex.push(monoPosIndex);
       }
       //ルビ文字配列についての処理
-      if (i % 2 == 1) $.writeln(_bracket.removeBracketsAndItem(res[i], "round"));
+      if (i % 2 == 1) {
+        // 文字"//"があれば"/"に変換する
+        let reg = new RegExp(/\/\//);
+        let remRoundText = _bracket.removeBracketsAndItem(res[i], "round");
+        if (reg.test(remRoundText)) remRoundText = remRoundText.replace(reg, "/");
+        rubyIndex.push(remRoundText.split("/"));
+      }
     });
+
+    let youLenCount = countNumOfExe / 2;
+    switch (youLenCount) {
+      case 1:
+        youreiInsertEnd.push("special");
+        break;
+      case 2:
+        youreiInsertEnd.push("break");
+        youreiInsertEnd.push("special");
+        break;
+      case 3:
+        youreiInsertEnd.push("space");
+        youreiInsertEnd.push("break");
+        youreiInsertEnd.push("special");
+        break;
+      case 4:
+        youreiInsertEnd.push("space");
+        youreiInsertEnd.push("break");
+        youreiInsertEnd.push("space");
+        youreiInsertEnd.push("special");
+        break;
+      default:
+        throw new Error("yourei_sizi_switch_error");
+
+        break;
+    }
+    // $.writeln(res.length);
   });
-  // forloop(rubyPositionIndex.length, (j) => {
-  //   $.writeln(rubyPositionIndex[j]);
-  // });
-  return baseTexts;
+  return [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, youreiInsertEnd];
 }
