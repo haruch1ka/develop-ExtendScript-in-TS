@@ -1,3 +1,9 @@
+type forloop = (index: number) => void;
+function forloop(times: number, func: forloop) {
+  for (let i = 0; i < times; i++) {
+    func(i);
+  }
+}
 class myExcel {
   excelFilePath: string;
   splitChar: string;
