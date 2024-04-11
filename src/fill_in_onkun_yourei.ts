@@ -1,4 +1,4 @@
-type forloop = (index: number) => void;
+﻿type forloop = (index: number) => void;
 function forloop(times: number, func: forloop) {
   for (let i = 0; i < times; i++) {
     func(i);
@@ -198,7 +198,7 @@ class Brakets {
     return res;
   }
   removeBrackets(string: string): string {
-    let reg = new RegExp(/[\(\)\[\]\《\》]/g);
+    let reg = new RegExp(/[\[\]\《\》]/g);
     return string.replace(reg, "");
   }
   removeBracketsAndItem(string: string, BraketsType: string): string {
@@ -255,59 +255,61 @@ function main() {
   const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
   const mystory: Story = _textFrames.getStory();
 
-  let testinput: string = `協力を《要請》する。	よう/せい	《安請け合い》する。	やす/う(け)/あ		
-何の《変哲》もない。	へん/てつ				
-市場を《独占》する。	どく/せん	《占める》。	し	《占う》。	うらな
-《屈辱》を味わう。	くつ/じょく				
-《選抜》チーム。	せん/ばつ	相手を追い《抜く》。	ぬ		
-《彫刻刀》でけずる。	ちょう/こく/とう	版画を《彫る》。	ほ		
-`;
-  const [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, InsertEnd] = inputTest(testinput);
+  //   let testinput: string = `髪を《刈り》上げる。	か
+  // 《気丈》に振る舞う。	き/じょう	着物の《丈》をつめる。	たけ
+  // 車内を《清掃》する。	せい/そう	庭の落葉を《掃く》。	は
+  // 降りかかる《災厄》。	さい/やく
+  // 《脱帽》する。	だつ/ぼう
+  // 《抱負》	ほう/ふ	肩(かた)を《抱く》	だ	疑問を《抱く》	いだ	《抱える》	かか
+  // 《子猫》を育てる。	こ/ねこ
+  // 《即答》を避ける。	そく/とう
+  // 《互角》に勝負する。	ご/かく	お《互い》に助け合う。	たが
+  // 責任を《追及》する。	つい/きゅう	考えが《及ばない》。	およ
+  // 《滑落》	かつ/らく	《滑稽》	こっ/けい	《滑る》	すべ	《滑らか》	なめ
+  // `;
+
+  let dialog = new myDialog("test");
+  if (!(typeof dialog.input == "string")) {
+    return;
+  }
+  const [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, InsertEnd] = inputTest(dialog.input);
 
   forloop(baseTexts.length, (i) => {
-    const len = baseTexts[i].length;
-    $.writeln(len);
+    const len = baseTexts[i].length; //文字数
     mystory.insertionPoints[-1].contents = baseTexts[i]; //textを挿入
+    forloop(positionIndex[i].length, (j) => {
+      let styledindex = len * -1 + positionIndex[i][j];
+      // $.writeln(mystory.characters[styledindex].contents);
+      mystory.characters[styledindex].appliedCharacterStyle = app.activeDocument.characterStyles.item("漢字表_用例太字");
+    });
+    forloop(rubyPositionIndex[i].length, (j) => {
+      let styledindex = len * -1 + rubyPositionIndex[i][j];
+      mystory.characters[styledindex].rubyFlag = true;
+      mystory.characters[styledindex].rubyString = rubyIndex[i][j];
+    });
+    $.writeln("------------------");
     switch (InsertEnd[i]) {
       case "break":
-        if (len < 8) mystory.insertionPoints[-1].contents = "\r";
+        mystory.insertionPoints[-1].contents = "\r";
         break;
       case "space":
-        mystory.insertionPoints[-1].contents = " ";
+        mystory.insertionPoints[-1].contents = "　";
         break;
       case "special":
-        if (len < 8) mystory.insertionPoints[-1].contents = SpecialCharacters.FRAME_BREAK;
+        mystory.insertionPoints[-1].contents = SpecialCharacters.FRAME_BREAK;
         break;
       default:
         throw new Error("insert end error");
         break;
-    }
-
-    $.writeln(InsertEnd[i]);
-
-    // let styledindex = len * -1 + positionIndex[i][0];
-    // $.writeln(mystory.characters[styledindex].contents);
-    // styledindex = len * -1 + positionIndex[i][1];
-    // $.writeln(mystory.characters[styledindex].contents);
-
-    // forloop(positionIndex[i].length, (j) => {
-
-    // });
-    // $.writeln(positionIndex[i]);
-    // $.writeln(rubyPositionIndex[i]);
+    } //改行等挿入
+    mystory.characters.lastItem().appliedCharacterStyle = app.activeDocument.characterStyles[0];
   });
-  // $.writeln(mystory.characters[0].rubyString);
-  // $.writeln(mystory.characters[1].rubyString);
-  // $.writeln(mystory.characters[11].rubyString);
+  mystory.clearOverrides(); //Story上のオーバーライドを一括消去
 }
-
 main();
 
 function inputTest(input: string): [string[], number[][], string[][], number[][], string[]] {
-  // let dialog = new myDialog("test");
-  let mytest = input;
   let _input = new Input(input);
-  // let _input = new Input(dialog.input);
   let _bracket = new Brakets();
 
   let baseTexts: string[] = []; //挿入される本文
@@ -331,7 +333,7 @@ function inputTest(input: string): [string[], number[][], string[][], number[][]
       //挿入される文についての処理
       if (i % 2 == 0) {
         let textRemovedBraket = _bracket.removeBrackets(res[i]);
-        baseTexts.push(_bracket.removeBrackets(res[i]));
+        baseTexts.push(textRemovedBraket);
         let posStartAndEndArr = _bracket.getBracketsItemIndex(res[i]); //"あ(いうえ)お"のようなstringから、"い"と"え"のindexを抽出する
         let monorubyPosIndex: number[] = [];
         let monoPosIndex: number[] = [];
@@ -364,8 +366,8 @@ function inputTest(input: string): [string[], number[][], string[][], number[][]
         youreiInsertEnd.push("special");
         break;
       case 3:
-        youreiInsertEnd.push("space");
         youreiInsertEnd.push("break");
+        youreiInsertEnd.push("space");
         youreiInsertEnd.push("special");
         break;
       case 4:

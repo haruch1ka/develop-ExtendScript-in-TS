@@ -8,7 +8,7 @@
       "type": "extendscript-debug",
       "request": "launch",
       "name": "スクリプト名を求める",
-      "program": "${workspaceFolder}/dist/reibun_rubi.js",
+      "program": "${workspaceFolder}/dist/fill_in_onkun_yourei.js",
       "stopOnEntry": false
     }
   ]
