@@ -8,10 +8,9 @@
       "type": "extendscript-debug",
       "request": "launch",
       "name": "スクリプト名を求める",
+      // "program": "${file}",
       "program": "${workspaceFolder}/dist/fill_in_onkun_yourei.js",
       "stopOnEntry": false
     }
   ]
-
-  // "program": "${file}",
 }
