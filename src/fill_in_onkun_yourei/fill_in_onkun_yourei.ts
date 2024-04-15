@@ -237,7 +237,7 @@ function main() {
   const s = new Selection();
   // $.writeln(s.is_selected); //選択されているか？
   if (!s.is_selected) {
-    alert("選択してください");
+    alert("テキストフレームを選択してください");
     return;
   }
   if (!s.is_one) {

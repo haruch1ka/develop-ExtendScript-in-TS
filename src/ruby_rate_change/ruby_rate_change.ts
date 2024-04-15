@@ -278,7 +278,7 @@ function main() {
   const s = new Selection();
   // $.writeln(s.is_selected); //選択されているか？
   if (!s.is_selected) {
-    alert("選択してください");
+    alert("テキストフレームを選択してください");
     return;
   }
   if (!s.is_one) {
@@ -297,7 +297,7 @@ function main() {
   const mystory: Story = _textFrames.getStory();
   const allCharactor = mystory.characters;
 
-  let dialog = new myDialog("値を入力して下さい。");
+  let dialog = new myDialog("ストーリー内のルビ比率を変換します。");
   $.writeln(dialog.input1);
   $.writeln(dialog.input2);
   $.writeln(dialog.input3);
