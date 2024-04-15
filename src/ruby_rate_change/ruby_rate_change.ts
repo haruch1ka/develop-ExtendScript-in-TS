@@ -94,19 +94,60 @@ class myExcel {
     }
   }
 }
+
+class myDialogInputTxt {
+  row: any;
+  inputObj: any;
+  input: any;
+  constructor(targetObj: any, inputTitle: string, editText: string) {
+    this.row = targetObj.dialogRows.add();
+    let inputDiscription = this.row.dialogColumns.add();
+    inputDiscription.staticTexts.add({ staticLabel: `${inputTitle}` });
+    this.inputObj = this.row.textEditboxes.add({ editContents: `${editText}`, minWidth: 80 });
+  }
+  getInput() {
+    this.input = this.inputObj.editContents;
+  }
+}
+class myDialogInputRadio {
+  row: any;
+  radioObj: any;
+  input: any;
+  constructor(targetObj: any, inputTitleArray: string) {
+    this.row = targetObj.dialogRows.add();
+    let inputDiscription = this.row.dialogColumns.add();
+    inputDiscription.staticTexts.add({ staticLabel: `${inputTitleArray}` });
+    this.radioObj = this.row.radiobuttonGroups.add();
+    this.radioObj.radiobuttonControls.add({ staticLabel: "縦", checkedState: true });
+    this.radioObj.radiobuttonControls.add({ staticLabel: "横" });
+  }
+  getInput() {
+    this.input = this.radioObj.selectedButton;
+  }
+}
 class myDialog {
   obj: any;
   temp: any;
-  textObj: any;
-  input: any;
+  input1: any;
+  input2: any;
+  input3: any;
   constructor(title: string) {
     this.obj = app.dialogs.add({ name: `${title}` });
     this.temp = this.obj.dialogColumns.add();
-    this.textObj = this.temp.textEditboxes.add({ editContents: "", minWidth: 200, multilene: true });
+    let _input1 = new myDialogInputTxt(this.temp, "ruby3文字 :", "66");
+    let _input2 = new myDialogInputTxt(this.temp, "ruby4文字 :", "50");
+    let _input3 = new myDialogInputRadio(this.temp, "文字組み方向 :");
     this.obj.show();
-    this.input = this.textObj.editContents;
+    _input1.getInput();
+    _input2.getInput();
+    _input3.getInput();
+
+    this.input1 = _input1.input;
+    this.input2 = _input2.input;
+    this.input3 = _input3.input;
   }
 }
+
 class Input {
   inputDataArray: string[];
   constructor(myinput: string) {
@@ -241,7 +282,7 @@ function main() {
     return;
   }
   if (!s.is_one) {
-    alert("1つ選択してください");
+    alert("テキストフレームを1つ選択してください");
     return;
   }
   s.gettype();
@@ -256,30 +297,42 @@ function main() {
   const mystory: Story = _textFrames.getStory();
   const allCharactor = mystory.characters;
 
-  let pastRubyText: string;
+  let dialog = new myDialog("値を入力して下さい。");
+  $.writeln(dialog.input1);
+  $.writeln(dialog.input2);
+  $.writeln(dialog.input3);
+
   forloop(allCharactor.length, (i) => {
-    if (allCharactor[i].rubyFlag) {
-      // if (pastRubyText != allCharactor[i].rubyString) {
-      //   $.writeln(allCharactor[i].rubyString + " " + allCharactor[i].rubyString.length);
-      // }
-      let rubyLen = allCharactor[i].rubyString.length;
+    let Char = allCharactor[i];
+    if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
+      let rubyLen = Char.rubyString.length;
+      if (rubyLen > 3 && Char.rubyString.search(new RegExp("　"))) {
+        let splitChar = Char.rubyString.split("　");
+        allCharactor[i].rubyString = splitChar[0];
+        allCharactor[i + 1].rubyString = splitChar[1];
+        allCharactor[i].rubyFlag = true;
+        allCharactor[i + 1].rubyFlag = true;
+      }
+    }
+  });
+  forloop(allCharactor.length, (i) => {
+    let Char = allCharactor[i];
+    if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
+      let rubyLen = Char.rubyString.length;
       switch (rubyLen) {
         case 3:
-          $.writeln(allCharactor[i].rubyXScale);
-          allCharactor[i].rubyYScale = 66;
+          if (dialog.input3 == 0) Char.rubyXScale = Number(dialog.input1);
+          if (dialog.input3 == 1) Char.rubyYScale = Number(dialog.input1);
           break;
         case 4:
-          $.writeln(allCharactor[i].rubyXScale);
-          allCharactor[i].rubyYScale = 50;
+          if (dialog.input3 == 0) Char.rubyXScale = Number(dialog.input2);
+          if (dialog.input3 == 1) Char.rubyYScale = Number(dialog.input2);
           break;
-
         default:
           break;
       }
-      $.writeln(allCharactor[i].rubyString + " " + allCharactor[i].rubyString.length);
-      pastRubyText = allCharactor[i].rubyString;
     }
   });
-  mystory.clearOverrides(); //Story上のオーバーライドを一括消去
+  mystory.clearOverrides(OverrideType.PARAGRAPH_ONLY); //Story上のオーバーライドを一括消去
 }
 main();

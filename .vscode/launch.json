@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "スクリプト名を求める",
       // "program": "${file}",
-      "program": "${workspaceFolder}/dist/apply_ruby_hiratai.js",
+      "program": "${workspaceFolder}/dist/fill_in_onkun_yourei.js",
       "stopOnEntry": false
     }
   ]

@@ -241,7 +241,7 @@ function main() {
     return;
   }
   if (!s.is_one) {
-    alert("1つ選択してください");
+    alert("テキストフレームを1つ選択してください");
     return;
   }
   s.gettype();
@@ -255,43 +255,38 @@ function main() {
   const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
   const mystory: Story = _textFrames.getStory();
 
-  //   let testinput: string = `髪を《刈り》上げる。	か
-  // 《気丈》に振る舞う。	き/じょう	着物の《丈》をつめる。	たけ
-  // 車内を《清掃》する。	せい/そう	庭の落葉を《掃く》。	は
-  // 降りかかる《災厄》。	さい/やく
-  // 《脱帽》する。	だつ/ぼう
-  // 《抱負》	ほう/ふ	肩(かた)を《抱く》	だ	疑問を《抱く》	いだ	《抱える》	かか
-  // 《子猫》を育てる。	こ/ねこ
-  // 《即答》を避ける。	そく/とう
-  // 《互角》に勝負する。	ご/かく	お《互い》に助け合う。	たが
-  // 責任を《追及》する。	つい/きゅう	考えが《及ばない》。	およ
-  // 《滑落》	かつ/らく	《滑稽》	こっ/けい	《滑る》	すべ	《滑らか》	なめ
-  // `;
-
   let dialog = new myDialog("エクセルの内容をコピーしてそのまま貼り付けてください");
   if (!(typeof dialog.input == "string")) {
     return;
   }
-  const [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, InsertEnd] = inputTest(dialog.input);
+  const [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, InsertEnd, youreiStyleIndex] = inputTest(dialog.input);
 
   forloop(baseTexts.length, (i) => {
     const len = baseTexts[i].length; //文字数
     mystory.insertionPoints[-1].contents = baseTexts[i]; //textを挿入
 
+    let applyParaStyle: ParagraphStyle;
+    if (youreiStyleIndex[i] == "1") {
+      applyParaStyle = app.activeDocument.paragraphStyles.item("用例_1行");
+    } else if (youreiStyleIndex[i] == "2") {
+      applyParaStyle = app.activeDocument.paragraphStyles.item("用例_2行");
+    }
+    forloop(len, (j) => {
+      let styledindex = len * -1;
+      mystory.characters[styledindex].appliedParagraphStyle = applyParaStyle;
+    });
+
+    //太字スタイルの適用
     forloop(positionIndex[i].length, (j) => {
       let styledindex = len * -1 + positionIndex[i][j];
-      $.writeln(mystory.characters[styledindex].contents);
       mystory.characters[styledindex].appliedCharacterStyle = app.activeDocument.characterStyles.item("漢字表_用例太字");
     });
+    //ルビを振る
     forloop(rubyPositionIndex[i].length, (j) => {
       let styledindex = len * -1 + rubyPositionIndex[i][j];
       mystory.characters[styledindex].rubyFlag = true;
       mystory.characters[styledindex].rubyString = rubyIndex[i][j];
     });
-    // forloop(rubyPositionIndex[i].length, (j) => {
-    //   $.writeln(rubyIndex[i][j]);
-    // });
-    $.writeln("------------------");
     switch (InsertEnd[i]) {
       case "break":
         mystory.insertionPoints[-1].contents = "\r";
@@ -309,10 +304,28 @@ function main() {
     mystory.characters.lastItem().appliedCharacterStyle = app.activeDocument.characterStyles[0];
   });
   mystory.clearOverrides(); //Story上のオーバーライドを一括消去
+
+  let allCharactor = mystory.characters;
+  forloop(allCharactor.length, (i) => {
+    let Char = allCharactor[i];
+    if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
+      let rubyLen = Char.rubyString.length;
+      switch (rubyLen) {
+        case 3:
+          Char.rubyXScale = 66;
+          break;
+        case 4:
+          Char.rubyXScale = 50;
+          break;
+        default:
+          break;
+      }
+    }
+  });
 }
 main();
 
-function inputTest(input: string): [string[], number[][], string[][], number[][], string[]] {
+function inputTest(input: string): [string[], number[][], string[][], number[][], string[], string[]] {
   let _input = new Input(input);
   let _bracket = new Brakets();
 
@@ -321,6 +334,7 @@ function inputTest(input: string): [string[], number[][], string[][], number[][]
   let rubyIndex: string[][] = []; //ルビ
   let rubyPositionIndex: number[][] = []; //ルビの挿入位置
   let youreiInsertEnd: string[] = [];
+  let youreiStyleIndex: string[] = [];
 
   forloop(_input.inputDataArray.length, (i) => {
     let item = _input.inputDataArray[i];
@@ -364,21 +378,31 @@ function inputTest(input: string): [string[], number[][], string[][], number[][]
     switch (youLenCount) {
       case 1:
         youreiInsertEnd.push("special");
+        youreiStyleIndex.push("1");
         break;
       case 2:
         youreiInsertEnd.push("break");
         youreiInsertEnd.push("special");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
         break;
       case 3:
         youreiInsertEnd.push("break");
         youreiInsertEnd.push("space");
         youreiInsertEnd.push("special");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
         break;
       case 4:
         youreiInsertEnd.push("space");
         youreiInsertEnd.push("break");
         youreiInsertEnd.push("space");
         youreiInsertEnd.push("special");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
+        youreiStyleIndex.push("2");
         break;
       default:
         throw new Error("yourei_sizi_switch_error");
@@ -387,5 +411,5 @@ function inputTest(input: string): [string[], number[][], string[][], number[][]
     }
     // $.writeln(res.length);
   });
-  return [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, youreiInsertEnd];
+  return [baseTexts, positionIndex, rubyIndex, rubyPositionIndex, youreiInsertEnd, youreiStyleIndex];
 }
