@@ -187,7 +187,7 @@ class Brakets {
 		return res;
 	}
 	removeBrackets(string: string): string {
-		let reg = new RegExp(/[\[\]\《\》]/g);
+		let reg = new RegExp(/[\[\]\《\》\「\」]/g);
 		return string.replace(reg, "");
 	}
 	removeBracketsAndItem(string: string, BraketsType: string): string {
@@ -234,10 +234,9 @@ function main() {
 
 	// const file = <File>File(active_folder_path).openDlg("ファイルを選択してください", "*.xlsx"); //完成時戻す
 
-	const file = <File>(
-		File(
-			"D://backup//bunkei//文溪堂_2023年度//国語//国語テスト//国語テスト//01国語テスト本誌共通parts//こたえてびき漢字コメント//流し込み用(3-6年).xlsx"
-		)
+	const file = <File>File(
+		"D://backup//bunkei//文溪堂_2023年度//国語//国語テスト//国語テスト//01国語テスト本誌共通parts//こたえてびき漢字コメント//流し込み用(3-6年).xlsx"
+		// "D://backup//bunkei//文溪堂_2023年度//国語//国語テスト//国語テスト//01国語テスト本誌共通parts//こたえてびき漢字コメント//H32字形コメント（1・2年用） - ドリルノート.xlsx"
 	);
 	//テスト用
 	if (!file) {
@@ -245,48 +244,14 @@ function main() {
 	}
 
 	const [insertText, insertTar, tarLength] = getTargetData(input, file.fsName);
+	let brakets = new Brakets();
 
 	$.writeln(insertText + " insertText");
+	$.writeln(brakets.removeBrackets(String(insertTar)) + " insertTar");
 	$.writeln(tarLength + " tarLength");
 	hoge(insertText, tarLength);
 }
 
-function hoge(text: string, tarlen: number) {
-	let insert = text;
-	const selectObj = <Group[]>app.activeDocument.selection;
-	const selectitem: any[] = selectObj[0].allPageItems;
-	let selName;
-
-	let rectangle: Rectangle;
-	let textFrame: TextFrame;
-	for (let i = 0; i < selectitem.length; i++) {
-		const e = selectitem[i];
-
-		if (e.constructor.name == "TextFrame") {
-			//初期値の取得
-			textFrame = <TextFrame>e;
-			rectangle = <Rectangle>textFrame.parentStory.pageItems[0].getElements()[0];
-			let rectArray: any[] = [];
-			for (let i = 0; i < tarlen; i++) {
-				let res = rectangle.duplicate([0, 0], [0, 0]);
-				rectArray.push(res);
-			}
-			rectangle.remove();
-			//値の入力
-
-			insert = insert.replace(new RegExp(/\＊/g), "「＊」");
-			let indexes: number[] = getAllIndexes(insert, "＊");
-			insert = insert.replace(new RegExp(/\＊/g), "");
-			textFrame.contents = insert;
-			for (let j = 0; j < indexes.length; j++) {
-				let myPictureAnchor: any = textFrame.insertionPoints[indexes[j]]; //挿入ポイント指定（検索文字の一個前）
-
-				rectArray[j].anchoredObjectSettings.insertAnchoredObject(myPictureAnchor, AnchorPosition.ANCHORED);
-				rectArray[j].clearObjectStyleOverrides();
-			}
-		}
-	}
-}
 function getTargetData(inputKanji: string, fileName: string): [string, RegExpMatchArray | null, number] {
 	let insertText: string = "";
 	let insertTar: RegExpMatchArray | null = null;
@@ -334,6 +299,42 @@ function getTargetData(inputKanji: string, fileName: string): [string, RegExpMat
 		}
 	}
 	return [insertText, insertTar, tarLength];
+}
+function hoge(text: string, tarlen: number) {
+	let insert = text;
+	const selectObj = <Group[]>app.activeDocument.selection;
+	const selectitem: any[] = selectObj[0].allPageItems;
+	let selName;
+
+	let rectangle: Rectangle;
+	let textFrame: TextFrame;
+	for (let i = 0; i < selectitem.length; i++) {
+		const e = selectitem[i];
+
+		if (e.constructor.name == "TextFrame") {
+			//初期値の取得
+			textFrame = <TextFrame>e;
+			rectangle = <Rectangle>textFrame.parentStory.pageItems[0].getElements()[0];
+			let rectArray: any[] = [];
+			for (let i = 0; i < tarlen; i++) {
+				let res = rectangle.duplicate([0, 0], [0, 0]);
+				rectArray.push(res);
+			}
+			rectangle.remove();
+			//値の入力
+
+			insert = insert.replace(new RegExp(/\＊/g), "「＊」");
+			let indexes: number[] = getAllIndexes(insert, "＊");
+			insert = insert.replace(new RegExp(/\＊/g), "");
+			textFrame.contents = insert;
+			for (let j = 0; j < indexes.length; j++) {
+				let myPictureAnchor: any = textFrame.insertionPoints[indexes[j]]; //挿入ポイント指定（検索文字の一個前）
+
+				rectArray[j].anchoredObjectSettings.insertAnchoredObject(myPictureAnchor, AnchorPosition.ANCHORED);
+				rectArray[j].clearObjectStyleOverrides();
+			}
+		}
+	}
 }
 function getAllIndexes(string: string, val: string) {
 	let indexes = [],
