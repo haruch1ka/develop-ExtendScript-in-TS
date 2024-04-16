@@ -293,6 +293,7 @@ function main() {
     // $.writeln(s.type);
   }
 
+  
   const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
   const mystory: Story = _textFrames.getStory();
   const allCharactor = mystory.characters;
