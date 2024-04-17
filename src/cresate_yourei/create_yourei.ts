@@ -1,9 +1,122 @@
+// Type: TypeScript File
+//ダイアログ表示のおまじない
+app.scriptPreferences.userInteractionLevel = 1699311169;
 type forloop = (index: number) => void;
 function forloop(times: number, func: forloop) {
 	for (let i = 0; i < times; i++) {
 		func(i);
 	}
 }
+
+class myFileSetting {
+	//field
+	my_confirmation: boolean; //処理前に確認ダイアログを表示するかどうか
+	my_save_folder_path: string = ""; //PDF保存フォルダ（あとで設定）
+	my_save_folder_path2: string = ""; //PDF保存フォルダ（あとで設定）
+	my_digitnum: number = 4; //ノンブルが数値だったら、桁を揃える。2=>002, 45=>045, 123=>123
+	my_config_filename: string = ""; //設定ファイル名
+	my_separator: string = ""; //パスの区切り文字
+	my_activescript_path: string = ""; //このスクリプトのパス
+	my_activescript_folder: Folder; //このスクリプトのコンテナフォルダ
+	my_config_path: string = ""; //設定ファイルのフルパス
+	actDocFolder: Folder; // アクティブなドキュメントの入っているフォルダ
+	f_modified: boolean = false; //ファイルを書き込んだかどうかのフラグ（余計な読み書き回数を減らすために）
+
+	//constructor
+	constructor(my_confirmation: boolean, my_config_filename: string) {
+		this.my_confirmation = my_confirmation;
+		this.my_config_filename = my_config_filename;
+		this.my_separator = this.get_separator();
+		this.my_activescript_path = this.get_my_script_path();
+		this.my_activescript_folder = File(this.my_activescript_path).parent;
+		this.my_config_path = this.my_activescript_folder + this.my_separator + this.my_config_filename;
+		this.actDocFolder = Folder(String(app.activeDocument.filePath));
+
+		//設定ファイルがなかったら
+		if (File(this.my_config_path).exists === false) {
+			this.f_modified = this.write_setting(this.my_config_path); //設定して書き込み
+		}
+
+		//設定ファイルの読み出し
+		let my_data_list_string: string = this.read_file(this.my_config_path);
+		let my_data_list: string[] = my_data_list_string.split(/[\r\n]+/);
+		this.my_save_folder_path = my_data_list[1];
+		this.my_save_folder_path2 = my_data_list[2];
+	}
+	//カレントスクリプトのフルパスを得る
+	get_my_script_path(): string {
+		try {
+			return String(app.activeScript);
+		} catch (e: any) {
+			return String(File(e.fileName)); //ESTKから実行した時も正しくパスを返す
+		}
+	}
+
+	//ファイルの内容を読み込んで返す
+	read_file(my_read_file_path: string): string {
+		let my_file_obj: File = new File(my_read_file_path);
+		if (!my_file_obj.exists) {
+			throw new Error("ファイルがありません\n" + my_read_file_path);
+		}
+		let tmp_str: string = "";
+		if (my_file_obj.open("r")) {
+			tmp_str = my_file_obj.read();
+			my_file_obj.close();
+		} else {
+			throw new Error("ファイルが開けません\n" + my_read_file_path);
+		}
+		tmp_str = tmp_str.replace(/[\r\n]+$/, ""); //最後の行末の改行を削除
+		return tmp_str;
+	}
+	//データをファイルに書き込む 。書き込んだファイルオブジェクトを返す
+	write_file(my_write_file_path: string, my_data: string): File {
+		let my_file_obj: File = new File(my_write_file_path);
+		my_file_obj.encoding = "UTF-8"; //★この行がないとShift-JISで書き出される
+		if (my_file_obj.open("w")) {
+			my_file_obj.write(my_data);
+			my_file_obj.close();
+			return my_file_obj;
+		} else {
+			throw new Error("ファイルが開けません\n" + my_write_file_path);
+		}
+	}
+
+	//初期設定＆設定ファイル書き込み
+	write_setting(my_write_file_path: string): boolean {
+		let tmp_data: string = "\r";
+		let myPath: string = this.chooseF("Partsが保存してあるフォルダを選んでください");
+		let myPath2: string = this.chooseFi("excelファイルを選んでください");
+		//alert ("保存先\n"+myPath);
+		tmp_data += myPath + "\r\n";
+		tmp_data += myPath2 + "\r\n";
+		this.write_file(my_write_file_path, tmp_data);
+		return true; //書き込み済みであることのフラグ
+	}
+
+	//OSのファイルセパレータを得る
+	get_separator(): string {
+		if (Folder.fs === "Macintosh") {
+			return "/";
+		} else {
+			return "\\";
+		}
+	}
+
+	//ファイル・フォルダ選択ダイアログ。パス文字列を返す。
+	chooseF(my_prompt: string): string {
+		const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
+		let my_pathx = Folder(active_folder_path).selectDlg(my_prompt);
+		let decoded = decodeURI(String(my_pathx));
+		return decoded;
+	}
+	chooseFi(my_prompt: string): string {
+		const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
+		let my_pathx = File(active_folder_path).openDlg(my_prompt);
+		let decoded = decodeURI(String(my_pathx));
+		return decoded;
+	}
+}
+
 class myExcel {
 	excelFilePath: string;
 	splitChar: string;
@@ -131,7 +244,7 @@ class myDialog {
 	constructor(title: string) {
 		this.obj = app.dialogs.add({ name: `${title}` });
 		this.temp = this.obj.dialogColumns.add();
-		let _input1 = new myDialogInputTxt(this.temp, "検索する漢字 :", "飛");
+		let _input1 = new myDialogInputTxt(this.temp, "検索する漢字 :", "");
 		this.obj.show();
 		_input1.getInput();
 		this.input1 = _input1.input;
@@ -169,6 +282,33 @@ class textFrames {
 		story = this.textFrames[0].parentStory;
 
 		return story;
+	}
+}
+class Selection {
+	obj: object[];
+	type: string = "";
+	is_selected: boolean = false;
+	is_one: boolean = false;
+	constructor() {
+		this.obj = <object[]>app.activeDocument.selection;
+		this.isSelected();
+		if (this.is_selected) {
+			this.gettype();
+		}
+	}
+	gettype() {
+		this.type = this.obj[0].constructor.name;
+	}
+	isSelected() {
+		if (this.obj.length !== 0) {
+			this.is_selected = true;
+			this.is_one = this.isOne();
+		} else {
+			this.is_selected = false;
+		}
+	}
+	isOne() {
+		return this.obj.length === 1;
 	}
 }
 class Brakets {
@@ -223,119 +363,168 @@ class Brakets {
 	}
 }
 function main() {
-	const mydialog = new myDialog("ここに対象の漢字一字を入力してください");
+	let setting = new myFileSetting(false, "my_setting.txt");
+	$.writeln(setting.my_save_folder_path);
+	$.writeln(setting.my_save_folder_path2);
+
+	//オブジェクトが取得されているか確認する。
+	const s = new Selection();
+	if (!s.is_selected) {
+		alert("テキストフレームを選択してください");
+		return;
+	}
+	if (!s.is_one) {
+		alert("テキストフレームを1つ選択してください");
+		return;
+	}
+	s.gettype();
+	$.writeln(s.type);
+	if (s.type !== "Group") {
+		alert("グループを選択してください");
+		return;
+	}
+	//入力ダイアログを表示する。
+	const mydialog = new myDialog("用例検索スクリプト");
 	const input = mydialog.input1;
 	if (input == "" || input.length != 1) {
 		return;
 	}
 
-	// const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
-	// const save_folder = Folder(active_folder_path).selectDlg("フォルダを選択してください。");
-
-	// const file = <File>File(active_folder_path).openDlg("ファイルを選択してください", "*.xlsx"); //完成時戻す
-
-	const file = <File>File(
-		"D://backup//bunkei//文溪堂_2023年度//国語//国語テスト//国語テスト//01国語テスト本誌共通parts//こたえてびき漢字コメント//流し込み用(3-6年).xlsx"
-		// "D://backup//bunkei//文溪堂_2023年度//国語//国語テスト//国語テスト//01国語テスト本誌共通parts//こたえてびき漢字コメント//H32字形コメント（1・2年用） - ドリルノート.xlsx"
-	);
-	//テスト用
-	if (!file) {
+	//選択されたグループからテキストフレームを取得する。
+	const group = <Group>s.obj[0];
+	const selectItem: PageItem[] = group.allPageItems;
+	let textframe!: TextFrame;
+	forloop(selectItem.length, (i) => {
+		const e = selectItem[i];
+		if (e.constructor.name == "TextFrame") {
+			textframe = <TextFrame>e;
+			return;
+		}
+	});
+	if (!textframe) {
 		return;
 	}
+	let excelFilePath = setting.my_save_folder_path2;
+	let excelfile = new File(excelFilePath);
+	const [insertText, insertFileItemName, tarLength] = getTargetData(input, excelfile.fsName);
 
-	const [insertText, insertTar, tarLength] = getTargetData(input, file.fsName);
-	let brakets = new Brakets();
+	// let insertText: string = "＊の下に＊を書くよ。";
+	// let insertFileItemName: string[] = ["6年_S裏S2_2020", "6年_S裏S3_2020"];
+	// let tarLength: number = 2;
 
 	$.writeln(insertText + " insertText");
-	$.writeln(brakets.removeBrackets(String(insertTar)) + " insertTar");
+	$.writeln(String(insertFileItemName) + " insertFileItemName");
 	$.writeln(tarLength + " tarLength");
-	hoge(insertText, tarLength);
-}
 
-function getTargetData(inputKanji: string, fileName: string): [string, RegExpMatchArray | null, number] {
+	//string から最後から2番目の文字を取得する。
+
+	let illustratorFolderPath = setting.my_save_folder_path + setting.my_separator;
+
+	insertDataToTextFrame(textframe, insertText, tarLength, insertFileItemName, illustratorFolderPath);
+}
+//指定された漢字のデータをexcelから取得する関数。
+function getTargetData(inputKanji: string, fileName: string): [string, string[], number] {
 	let insertText: string = "";
-	let insertTar: RegExpMatchArray | null = null;
+	let insertFileItemName: string[] = [];
 	let tarLength: number = 0;
-	for (let i = 1; i < 5; i++) {
+	forloop(5, (i) => {
+		$.writeln(fileName);
 		let excel_instance = new myExcel(fileName, ";", String(i));
 		let excel_data = excel_instance.GetDataFromExcelPC();
+
+		// excelデータの1行目は必要ないため削除する。
 		excel_data.shift();
+
+		// excelデータが取得できなかった場合は処理を終了する。
 		if (excel_data[0] == undefined) {
-			break;
+			return;
 		}
-		let col: any = excel_data;
+		let col: string[][] = excel_data;
 		let yourei_txt: string = "";
-		for (let j = 1; j < col.length; j++) {
+
+		// x〔〕の部分を削除する。
+		forloop(col.length, (j) => {
 			if (inputKanji == col[j][1]) {
 				let replaced_text = col[j][2].replace(new RegExp(/×〔.*〕/), "");
 				yourei_txt = replaced_text;
-				break;
+				return;
 			}
-		}
+		});
+		// excelデータから正規表現で指定された文字列を取得する。
 		if (yourei_txt != "") {
-			let regKagi = new RegExp(/\「.*?\」/g);
-			let regKou = new RegExp(/\〔.*?\〕/g);
-			if (regKagi.test(yourei_txt)) {
-				insertTar = yourei_txt.match(regKagi);
-			} else if (regKou.test(yourei_txt)) {
-				insertTar = <RegExpMatchArray>yourei_txt.match(regKou);
+			let quotationRegex = new RegExp(/\「.*?\」/g);
+			let bracketRegex = new RegExp(/\〔.*?\〕/g);
+			if (quotationRegex.test(yourei_txt)) {
+				let match = yourei_txt.match(quotationRegex);
+				if (match) insertFileItemName = match;
+			} else if (bracketRegex.test(yourei_txt)) {
+				let match = yourei_txt.match(bracketRegex);
+				if (match) insertFileItemName = match;
 			} else {
-				throw new Error("置き換えが見つからないよ");
-				insertTar = null;
+				insertFileItemName = [];
 			}
-			let replaceYourei = yourei_txt;
-			if (insertTar != null) {
-				tarLength = insertTar.length;
-				for (let i = 0; i < insertTar.length; i++) {
-					replaceYourei = replaceYourei.replace(insertTar[i], "＊");
-				}
-			}
+			let replaced_Yourei = yourei_txt;
 
-			insertText = replaceYourei;
-			$.writeln(insertText);
-			$.writeln(insertTar);
-			if (insertTar) alert(String(insertTar));
-			break;
+			// 指定された文字列の部分を「＊」に置き換える。
+			if (insertFileItemName != null && insertFileItemName.length > 0) {
+				tarLength = insertFileItemName.length;
+				forloop(insertFileItemName.length, (i) => {
+					replaced_Yourei = replaced_Yourei.replace(insertFileItemName[i], "＊");
+				});
+			}
+			insertText = replaced_Yourei;
+			return;
 		}
-	}
-	return [insertText, insertTar, tarLength];
+	});
+	if (insertFileItemName) $.writeln(String(insertFileItemName));
+	return [insertText, insertFileItemName, tarLength];
 }
-function hoge(text: string, tarlen: number) {
+//テキストフレームに指定された文字列を挿入する関数。
+function insertDataToTextFrame(
+	textFrame: TextFrame,
+	text: string,
+	tarlen: number,
+	insertFileItemName: string[],
+	illustratorFolderPath: string
+) {
 	let insert = text;
-	const selectObj = <Group[]>app.activeDocument.selection;
-	const selectitem: any[] = selectObj[0].allPageItems;
-	let selName;
 
+	//rectangleを生成する。
 	let rectangle: Rectangle;
-	let textFrame: TextFrame;
-	for (let i = 0; i < selectitem.length; i++) {
-		const e = selectitem[i];
+	rectangle = app.activeDocument.pages[0].rectangles.add();
+	rectangle.visibleBounds = ["0 mm", "0 mm", "4mm", "4 mm"];
+	rectangle.clearObjectStyleOverrides();
+	rectangle.fillColor = "Black";
+	rectangle.strokeWeight = 0;
+	rectangle.strokeColor = "None";
+	rectangle.contentType = ContentType.GRAPHIC_TYPE;
 
-		if (e.constructor.name == "TextFrame") {
-			//初期値の取得
-			textFrame = <TextFrame>e;
-			rectangle = <Rectangle>textFrame.parentStory.pageItems[0].getElements()[0];
-			let rectArray: any[] = [];
-			for (let i = 0; i < tarlen; i++) {
-				let res = rectangle.duplicate([0, 0], [0, 0]);
-				rectArray.push(res);
-			}
-			rectangle.remove();
-			//値の入力
+	let brakets = new Brakets();
+	let rectArray: any[] = [];
+	for (let i = 0; i < tarlen; i++) {
+		let insertFileName = brakets.removeBrackets(insertFileItemName[i]);
+		let insertFile = File(illustratorFolderPath + String(insertFileName) + ".ai");
+		let res = rectangle.duplicate([0, 0], [0, 0]);
+		res.place(insertFile);
+		res.fit(FitOptions.CONTENT_TO_FRAME);
+		rectArray.push(res);
+	}
+	rectangle.remove();
+	//値の入力
 
-			insert = insert.replace(new RegExp(/\＊/g), "「＊」");
-			let indexes: number[] = getAllIndexes(insert, "＊");
-			insert = insert.replace(new RegExp(/\＊/g), "");
-			textFrame.contents = insert;
-			for (let j = 0; j < indexes.length; j++) {
-				let myPictureAnchor: any = textFrame.insertionPoints[indexes[j]]; //挿入ポイント指定（検索文字の一個前）
-
-				rectArray[j].anchoredObjectSettings.insertAnchoredObject(myPictureAnchor, AnchorPosition.ANCHORED);
-				rectArray[j].clearObjectStyleOverrides();
-			}
-		}
+	insert = insert.replace(new RegExp(/\＊/g), "「＊」");
+	let indexes: number[] = getAllIndexes(insert, "＊");
+	insert = insert.replace(new RegExp(/\＊/g), "");
+	//textFrame に文字列を挿入する。
+	textFrame.contents = insert;
+	for (let j = 0; j < indexes.length; j++) {
+		let myPictureAnchor: any = textFrame.insertionPoints[indexes[j]]; //挿入ポイント指定（検索文字の一個前）
+		rectArray[j].anchoredObjectSettings.insertAnchoredObject(myPictureAnchor, AnchorPosition.ANCHORED);
+		rectArray[j].clearObjectStyleOverrides();
 	}
 }
+
+//指定された文字列の指定された文字のインデックスを取得する関数。
 function getAllIndexes(string: string, val: string) {
 	let indexes = [],
 		i;
@@ -344,6 +533,7 @@ function getAllIndexes(string: string, val: string) {
 	}
 	return indexes;
 }
+//オブジェクトに指定されたアイテムを挿入する関数。
 function anchoredIn(story: any): any {
 	let ancObj: any;
 	ancObj = story.add();
