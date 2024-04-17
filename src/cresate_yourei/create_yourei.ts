@@ -406,7 +406,18 @@ function main() {
 	}
 	let excelFilePath = setting.my_save_folder_path2;
 	let excelfile = new File(excelFilePath);
-	const [insertText, insertFileItemName, tarLength] = getTargetData(input, excelfile.fsName);
+
+	//stringの最後から2番目の文字を取得する。
+	let grade = setting.my_save_folder_path.slice(-2);
+	$.writeln(grade);
+	let isOneTwo;
+	if (grade == "1年" || grade == "2年") {
+		isOneTwo = true;
+	} else {
+		isOneTwo = false;
+	}
+
+	const [insertText, insertFileItemName, tarLength] = getTargetData(input, excelfile.fsName, isOneTwo);
 
 	// let insertText: string = "＊の下に＊を書くよ。";
 	// let insertFileItemName: string[] = ["6年_S裏S2_2020", "6年_S裏S3_2020"];
@@ -416,14 +427,12 @@ function main() {
 	$.writeln(String(insertFileItemName) + " insertFileItemName");
 	$.writeln(tarLength + " tarLength");
 
-	//string から最後から2番目の文字を取得する。
-
 	let illustratorFolderPath = setting.my_save_folder_path + setting.my_separator;
 
 	insertDataToTextFrame(textframe, insertText, tarLength, insertFileItemName, illustratorFolderPath);
 }
 //指定された漢字のデータをexcelから取得する関数。
-function getTargetData(inputKanji: string, fileName: string): [string, string[], number] {
+function getTargetData(inputKanji: string, fileName: string, isOneTwo: boolean): [string, string[], number] {
 	let insertText: string = "";
 	let insertFileItemName: string[] = [];
 	let tarLength: number = 0;
@@ -431,7 +440,10 @@ function getTargetData(inputKanji: string, fileName: string): [string, string[],
 		$.writeln(fileName);
 		let excel_instance = new myExcel(fileName, ";", String(i));
 		let excel_data = excel_instance.GetDataFromExcelPC();
-
+		let targetRow = 1;
+		if (isOneTwo) {
+			targetRow = 0;
+		}
 		// excelデータの1行目は必要ないため削除する。
 		excel_data.shift();
 
@@ -444,8 +456,10 @@ function getTargetData(inputKanji: string, fileName: string): [string, string[],
 
 		// x〔〕の部分を削除する。
 		forloop(col.length, (j) => {
-			if (inputKanji == col[j][1]) {
-				let replaced_text = col[j][2].replace(new RegExp(/×〔.*〕/), "");
+			$.writeln(col[j][targetRow]);
+
+			if (inputKanji == col[j][targetRow]) {
+				let replaced_text = col[j][targetRow + 1].replace(new RegExp(/×〔.*〕/), "");
 				yourei_txt = replaced_text;
 				return;
 			}
