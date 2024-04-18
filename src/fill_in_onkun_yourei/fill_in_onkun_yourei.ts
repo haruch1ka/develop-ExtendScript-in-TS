@@ -289,7 +289,7 @@ function main() {
 		});
 		switch (InsertEnd[i]) {
 			case "break":
-				mystory.insertionPoints[-1].contents = "\r";
+				mystory.insertionPoints[-1].contents = SpecialCharacters.FORCED_LINE_BREAK;
 				break;
 			case "space":
 				mystory.insertionPoints[-1].contents = "　";
