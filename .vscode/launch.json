@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/create_yourei.js",
+			"program": "${workspaceFolder}/dist/tashi_mato_yourei.js",
 			"stopOnEntry": false
 		}
 	]
