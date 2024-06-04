@@ -105,13 +105,13 @@ class myFileSetting {
 	//ファイル・フォルダ選択ダイアログ。パス文字列を返す。
 	chooseF(my_prompt: string): string {
 		const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
-		let my_pathx = Folder(active_folder_path).selectDlg(my_prompt);
+		let my_pathx = Folder().selectDlg(my_prompt);
 		let decoded = decodeURI(String(my_pathx));
 		return decoded;
 	}
 	chooseFi(my_prompt: string): string {
 		const active_folder_path: string = decodeURI(String(app.activeDocument.filePath));
-		let my_pathx = File(active_folder_path).openDlg(my_prompt);
+		let my_pathx = File().openDlg(my_prompt);
 		let decoded = decodeURI(String(my_pathx));
 		return decoded;
 	}
@@ -200,7 +200,6 @@ class myExcel {
 				data.name = name;
 				data.push(tempArrLine);
 			}
-
 			return data;
 		} catch (err: any) {
 			$.writeln(err.message + ", line: " + err.line);
@@ -403,67 +402,79 @@ function main() {
 	if (!mydialog.exsist) return;
 	const input = mydialog.input1;
 
-	//選択されたグループからテキストフレームを取得する。
-	const group = <Group>s.obj[0];
-	const selectItem: PageItem[] = group.allPageItems;
-	let textframe!: TextFrame;
-	forloop(selectItem.length, (i) => {
-		const e = selectItem[i];
-		if (e.constructor.name == "TextFrame") {
-			textframe = <TextFrame>e;
-			return;
-		}
+	//入力された文字列を[{漢字},{左右}]配列に変換してinput_row_arrayに格納する。
+	const _input = new Input(input);
+	const input_row_array: string[][] = [];
+	forloop(_input.inputDataArray.length, (i) => {
+		let res = _input.splitString(_input.inputDataArray[i], "	");
+		if (res[res.length - 1] != "") input_row_array.push([res[0], res[res.length - 1]]);
 	});
-	if (!textframe) {
-		return;
-	}
+
+	//字形コメントの文字列をもとに、グループオブジェクトを複製する。
+	let TextFrameArray: TextFrame[] = [];
+	const rightGroup = <Group>s.obj[0];
+	const leftGroup = <Group>s.obj[1];
+	let diffLR = <number>rightGroup.geometricBounds[3] - <number>leftGroup.geometricBounds[3];
+	let x = 0;
+	forloop(input_row_array.length, (i) => {
+		let diff = -20;
+		let group: Group;
+		if (input_row_array[i][1] == "右") {
+			group = <Group>rightGroup.duplicate(undefined, [x, 80]);
+		} else {
+			group = <Group>leftGroup.duplicate(undefined, [x + diffLR, 80]);
+		}
+		const textframe = getTextFrameFromGroup(group);
+		TextFrameArray.push(textframe);
+		x += diff;
+	});
+
 	let excelFilePath = setting.my_save_folder_path2;
 	let excelfile = new File(excelFilePath);
 
-	//stringの最後から2番目の文字を取得する。
-	let grade = setting.my_save_folder_path.slice(-2);
+	//学年を取得する。
+	let grade = setting.my_save_folder_path.slice(-2, -1);
 	$.writeln(grade);
-	let isOneTwo;
-	if (grade == "1年" || grade == "2年") {
-		isOneTwo = true;
+	let isOneOrTwo;
+	if (grade == "1" || grade == "2") {
+		isOneOrTwo = true;
 	} else {
-		isOneTwo = false;
+		isOneOrTwo = false;
 	}
 
-	const [insertText, insertFileItemName, tarLength] = getTargetData(input, excelfile.fsName, isOneTwo);
+	//excelデータを取得する。
+	let excel_data_array: string[][][] = [];
+	let excel_tab_num = Number(grade);
+	if (!isOneOrTwo) excel_tab_num += -2;
+	$.writeln(excel_tab_num + " excel_tab_num");
 
-	// let insertText: string = "＊の下に＊を書くよ。";
-	// let insertFileItemName: string[] = ["6年_S裏S2_2020", "6年_S裏S3_2020"];
-	// let tarLength: number = 2;
+	let excel_instance = new myExcel(excelfile.fsName, ";", String(excel_tab_num));
+	let excel_data = excel_instance.GetDataFromExcelPC();
+	excel_data_array.push(excel_data);
 
-	$.writeln(insertText + " insertText");
-	$.writeln(String(insertFileItemName) + " insertFileItemName");
-	$.writeln(tarLength + " tarLength");
+	//input_row_arrayの文字列をもとに、挿入する文字列を取得する。
+	forloop(input_row_array.length, (i) => {
+		let inputKanji = input_row_array[i][0];
+		const [insertText, insertFileItemName, tarLength] = getTargetData(inputKanji, isOneOrTwo, excel_data_array);
+		$.writeln(insertText + " insertText");
+		$.writeln(String(insertFileItemName) + " insertFileItemName");
+		$.writeln(tarLength + " tarLength");
 
-	// let illustratorFolderPath = setting.my_save_folder_path + setting.my_separator;
-
-	// insertDataToTextFrame(textframe, insertText, tarLength, insertFileItemName, illustratorFolderPath);
+		let illustratorFolderPath = setting.my_save_folder_path + setting.my_separator;
+		insertDataToTextFrame(TextFrameArray[i], insertText, tarLength, insertFileItemName, illustratorFolderPath);
+	});
 }
-//指定された漢字のデータをexcelから取得する関数。
-function getTargetData(inputKanji: string, fileName: string, isOneTwo: boolean): [string, string[], number] {
+//指定された漢字のデータをexcelデータから取得する関数。
+function getTargetData(inputKanji: string, isOneOrTwo: boolean, exceldata: string[][][]): [string, string[], number] {
 	let insertText: string = "";
 	let insertFileItemName: string[] = [];
 	let tarLength: number = 0;
-	let excel_data_array: string[][][] = [];
-	forloop(5, (i) => {
-		let excel_instance = new myExcel(fileName, ";", String(i));
-		let excel_data = excel_instance.GetDataFromExcelPC();
-		excel_data_array.push(excel_data);
-		// excelデータが取得できなかった場合は処理を終了する。
-		if (excel_data[0] == undefined) {
-			return;
-		}
-	});
+	let excel_data_array: string[][][] = exceldata;
 
 	forloop(excel_data_array.length, (i) => {
 		let excel_data = excel_data_array[i];
 		let targetRow = 1;
-		if (isOneTwo) {
+		if (isOneOrTwo) {
 			targetRow = 0;
 		}
 		// excelデータの1行目は必要ないため削除する。
@@ -575,45 +586,17 @@ function anchoredIn(story: any): any {
 	ancObj.appliedObjectStyle = app.activeDocument.objectStyles.item("インライン基本");
 	return ancObj;
 }
-main();
 
-function test() {
-	let setting = new myFileSetting(false, "my_setting.txt");
-
-	//目的のオブジェクトが選択されているか確認する。
-	const s = new Selection();
-	if (s.alert(!s.is_selected, "オブジェクトが選択されていません")) return;
-	if (s.alert(!(s.selection_length == 2), "2つグループを選択してください")) return;
-	s.gettype();
-	if (s.alert(s.type !== "Group", "グループを選択してください")) return;
-	$.writeln(s.type);
-
-	//入力ダイアログを表示する。
-	const mydialog = new myDialog("たしまと用例スクリプト");
-	if (!mydialog.exsist) return;
-	const input = mydialog.input1;
-
-	//入力された文字列を配列に変換する。
-	const _input = new Input(input);
-	const input_row_array: string[][] = [];
-	forloop(_input.inputDataArray.length, (i) => {
-		let res = _input.splitString(_input.inputDataArray[i], "	");
-		if (res[res.length - 1] != "") input_row_array.push([res[0], res[res.length - 1]]);
-	});
-	//字形コメントの文字列をもとに、グループオブジェクトを複製する。
-	let groupObjArray: PageItem[] = [];
-	const rightGroup = <Group>s.obj[0];
-	const leftGroup = <Group>s.obj[1];
-	let diffLR = <number>rightGroup.geometricBounds[3] - <number>leftGroup.geometricBounds[3];
-	let x = 0;
-	forloop(input_row_array.length, (i) => {
-		let diff = -20;
-		if (input_row_array[i][1] == "右") {
-			groupObjArray.push(rightGroup.duplicate(undefined, [x, 60]));
-		} else {
-			groupObjArray.push(leftGroup.duplicate(undefined, [x + diffLR, 60]));
+function getTextFrameFromGroup(group: Group): TextFrame {
+	const selectItem: PageItem[] = group.allPageItems;
+	let textframe!: TextFrame;
+	forloop(selectItem.length, (i) => {
+		const e = selectItem[i];
+		if (e.constructor.name == "TextFrame") {
+			textframe = <TextFrame>e;
+			return;
 		}
-		x += diff;
 	});
+	return textframe;
 }
-// test();
+main();

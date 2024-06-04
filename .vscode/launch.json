@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/tashi_mato_yourei.js",
+			"program": "${workspaceFolder}/dist/fill_in_the_anchors_kanjii.js",
 			"stopOnEntry": false
 		}
 	]

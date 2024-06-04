@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "module": "None",
-    "strict": true,
-    "noLib": true,
-    "types": ["types-for-adobe/InDesign/2021"],
-    "rootDir": "./src",
-    "outDir": "./dist"
-  },
-  "include": ["./src/*.ts"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"module": "None",
+		"strict": true,
+		"noLib": true,
+		"types": ["types-for-adobe/InDesign/2021"],
+		"rootDir": "./src",
+		"outDir": "./dist"
+	},
+	"include": ["./src/*.ts"],
+	"exclude": ["node_modules", "dist", ".lib"]
 }

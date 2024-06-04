@@ -327,7 +327,7 @@ class Brakets {
 		return res;
 	}
 	removeBrackets(string: string): string {
-		let reg = new RegExp(/[\[\]\《\》\「\」]/g);
+		let reg = new RegExp(/[\[\]\《\》\「\」\〔\〕]/g);
 		return string.replace(reg, "");
 	}
 	removeBracketsAndItem(string: string, BraketsType: string): string {
@@ -407,17 +407,27 @@ function main() {
 	let excelFilePath = setting.my_save_folder_path2;
 	let excelfile = new File(excelFilePath);
 
-	//stringの最後から2番目の文字を取得する。
-	let grade = setting.my_save_folder_path.slice(-2);
+	//学年を取得する。
+	let grade = setting.my_save_folder_path.slice(-2, -1);
 	$.writeln(grade);
-	let isOneTwo;
-	if (grade == "1年" || grade == "2年") {
-		isOneTwo = true;
+	let isOneOrTwo;
+	if (grade == "1" || grade == "2") {
+		isOneOrTwo = true;
 	} else {
-		isOneTwo = false;
+		isOneOrTwo = false;
 	}
 
-	const [insertText, insertFileItemName, tarLength] = getTargetData(input, excelfile.fsName, isOneTwo);
+	//excelデータを取得する。
+	let excel_data_array: string[][][] = [];
+	let excel_tab_num = Number(grade);
+	if (!isOneOrTwo) excel_tab_num += -2;
+	$.writeln(excel_tab_num + " excel_tab_num");
+
+	let excel_instance = new myExcel(excelfile.fsName, ";", String(excel_tab_num));
+	let excel_data = excel_instance.GetDataFromExcelPC();
+	excel_data_array.push(excel_data);
+
+	const [insertText, insertFileItemName, tarLength] = getTargetData(input, isOneOrTwo, excel_data_array);
 
 	// let insertText: string = "＊の下に＊を書くよ。";
 	// let insertFileItemName: string[] = ["6年_S裏S2_2020", "6年_S裏S3_2020"];
@@ -432,25 +442,21 @@ function main() {
 	insertDataToTextFrame(textframe, insertText, tarLength, insertFileItemName, illustratorFolderPath);
 }
 //指定された漢字のデータをexcelから取得する関数。
-function getTargetData(inputKanji: string, fileName: string, isOneTwo: boolean): [string, string[], number] {
+function getTargetData(inputKanji: string, isOneOrTwo: boolean, exceldata: string[][][]): [string, string[], number] {
 	let insertText: string = "";
 	let insertFileItemName: string[] = [];
 	let tarLength: number = 0;
-	forloop(5, (i) => {
-		$.writeln(fileName);
-		let excel_instance = new myExcel(fileName, ";", String(i));
-		let excel_data = excel_instance.GetDataFromExcelPC();
+	let excel_data_array: string[][][] = exceldata;
+
+	forloop(excel_data_array.length, (i) => {
+		let excel_data = excel_data_array[i];
 		let targetRow = 1;
-		if (isOneTwo) {
+		if (isOneOrTwo) {
 			targetRow = 0;
 		}
 		// excelデータの1行目は必要ないため削除する。
 		excel_data.shift();
 
-		// excelデータが取得できなかった場合は処理を終了する。
-		if (excel_data[0] == undefined) {
-			return;
-		}
 		let col: string[][] = excel_data;
 		let yourei_txt: string = "";
 

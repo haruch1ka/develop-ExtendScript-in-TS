@@ -1,18 +1,19 @@
 {
-  "name": "script",
-  "version": "1.0.0",
-  "description": "",
-  "main": "foo.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
-    "types-for-adobe": "^7.2.0",
-    "typescript": "^5.4.3"
-  }
+	"name": "script",
+	"version": "1.0.0",
+	"description": "",
+	"main": "foo.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"tsc": "tsc"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"eslint": "^8.57.0",
+		"prettier": "^3.2.5",
+		"types-for-adobe": "^7.2.0",
+		"typescript": "^5.4.3"
+	}
 }
