@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/fill_in_the_anchors_kanjii.js",
+			"program": "${workspaceFolder}/dist/ruby_rate_change.js",
 			"stopOnEntry": false
 		}
 	]

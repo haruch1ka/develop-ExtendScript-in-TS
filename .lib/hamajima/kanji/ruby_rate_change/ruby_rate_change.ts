@@ -1,8 +1,6 @@
-﻿//概要
-//ストーリー上のルビの比率を変更するスクリプト
+﻿//ストーリー上のルビの比率を変更するスクリプト
 //うまく動作しないときには　"UTF-8 with BOM" で保存されているか確認すること
-//
-//
+
 // 更新履歴
 // 2023/04/16 作成
 // 2024/06/04 欧文スペースに対応 軽微な修正
@@ -186,7 +184,8 @@ function main() {
 				splitChar = Char.rubyString.split(" ");
 			} else {
 				return true;
-			}　
+			}
+			$.writeln(splitChar);
 			//ルビ文字を代入する
 			allCharactor[i].rubyString = splitChar[0];
 			allCharactor[i + 1].rubyString = splitChar[1];
