@@ -1,10 +1,12 @@
-﻿//ストーリー上のルビの比率を変更するスクリプト
+﻿//概要
+//ストーリー上のルビの比率を変更するスクリプト
 //うまく動作しないときには　"UTF-8 with BOM" で保存されているか確認すること
-
+//
+//
 // 更新履歴
 // 2023/04/16 作成
-// 2024/06/04 欧文スペースに対応 軽微な修正
-
+// 2024/06/04 欧文スペースに対応/軽微な修正
+// 2024/06/05 三文字以上のルビに対応/オーバーライドの消去を無効に
 type forloop = (index: number) => void;
 function forloop(times: number, func: forloop) {
 	for (let i = 0; i < times; i++) {
@@ -175,8 +177,8 @@ function main() {
 		if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
 			let rubyLen = Char.rubyString.length;
 			if (!(rubyLen >= 3)) return true;
-			let splitChar;
-			$.writeln(splitChar);
+			let splitChar = null;
+
 			//全角スペース又は半角スペースがある場合分割
 			if (Char.rubyString.search(new RegExp("　")) >= 0) {
 				splitChar = Char.rubyString.split("　");
@@ -185,13 +187,19 @@ function main() {
 			} else {
 				return true;
 			}
-			$.writeln(splitChar);
+			if (splitChar == null) {
+				throw new Error("splitChar が null です。");
+			} else {
+				$.writeln("splitChar is  = " + splitChar);
+			}
+
 			//ルビ文字を代入する
-			allCharactor[i].rubyString = splitChar[0];
-			allCharactor[i + 1].rubyString = splitChar[1];
-			//ルビフラグを立てる
-			allCharactor[i].rubyFlag = true;
-			allCharactor[i + 1].rubyFlag = true;
+			for (let j = 0; j < splitChar.length; j++) {
+				$.writeln("i + j " + (i + j) + " : " + splitChar[j]);
+				allCharactor[i + j].rubyString = splitChar[j];
+				//ルビフラグを立てる
+				allCharactor[i + j].rubyFlag = true;
+			}
 		}
 	});
 	forloop(allCharactor.length, (i) => {
@@ -215,6 +223,6 @@ function main() {
 			}
 		}
 	});
-	mystory.clearOverrides(OverrideType.PARAGRAPH_ONLY); //Story上のオーバーライドを一括消去
+	// mystory.clearOverrides(OverrideType.PARAGRAPH_ONLY); //Story上のオーバーライドを一括消去
 }
 main();
