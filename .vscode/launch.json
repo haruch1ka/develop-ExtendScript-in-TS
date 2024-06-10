@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/watching_zenyaku.js",
+			"program": "${workspaceFolder}/dist/dev.js",
 			// "program": "${workspaceFolder}/dist/watching_zenyaku_test.js",
 			"stopOnEntry": false
 		}
