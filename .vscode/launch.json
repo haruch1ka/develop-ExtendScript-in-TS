@@ -9,7 +9,8 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/ruby_rate_change.js",
+			"program": "${workspaceFolder}/dist/watching_zenyaku.js",
+			// "program": "${workspaceFolder}/dist/watching_zenyaku_test.js",
 			"stopOnEntry": false
 		}
 	]

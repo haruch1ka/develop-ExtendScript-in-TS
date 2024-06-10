@@ -24,6 +24,20 @@ class myDialogInputTxt {
 		this.input = this.inputObj.editContents;
 	}
 }
+class myDialogInputTxtLarge {
+	row: any;
+	inputObj: any;
+	input: any;
+	constructor(targetObj: any, inputTitle: string, editText: string) {
+		this.row = targetObj.dialogRows.add();
+		let inputDiscription = this.row.dialogColumns.add();
+		inputDiscription.staticTexts.add({ staticLabel: `${inputTitle}` });
+		this.inputObj = this.row.textEditboxes.add({ editContents: `${editText}`, minWidth: 80 });
+	}
+	getInput() {
+		this.input = this.inputObj.editContents;
+	}
+}
 class myDialogInputRadio {
 	row: any;
 	radioObj: any;
@@ -40,61 +54,42 @@ class myDialogInputRadio {
 		this.input = this.radioObj.selectedButton;
 	}
 }
+
 class myDialog {
 	obj: any;
 	temp: any;
 	input1: any;
-	input2: any;
-	input3: any;
 	constructor(title: string) {
 		this.obj = app.dialogs.add({ name: `${title}` });
 		this.temp = this.obj.dialogColumns.add();
-		let _input1 = new myDialogInputTxt(this.temp, "ruby3文字 :", "66");
-		let _input2 = new myDialogInputTxt(this.temp, "ruby4文字 :", "50");
-		let _input3 = new myDialogInputRadio(this.temp, "文字組み方向 :");
+		let _input1 = new myDialogInputTxt(this.temp, "スラッシュ訳 :", "");
 		this.obj.show();
 		_input1.getInput();
-		_input2.getInput();
-		_input3.getInput();
 
 		this.input1 = _input1.input;
-		this.input2 = _input2.input;
-		this.input3 = _input3.input;
 	}
 }
 
 class Input {
-	inputDataArray: string[];
-	constructor(myinput: string) {
+	inputDataArray: any[];
+	constructor(myinput: string, splitRegex: RegExp = new RegExp(/[\r\n]+/)) {
 		let input = myinput;
-		input = input.replace(new RegExp(/^[\r\n]+/gm), "");
-		const regex = new RegExp(/[\r\n]+/);
+		// const regex = new RegExp(/[\r\n]+/);
+		const regex = splitRegex;
+
 		let inputArr: string[] = input.split(regex); //入力を改行文字で分割
 		this.inputDataArray = inputArr;
 	}
-
-	trimkanji(str: string): string[] {
-		let mystr = str;
-		const res: string[] = [];
-
-		for (let num = 4; num > 0; num--) {
-			const reg = new RegExp("[\u4E00-\u9FFF]{" + num + "}", "g");
-			do {
-				const strindex = mystr.search(reg);
-				if (strindex == -1) {
-					break;
-				}
-				let pickupStr = mystr.slice(strindex, strindex + num);
-				res.push(pickupStr);
-				// $.writeln(pickupStr + " :target");
-				mystr = mystr.replace(pickupStr, "");
-			} while (mystr.search(reg) != -1);
-		}
-		return res;
+	public getDataArray() {
+		return this.inputDataArray;
 	}
-	splitString(str: string, splitChar: string): string[] {
-		let res = str.split(splitChar);
-		return res;
+	public trimDataArray() {
+		forloop(this.inputDataArray.length, (i) => {
+			let regex: RegExp = new RegExp(`^.{1}`);
+			if (i + 1 >= 10) regex = new RegExp(`^.{2}`);
+			const line = this.inputDataArray[i].replace(regex, "");
+			this.inputDataArray[i] = line;
+		});
 	}
 }
 class textFrames {
@@ -157,68 +152,79 @@ function main() {
 	} else {
 		// $.writeln(s.type);
 	}
+	//入力データの処理
+	let dialog = new myDialog("貼られたスラッシュ訳を流し込む");
+	const input = new Input(dialog.input1);
+	//先頭の数字を削除
+	input.trimDataArray();
 
+	//データの中身を"　　"で分割
+	const splitedArray: any[] = [];
+	const inputArray: any[] = input.getDataArray();
+	forloop(inputArray.length, (i) => {
+		const line = inputArray[i];
+		const regex = new RegExp("　　");
+		const splitedLine = new Input(line, regex).getDataArray() as string[];
+		splitedArray[i] = splitedLine;
+		$.writeln("splited " + splitedLine);
+	});
+
+	//アンカーオブジェクトを取得
 	const _textFrames = new textFrames(<TextFrames>app.activeDocument.selection);
 	const mystory: Story = _textFrames.getStory();
-	const allCharactor = mystory.characters;
+	const myAnchorItems: PageItem[] = [];
+	for (let i = 0; i < mystory.pageItems.length; i++) {
+		myAnchorItems.push(mystory.pageItems[i]);
+	}
 
-	let dialog = new myDialog("ストーリー内のルビ比率を変換します。");
-	$.writeln(dialog.input1);
-	$.writeln(dialog.input2);
-	$.writeln(dialog.input3);
+	//アンカーオブジェクトから□数字と
+	//訳文のテキストフレームを抽出
+	const myNumberTextFrames: TextFrame[] = [];
+	const myTranslateTextFrames: TextFrame[] = [];
 
-	forloop(allCharactor.length, (i) => {
-		let Char = allCharactor[i];
-		//ルビタイプが文字単位の場合
-		if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
-			let rubyLen = Char.rubyString.length;
-			if (!(rubyLen >= 3)) return true;
-			let splitChar = null;
+	for (let i = 0; i < mystory.pageItems.length; i++) {
+		let anchorItem = myAnchorItems[i];
+		switch (anchorItem.getElements()[0].constructor.name) {
+			case "TextFrame":
+				const textFrame: TextFrame = anchorItem.getElements()[0] as TextFrame;
+				// $.writeln("contents  " + textFrame.contents);
+				const bounds = textFrame.geometricBounds;
+				const width = (bounds[3] as number) - (bounds[1] as number);
 
-			//全角スペース又は半角スペースがある場合分割
-			if (Char.rubyString.search(new RegExp("　")) >= 0) {
-				splitChar = Char.rubyString.split("　");
-			} else if (Char.rubyString.search(new RegExp(" ")) >= 0) {
-				splitChar = Char.rubyString.split(" ");
-			} else {
-				return true;
-			}
-			if (splitChar == null) {
-				throw new Error("splitChar が null です。");
-			} else {
-				$.writeln("splitChar is  = " + splitChar);
-			}
-
-			//ルビ文字を代入する
-			for (let j = 0; j < splitChar.length; j++) {
-				$.writeln("i + j " + (i + j) + " : " + splitChar[j]);
-				allCharactor[i + j].rubyString = splitChar[j];
-				//ルビフラグを立てる
-				allCharactor[i + j].rubyFlag = true;
-			}
+				if (width < 5) {
+					myNumberTextFrames.push(textFrame);
+				} else {
+					myTranslateTextFrames.push(textFrame);
+				}
+				break;
+			case "Rectangle":
+				const rectangle: Rectangle = anchorItem.getElements()[0] as Rectangle;
+				// rectangle.remove();
+				// $.writeln("rectangle  " + rectangle);
+				break;
+			default:
+				// $.writeln("default");
+				break;
 		}
+	}
+	$.writeln("--------------------");
+
+	////////////////////テキストフレームにテキストを流し込む//////////////////////////////
+
+	//頭数字のテキストフレームにテキストを流し込む
+	forloop(myNumberTextFrames.length, (i) => {
+		myNumberTextFrames[i].contents = (i + 1).toString();
 	});
-	forloop(allCharactor.length, (i) => {
-		let Char = allCharactor[i];
-		//ルビタイプが文字単位の場合
-		if (Char.rubyType === RubyTypes.PER_CHARACTER_RUBY) {
-			let rubyLen = Char.rubyString.length;
-			switch (rubyLen) {
-				case 3:
-					//ダイアログで入力された3文字のときの値を代入
-					if (dialog.input3 == 0) Char.rubyXScale = Number(dialog.input1);
-					if (dialog.input3 == 1) Char.rubyYScale = Number(dialog.input1);
-					break;
-				//ダイアログで入力された4文字のときの値を代入
-				case 4:
-					if (dialog.input3 == 0) Char.rubyXScale = Number(dialog.input2);
-					if (dialog.input3 == 1) Char.rubyYScale = Number(dialog.input2);
-					break;
-				default:
-					break;
-			}
-		}
+	//翻訳文をテキストフレームに流し込む
+	let counter = 0;
+	forloop(splitedArray.length, (i) => {
+		forloop(splitedArray[i].length, (j) => {
+			myTranslateTextFrames[counter].contents = splitedArray[i][j];
+			// myTranslateTextFrames[counter].contents = splitedArray[i][j];
+			counter++;
+		});
 	});
-	// mystory.clearOverrides(OverrideType.PARAGRAPH_ONLY); //Story上のオーバーライドを一括消去
 }
+function insertTranslation() {}
+
 main();
