@@ -1,87 +1,96 @@
+#include json2.jsxinc
 //アンカーボックス内に漢字を流し込むスクリプト
 //入力欄左に見出し語を、入力欄右に問題文をそれぞれエクセルからコピペしてくる。
 //入力欄の数のみをコピペすること
 
-let hoge = `詩を楽しむ。
-葉っぱをひろう。
-旅にでる。
-あま酒をのむ。
-次のページ。
-ゆうびん局
-県道をとおる。
-氷でひやす。
-六十秒
-今と昔。
-横になる。
-指をまげる。
-鉄ぼうであそぶ。
-国語の学習。
-着目する
-登場人物
-町の様子。
-すきな場面。
-番号をつける。
-漢字でかく。
-ことばの意味。
-文章を読む。
-算数の問題。
-新発売の本。
-平気な顔。
-自由になる。
-相手を見る。
-新しい洋服。
-早朝におきる。
-野球をする。
-日光が当たる。
-農家のしごと。
-有名な絵。
-話の全体。
-世界の国。
-安心する
-バスの定員。
-図書館
-出来事
+let hoge = `人数が減る。
+かさを貸す。
+墓参りに行く。
+損をする。
+そばに寄る。
+非常識
+気の毒に思う。
+太い木の枝。
+りょう師になる。
+価値のある物。
+逆の意味。
+粉ミルクを買う。
+再発見する
+印象がよい。
+基本を学ぶ。
+車を修理する。
+適切な言葉。
+正しい順序。
+問題の解決。
+人口の減少。
+合格する
+商品の金額。
+標準のサイズ。
+主ごと述語。
+快晴の空。
+北西の方角。
+かぜの予防。
+責任を果たす。
+圧力を感じる。
+店を営業する。
+新しい制度。
+白米を食べる。
+肥料を使う。
+旧式の機械。
+伝統を守る。
+輸入する
+技術が進む。
+大型のバス。
+祖父母
 `;
-let fuga = `詩
-葉
-旅
-酒
-次
-局
-県
-氷
-秒
-昔
-横
-指
-鉄
-習
-着
-登
-様
-面
-号
-漢
-味
-章
-題
-発
-平
-由
-相
-洋
-早
-球
-光
-農
-有
-全
-世
-安
-定
-館
-事
+let fuga = `減
+貸
+墓
+損
+寄
+非
+毒
+枝
+師
+価
+逆
+粉
+再
+象
+基
+修
+適
+序
+解
+減
+格
+額
+準
+述
+快
+西
+防
+責
+圧
+営
+制
+米
+肥
+旧
+統
+輸
+技
+型
+祖
 `;
+
+let fugaPro ;
+type forloop = (index: number) => void;
+function forloop(times: number, func: forloop) {
+	for (let i = 0; i < times; i++) {
+		func(i);
+	}
+}
 class myDialog {
 	obj: any;
 	temp: any;
@@ -144,25 +153,6 @@ class Input {
 		}
 	}
 }
-class Infomation {
-	mySelection: any;
-	constructor(selection: any) {
-		this.mySelection = selection;
-	}
-	showObjType() {
-		let selObj: any = this.mySelection;
-		for (let i: number = 0; i < selObj.length; i++) {
-			let dType: string = selObj[i].constructor.name;
-
-			$.writeln(`${dType}`);
-		}
-	}
-	showInputObjType(input: any) {
-		let dType: string = input.constructor.name;
-
-		$.writeln(`${dType}`);
-	}
-}
 class textFrames {
 	textFrames: TextFrames;
 	contentsLength: number;
@@ -187,9 +177,9 @@ class process {
 		this.input_two = mondai.trimforeach();
 		const resArr: string[] = [];
 
-		for (let i = 0; i < this.input_two.length; i++) {
-			let res = this.filter(this.input_one[i], this.input_two[i]);
-			$.writeln(res);
+		for (let i = 0; i < this.input_one.length; i++) {
+			let res = this.filter(this.input_two[i], this.input_one[i]);
+			// $.writeln(res);
 			resArr.push(res);
 		}
 		this.processedArray = resArr;
@@ -204,22 +194,76 @@ class process {
 		return res;
 	}
 }
+class Selection {
+	obj: object[];
+	type: string = "";
+	is_selected: boolean = false;
+	is_one: boolean = false;
+	constructor() {
+		this.obj = <object[]>app.activeDocument.selection;
+		this.isSelected();
+		if (this.is_selected) {
+			this.gettype();
+		}
+	}
+	gettype() {
+		this.type = this.obj[0].constructor.name;
+	}
+	isSelected() {
+		if (this.obj.length !== 0) {
+			this.is_selected = true;
+			this.is_one = this.isOne();
+		} else {
+			this.is_selected = false;
+		}
+	}
+	isOne() {
+		return this.obj.length === 1;
+	}
+}
 
 function main() {
-	alert("エクセルから必要な漢字を入力欄の数「だけ」、コピーして貼り付けて下さい。");
-	alert("単漢字のみの場合は両側に見出し語を入力して下さい");
-	let mydia = new myDialog("左側に見出し語を右側に問題を入れてください。");
-	// $.writeln(mydia.textObj.editContents);
-	// $.writeln(mydia.textObj2.editContents);
-	//何も入れずキャンセルを弾く
-	if (mydia.textObj.editContents == "" || mydia.textObj2.editContents == "") {
+	const s = new Selection();
+	// $.writeln(s.is_selected); //選択されているか？
+	if (!s.is_selected) {
+		alert("テキストフレームを選択してください");
 		return;
 	}
-	const processedData = new process(new Input(mydia.textObj2.editContents), new Input(mydia.textObj.editContents));
+	if (!s.is_one) {
+		alert("テキストフレームを1つ選択してください");
+		return;
+	}
+	s.gettype();
+	if (s.type !== "TextFrame") {
+		alert("テキストフレームを選択してください");
+		return;
+	} else {
+		// $.writeln(s.type);
+	}
+	// alert("エクセルから必要な漢字を入力欄の数「だけ」、コピーして貼り付けて下さい。");
+	// alert("単漢字のみの場合は両側に見出し語を入力して下さい");
+	// let mydia = new myDialog("左側に見出し語を右側に問題を入れてください。");
+	// // $.writeln(mydia.textObj.editContents);
+	// // $.writeln(mydia.textObj2.editContents);
+	// //何も入れずキャンセルを弾く
+	// if (mydia.textObj.editContents == "" || mydia.textObj2.editContents == "") {
+	// 	return;
+	// }
+	const processedData = new process(new Input(fuga), new Input(hoge));
 
 	// $.writeln(processedData.processedArray);
+	$.writeln("-----------------");
 	$.writeln(processedData.input_one);
 	$.writeln(processedData.input_two);
+	$.writeln("-----------------");
+
+	//yahooAPIへpost 及び取得したrubyのjsonを取得
+	let input = hoge.replace(/\n/g, "");
+	input = input.replace(/。/g, "");
+	let res = httpRequest(input);
+	let json = JSON.parse(res);
+	getFurigana(json, processedData.input_one);
+
 	let inputOnelen = processedData.input_one.length;
 	let inputTwolen = processedData.input_two.length;
 
@@ -284,10 +328,13 @@ function main() {
 				let item = <TextFrame>anchor.pageItems[0].getElements()[0];
 				let item2 = <TextFrame>anchor.pageItems[1].getElements()[0];
 				// $.writeln(item.contents); //読み ex.(し)
-				$.writeln(item2.contents); //漢字ー文字　ex.(詩)
+				// $.writeln(item2.contents); //漢字ー文字　ex.(詩)
 				// $.writeln("one");
 
-				let insert: string = String(processedData.input_two[i]);
+				// let insert: string = "　";
+				let insert: string = String(processedData.input_one[i]);
+				let yomiRuby = ""
+				item.contents = yomiRuby
 				item2.contents = insert;
 				break;
 			}
@@ -299,7 +346,11 @@ function main() {
 				// $.writeln(item2.contents); //読み0 ex.(てい)
 				// $.writeln(item3.contents); //漢字二文字　ex.(定食)
 
-				item3.contents = processedData.processedArray[i];
+				// let insert = "　　";
+				let yomiRuby = ""
+				let insert = processedData.processedArray[i];
+				item2.contents = yomiRuby;
+				item3.contents = insert;
 				break;
 			}
 			case 6: {
@@ -316,14 +367,78 @@ function main() {
 				// $.writeln(item5.contents); //読み0 ex.(と)
 				// $.writeln(item6.contents); //漢字三文字　ex.(図書館)
 
-				item6.contents = processedData.processedArray[i];
+				// let insert = "　　";
+				let yomiRuby = ""
+				let insert = processedData.processedArray[i];
+				item5.contents = yomiRuby;
+				item6.contents = insert;
 				break;
 			}
-
 			default:
 				break;
 		}
 	}
+}
+
+
+
+function httpRequest(input: string): string {
+	let result = "";
+	let kanji = input;
+	let vbstotosute = "";
+	vbstotosute += "Public s\r";
+	vbstotosute += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
+	vbstotosute += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
+	vbstotosute +=
+		'Dim data : data = "{ ""id"": ""1234-1"", ""jsonrpc"": ""2.0"", ""method"": ""jlp.furiganaservice.furigana"", ""params"": { ""q"": ""' +
+		kanji +
+		'"", ""grade"": ""1"" } }"\r';
+	vbstotosute += "With http\r";
+	vbstotosute += '.Open "POST", url, False\r';
+	vbstotosute += '.SetRequestHeader "Content-Type", "application/json"\r';
+	vbstotosute += '.SetRequestHeader "User-Agent" , "Yahoo AppID: dj00aiZpPVFwejVIbkt4RFJGVSZzPWNvbnN1bWVyc2VjcmV0Jng9NjE-"\r';
+	vbstotosute += ".Send data\r";
+	vbstotosute += "End With\r";
+	vbstotosute += "s = http.ResponseText\r";
+	vbstotosute += 'Set objInDesign = CreateObject("InDesign.Application")\r';
+	vbstotosute += 'objInDesign.ScriptArgs.SetValue "http_data", s\r';
+	app.doScript(vbstotosute, ScriptLanguage.VISUAL_BASIC, undefined, UndoModes.FAST_ENTIRE_SCRIPT);
+	result = app.scriptArgs.getValue("http_data");
+	app.scriptArgs.clear();
+	return result;
+}
+// jsonから読み仮名を取得する関数
+function getFurigana(json: object, targetArray: string[]): string {
+	let midashiKanjiArray :string [] = targetArray;
+	let yomiganaArray :string [] = [];	
+	for(let k = 0; k < midashiKanjiArray.length; k++){
+		let searchedCount = 0;
+		for(let i = 0; i < json.result.word.length; i++){	
+				let targetWord = midashiKanjiArray[k];
+				let tarObj = json.result.word[i];
+				// $.writeln(targetWord + " : " + tarObj.surface) 
+				let ruby = "";
+				if (tarObj.hasOwnProperty("subword")) {
+					let subword = tarObj.subword;
+					for (let j = 0; j < subword.length; j++) {
+							if (isWordContain(subword[j].surface, targetWord))ruby = subword[j].furigana;
+					}
+				} else {
+					if (isWordContain(tarObj.surface, targetWord))ruby = tarObj.furigana;
+				}
+				if (ruby != "") {
+					yomiganaArray.push(ruby);
+					break;
+				}
+				searchedCount++;
+		}
+		// $.writeln(searchedCount + " searchedCount");
+		json.result.word.splice(0,searchedCount+1);
+	}
+	$.writeln(yomiganaArray);
+}
+function isWordContain (string :string ,word :string) :boolean{
+	return  string.indexOf(word) != -1;
 }
 
 main();
