@@ -316,25 +316,25 @@ function main() {
 //httpリクエストを送るVBSスクリプト
 function httpRequest(input: string): string {
 	let result = "";
-	let kanji = input;
-	let vbstotosute = "";
-	vbstotosute += "Public s\r";
-	vbstotosute += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
-	vbstotosute += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
-	vbstotosute +=
+	let myinput = input;
+	let vbs = "";
+	vbs += "Public s\r";
+	vbs += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
+	vbs += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
+	vbs +=
 		'Dim data : data = "{ ""id"": ""1234-1"", ""jsonrpc"": ""2.0"", ""method"": ""jlp.furiganaservice.furigana"", ""params"": { ""q"": ""' +
-		kanji +
+		myinput +
 		'"", ""grade"": ""1"" } }"\r';
-	vbstotosute += "With http\r";
-	vbstotosute += '.Open "POST", url, False\r';
-	vbstotosute += '.SetRequestHeader "Content-Type", "application/json"\r';
-	vbstotosute += '.SetRequestHeader "User-Agent" , "Yahoo AppID: dj00aiZpPVFwejVIbkt4RFJGVSZzPWNvbnN1bWVyc2VjcmV0Jng9NjE-"\r';
-	vbstotosute += ".Send data\r";
-	vbstotosute += "End With\r";
-	vbstotosute += "s = http.ResponseText\r";
-	vbstotosute += 'Set objInDesign = CreateObject("InDesign.Application")\r';
-	vbstotosute += 'objInDesign.ScriptArgs.SetValue "http_data", s\r';
-	app.doScript(vbstotosute, ScriptLanguage.VISUAL_BASIC, undefined, UndoModes.FAST_ENTIRE_SCRIPT);
+	vbs += "With http\r";
+	vbs += '.Open "POST", url, False\r';
+	vbs += '.SetRequestHeader "Content-Type", "application/json"\r';
+	vbs += '.SetRequestHeader "User-Agent" , "Yahoo AppID: dj00aiZpPVFwejVIbkt4RFJGVSZzPWNvbnN1bWVyc2VjcmV0Jng9NjE-"\r';
+	vbs += ".Send data\r";
+	vbs += "End With\r";
+	vbs += "s = http.ResponseText\r";
+	vbs += 'Set objInDesign = CreateObject("InDesign.Application")\r';
+	vbs += 'objInDesign.ScriptArgs.SetValue "http_data", s\r';
+	app.doScript(vbs, ScriptLanguage.VISUAL_BASIC, undefined, UndoModes.FAST_ENTIRE_SCRIPT);
 	result = app.scriptArgs.getValue("http_data");
 	app.scriptArgs.clear();
 	return result;

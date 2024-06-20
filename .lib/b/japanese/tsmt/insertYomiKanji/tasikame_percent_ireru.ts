@@ -139,6 +139,7 @@ function main() {
 		removeOverset(myTextFrame);
 		$.writeln(processedData[i] + "%");
 		var insertText = processedData[i] + "％";
+		myTextFrame.contents = NothingEnum.NOTHING; //初期化の処理ができるかどうか検証する//いつか
 		myTextFrame.contents = insertText;
 	}
 }
