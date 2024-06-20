@@ -8,8 +8,8 @@
 			"type": "extendscript-debug",
 			"request": "launch",
 			"name": "スクリプト名を求める",
-			"program": "${file}",
-			// "program": "${workspaceFolder}/dist/dev.js",
+			// "program": "${file}",
+			"program": "${workspaceFolder}/dist/dev.js",
 			// "program": "${workspaceFolder}/dist/watching_zenyaku_test.js",
 			"stopOnEntry": false
 		}
