@@ -72,30 +72,6 @@ class Input {
 		let inputArr: string[] = input.split(regex); //入力を改行文字で分割
 		this.inputDataArray = inputArr;
 	}
-
-	trimkanji(str: string): string[] {
-		let mystr = str;
-		const res: string[] = [];
-
-		for (let num = 4; num > 0; num--) {
-			const reg = new RegExp("[\u4E00-\u9FFF]{" + num + "}", "g");
-			do {
-				const strindex = mystr.search(reg);
-				if (strindex == -1) {
-					break;
-				}
-				let pickupStr = mystr.slice(strindex, strindex + num);
-				res.push(pickupStr);
-				// $.writeln(pickupStr + " :target");
-				mystr = mystr.replace(pickupStr, "");
-			} while (mystr.search(reg) != -1);
-		}
-		return res;
-	}
-	splitString(str: string, splitChar: string): string[] {
-		let res = str.split(splitChar);
-		return res;
-	}
 }
 class textFrames {
 	textFrames: TextFrames;
