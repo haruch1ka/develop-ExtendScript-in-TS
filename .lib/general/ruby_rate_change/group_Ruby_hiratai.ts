@@ -87,6 +87,8 @@ class textFrames {
 		return story;
 	}
 }
+
+//選択されたオブジェクトに関する情報を取得するクラス
 class Selection {
 	obj: object[];
 	type: string = "";

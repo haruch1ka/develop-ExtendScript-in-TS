@@ -1,9 +1,3 @@
-//置き換えリスト（アンカー内の文字をアンカー解除時に変更する場合。変更しない場合は[　]内を削除）
-let changeList: string[] = [
-	//"問","お問合せ：",
-	//"定","定員：",
-];
-//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 function checkSelection() {
 	let myObject;
 	let myCheckSelection = false;
@@ -11,44 +5,35 @@ function checkSelection() {
 		let appSel = app.selection as object[];
 		if (appSel.length > 0) {
 			switch (appSel[0].constructor.name) {
-				case "InsertionPoint":
-				case "Character":
-				case "Word":
-				case "TextStyleRange":
-				case "Line":
-				case "Paragraph":
+				case "InsertionPoint": //挿入点
+				case "Character": //一文字
+				case "Word": //単語
+				case "TextStyleRange": //テキストのスタイルが連続している部分
+				case "Line": //一行
+				case "Paragraph": //段組みの１段落分
 				case "TextColumn": //選択された複数文字
-				case "Text":
-				case "TextFrame":
+				case "Text": //特定のテキスト　実態はよくわかってない
+				case "TextFrame": //テキストフレーム
 					app.scriptPreferences.userInteractionLevel = 1699311169;
-					//myFindText(myObject, myFindLimit, myFindPreferences, myChangePreferences, myCheckSelection);
 					myObject = myDisplayDialog(appSel);
 					myCheckSelection = myObject[1];
 					myObject = myObject[0];
 					if (myObject != null) {
 						find_and_grep(myObject, myCheckSelection);
-						// find_and_replace(myObject, myCheckSelection);
-						//myFindChangeByList(myObject, myCheckSelection);
 					}
 					break;
 				default:
 					alert("適切なオブジェクトを選択してください。");
-				// app.scriptPreferences.userInteractionLevel = 1699311169;
-				// for (let sel = 0; sel < appSel.length; sel++) {
-				// 	find_and_replace(appSel[sel], false);
-				// }
-				//myFindChangeByList(app.documents.item(0), false);
 			}
 		} else {
 			alert("オブジェクトが選択されていません。");
-			//Nothing was selected, so simply search the document.
-			// find_and_replace(app.documents.item(0), false);
-			//myFindChangeByList(app.documents.item(0), false);
 		}
 	} else {
 		alert("ドキュメントが開かれていません。");
 	}
 }
+// ダイアログを表示して選択によって対象のオブジェクトを返す
+//
 function myDisplayDialog(Selection: object[]): [object | null, boolean] {
 	let myObject: object | null, myRangeButtons: RadiobuttonGroup, myCheckSelection: boolean;
 	[myCheckSelection, myObject] = [false, null];
@@ -70,7 +55,9 @@ function myDisplayDialog(Selection: object[]): [object | null, boolean] {
 			}
 		}
 	}
+	//ダイアログの表示
 	let myResult = myDialog.show();
+	//ラジオボタンの選択結果によって処理を分岐
 	if (myResult == true && myRangeButtons != null) {
 		switch (myRangeButtons.selectedButton) {
 			case 0:
@@ -91,6 +78,9 @@ function myDisplayDialog(Selection: object[]): [object | null, boolean] {
 	return [myObject, myCheckSelection];
 }
 
+//オブジェクト内を検索してアンカーを取得する。
+//取得したアンカーを解除してテキストに変換する。
+//処理を分けたほうがいいかも。
 function find_and_grep(myObject: any, myCheckSelection: boolean) {
 	let findGrep: FindGrepPreference;
 	let findAnchor: Character[] = [];

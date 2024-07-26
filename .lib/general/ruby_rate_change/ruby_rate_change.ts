@@ -26,6 +26,7 @@ class myDialogInputTxt {
 		this.input = this.inputObj.editContents;
 	}
 }
+//ラジオボタンのダイアログクラス
 class myDialogInputRadio {
 	row: any;
 	radioObj: any;
@@ -42,6 +43,7 @@ class myDialogInputRadio {
 		this.input = this.radioObj.selectedButton;
 	}
 }
+//ダイアログクラス
 class myDialog {
 	obj: any;
 	temp: any;
@@ -64,7 +66,7 @@ class myDialog {
 		this.input3 = _input3.input;
 	}
 }
-
+// インプットの処理クラス
 class Input {
 	inputDataArray: string[];
 	constructor(myinput: string) {
