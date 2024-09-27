@@ -1,4 +1,7 @@
-﻿type forloop = (index: number) => void;
+﻿//改行、スペース、特殊文字の処理
+//ストーリーの取得スタイルの適用、ルビの振り分け
+
+type forloop = (index: number) => void;
 function forloop(times: number, func: forloop) {
 	for (let i = 0; i < times; i++) {
 		func(i);

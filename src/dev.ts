@@ -1,191 +1,238 @@
-﻿"use strict";
+"use strict";
+
+/*@ts-ignore*/
+Array.prototype.map = function (callback: Function, thisArg: any) {
+	if (typeof this.length != "number") return;
+	if (typeof callback != "function") return;
+
+	var newArr = [];
+
+	if (typeof this == "object") {
+		for (var i = 0; i < this.length; i++) {
+			if (i in this) {
+				/*@ts-ignore*/
+				newArr[i] = callback.call(thisArg || this, this[i], i, this);
+			} else {
+				return;
+			}
+		}
+	}
+
+	return newArr;
+};
 //
 //エンジニアの方へ... このスクリプトは、.tsで書かれたものを.jsへコンパイルして製作されています。
+//githabにscriptのリソースをアップロードしているので、開発者の方はそちらを参照してください。
 //
 
-type forloop = (index: number) => void;
-function forloop(times: number, func: forloop) {
-	for (let i = 0; i < times; i++) {
-		func(i);
+class calendar {
+	year: number;
+	monthDays: number[];
+	constructor(year: number) {
+		this.year = year;
+		this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数
+		if (this.isLeapYear()) this.monthDays[1] = 29; // うるう年
+	}
+	isLeapYear(): boolean {
+		if (this.year % 400 === 0) return true;
+		if (this.year % 100 === 0) return false;
+		if (this.year % 4 === 0) return true;
+		return false;
+	}
+	getYoubi(year: number, month: number, day: number): number {
+		const d = new Date(year, month - 1, day);
+		return d.getDay();
+	}
+	getMonthText(year: number, month: number) {
+		const youbi = this.getYoubi(year, month, 1);
 	}
 }
+class monthText {
+	daysTextArray: string[] = [];
+	beforeDashArray: string[] = [];
+	afterDashArray: string[] = [];
+	constructor(month: number, year: number, cal: calendar) {
+		// /*@ts-ignore*/
+		// $.writeln(month, year);
+		//数字で曜日を取得
+		const youbi = cal.getYoubi(year, month, 1);
 
-class myDialog {
-	obj: any;
-	temp: any;
-	textObj: any;
-	input: any;
-	constructor(title: string) {
-		this.obj = app.dialogs.add({ name: `${title}` });
-		this.temp = this.obj.dialogColumns.add();
-		this.textObj = this.temp.textEditboxes.add({ editContents: "", minWidth: 200, multilene: true });
-		this.obj.show();
-		this.input = this.textObj.editContents;
-	}
-}
-class Input {
-	inputDataArray: string[];
-	constructor(myinput: string) {
-		let input = myinput;
-		input = input.replace(new RegExp(/^[\r\n]+/gm), "");
-		const regex = new RegExp(/[\r\n]+/);
-		let inputArr: string[] = input.split(regex); //入力を改行文字で分割
-		this.inputDataArray = inputArr;
-	}
-
-	trimkanji(str: string): string[] {
-		let mystr = str;
-		const res: string[] = [];
-
-		for (let num = 4; num > 0; num--) {
-			const reg = new RegExp("[\u4E00-\u9FFF]{" + num + "}", "g");
-			do {
-				const strindex = mystr.search(reg);
-				if (strindex == -1) {
-					break;
-				}
-				let pickupStr = mystr.slice(strindex, strindex + num);
-				res.push(pickupStr);
-				// $.writeln(pickupStr + " :target");
-				mystr = mystr.replace(pickupStr, "");
-			} while (mystr.search(reg) != -1);
-		}
-		return res;
-	}
-	splitString(str: string, splitChar: string): string[] {
-		let res = str.split(splitChar);
-		return res;
-	}
-}
-class textFrame {
-	textFrame: TextFrame;
-	constructor(TextFrame: TextFrame) {
-		this.textFrame = TextFrame;
-	}
-	getStory(): Story {
-		let story: Story;
-		story = this.textFrame.parentStory;
-
-		return story;
-	}
-}
-class Selection {
-	obj: object[];
-	type: string = "";
-	is_selected: boolean = false;
-	is_one: boolean = false;
-	constructor() {
-		this.obj = <object[]>app.activeDocument.selection;
-		this.isSelected();
-		if (this.is_selected) {
-			this.gettype();
-		}
-	}
-	gettype() {
-		this.type = this.obj[0].constructor.name;
-	}
-	isSelected() {
-		if (this.obj.length !== 0) {
-			this.is_selected = true;
-			this.is_one = this.isOne();
-		} else {
-			this.is_selected = false;
-		}
-	}
-	isOne() {
-		return this.obj.length === 1;
-	}
-}
-
-function main() {
-	const s = new Selection();
-	// $.writeln(s.is_selected); //選択されているか？
-	if (!s.is_selected) {
-		alert("テキストフレームを選択してください");
-		return;
-	}
-	s.gettype();
-	if (s.type !== "TextFrame") {
-		alert("テキストフレームを選択してください");
-		return;
-	} else {
-		// $.writeln(s.type);
-	}
-
-	/* @ts-ignore */
-	const selections: TextFrame[] = <TextFrames>app.activeDocument.selection;
-	const _textFrame = new textFrame(selections[1]);
-	const mystory: Story = _textFrame.getStory();
-	const mystoryString = mystory.contents.toString();
-
-	const regex = /\d{1,3}\/\d{1,3}|\([^\(\)]*\)\/\([^\(\)]*\)/g;
-
-	const hogepiyo = (regex: RegExp, mystory: Story) => {
-		const [replacedText, fractions] = extractTextInParentheses(mystoryString, regex);
-
-		if (fractions.length === 0) return;
-		mystory.contents = replacedText;
-		const copyRightIndex = getMutchAllIndexes(replacedText, /©/g, (findText) => {});
-		const copyRightText = mystory.contents;
-		mystory.contents = copyRightText.replace(/©/g, "　");
-
-		forloop(copyRightIndex.length, (index) => {
-			const createdTextFrame = createTextFrame(selections[0], fractions[index]);
-			insertSelectedTextFrameAsAnchorAtIndex(createdTextFrame, selections[1], copyRightIndex[index] + index);
-		});
-	};
-	hogepiyo(regex, mystory);
-	// const [replacedText, fractions] = extractTextInParentheses(mystoryString, regex);
-	// extractTextInParentheses(mystoryString, /\([^\(\)]*\)\/\([^\(\)]*\)/g);
-}
-function extractTextInParentheses(str: string, regex: RegExp): [string, string[][]] {
-	$.writeln("----");
-	let replacedText = str;
-	const fractions: string[][] = [];
-
-	let find;
-	getMutchAllIndexes(str, regex, (findText) => {
-		const splitedTexts = findText.split("/");
-		fractions.push(splitedTexts);
-		$.writeln("---");
 		/*@ts-ignore*/
-		replacedText = replacedText.replace(findText, "©");
-	});
-	// $.writeln(replacedText);
-	// $.writeln(fractions);
-	return [replacedText, fractions];
-}
-function createTextFrame(textFrame: TextFrame, insertArray: string[]): TextFrame {
-	/*@ts-ignore*/
-	const duplicateTextFrame = textFrame.duplicate() as TextFrame;
-	/*@ts-ignore*/
-	const table = <table>duplicateTextFrame.tables[0];
-	const insertFormatedArray = [removeBracketsAndSpace(insertArray[0]), removeBracketsAndSpace(insertArray[1])];
-
-	table.contents = insertFormatedArray;
-	return duplicateTextFrame;
-}
-function insertSelectedTextFrameAsAnchorAtIndex(insertTextFrame: TextFrame, toTextFrame: TextFrame, index: number) {
-	const anchorTextFrame = insertTextFrame;
-	const insertionPoint = toTextFrame.insertionPoints[index];
-	// アンカーオブジェクトとして挿入
-	anchorTextFrame.anchoredObjectSettings.insertAnchoredObject(insertionPoint, AnchorPosition.ANCHORED);
-	anchorTextFrame.clearObjectStyleOverrides();
-}
-function getMutchAllIndexes(str: string, regex: RegExp, callBack: (arr: string) => void): number[] {
-	const indexes = [];
-	let find;
-	while ((find = regex.exec(str)) !== null) {
-		$.writeln("string " + find[0].toString());
-		$.writeln("index " + find.index);
-		const findText = find[0].toString();
-		const index = find.index;
-		indexes.push(index);
-		callBack(findText);
+		[...Array(youbi)].map(() => this.beforeDashArray.push("..."));
+		/*@ts-ignore*/
+		[...Array(cal.monthDays[month - 1])].map((_, i) => this.daysTextArray.push(String(i + 1)));
+		const length = this.daysTextArray.length;
+		const diff = 35 - (youbi + length);
+		if (diff > 0) {
+			/*@ts-ignore*/
+			[...Array(diff)].map(() => this.afterDashArray.push("..."));
+		} else if (diff < 0) {
+			/*@ts-ignore*/
+			const diffArray = [...Array(-diff)].map(() => this.daysTextArray.pop());
+			/*@ts-ignore*/
+			diffArray.reverse();
+			const counter = 0;
+			/*@ts-ignore*/
+			diffArray.map((v, i) => {
+				const place = 29 - youbi + i * 2;
+				this.daysTextArray.splice(place, 0, v);
+			});
+		}
+		// /*@ts-ignore*/
+		// $.writeln(this.beforeDashArray);
+		// /*@ts-ignore*/
+		// $.writeln(this.daysTextArray);
+		// /*@ts-ignore*/
+		// $.writeln(this.afterDashArray);
 	}
-	return indexes;
 }
-function removeBracketsAndSpace(str: string): string {
-	return str.replace(/\s/g, "").replace(/\(|\)/g, "");
+class stockText {
+	beforeTextArray: string[] = [];
+	mainTextArray: string[] = [];
+	afterTextArray: string[] = [];
+	stockText(_monthTextInstance: monthText) {
+		const beforeText = this.makeText(_monthTextInstance.beforeDashArray).slice(0, -1); //beforeTextの最後の改行を削除
+		const mainText = this.makeText(_monthTextInstance.daysTextArray).slice(0, -1); //mainTextの最後の改行を削除
+		const afterText = this.makeText(_monthTextInstance.afterDashArray); //afterTextの最後の改行を削除
+		this.beforeTextArray.push(beforeText);
+		this.mainTextArray.push(mainText);
+		this.afterTextArray.push(afterText);
+	}
+	makeText(textArray: string[]): string {
+		let text = "";
+		for (let i = 0; i < textArray.length; i++) {
+			text += textArray[i] + "\r";
+		}
+		return text;
+	}
 }
-main();
+const createCalTexts = (pages: any) => {
+	const _stockText = new stockText();
+	for (let j = 0; j < pages.length; j++) {
+		const year = 2025;
+		const pageIndex = j;
+		const tarYear = j > 11 ? year + 1 : year;
+		const tarMonth = j > 11 ? j - 11 : j + 1;
+		// /*@ts-ignore*/
+		$.writeln("year :" + tarYear + " " + "month :" + tarMonth);
+		// new monthText(tarMonth, tarYear);
+		/*ページのアイテム要素の収集 */
+		const page = pages[pageIndex];
+		const _monthText = new monthText(tarMonth, tarYear, new calendar(tarYear));
+		_stockText.stockText(_monthText);
+	}
+	// for (let i = 0; i < _stockText.beforeTextArray.length; i++) {
+	// 	$.writeln("--------------------");
+	// 	$.writeln(_stockText.beforeTextArray[i]);
+	// 	$.writeln("--------------------");
+	// }
+	return _stockText;
+};
+const calTexts = createCalTexts(app.activeDocument.pages);
+
+const txf1a = app.activeDocument.pages[0].textFrames.itemByName("txf1a");
+const story = txf1a.parentStory;
+for (let i = 0; i < calTexts.mainTextArray.length; i++) {
+	story.insertionPoints[-1].contents = calTexts.mainTextArray[i];
+	story.insertionPoints[-1].contents = SpecialCharacters.PAGE_BREAK;
+}
+/*@ts-ignore*/
+story.characters.everyItem().appliedCharacterStyle = app.activeDocument.characterStyles[0];
+story.clearOverrides(); //Story上のオーバーライドを一括消去
+
+// const getPageItems = (page: any) => {
+// 	const textFrames = [...page.textFrames];
+// 	textFrames.pop();
+// 	return textFrames.reverse();
+// };
+// const items = getPageItems(page);
+
+// story.insertionPoints[0].contents = beforeText;
+// story.insertionPoints[-1].contents = afterText;
+// story.insertionPoints[-1].contents = SpecialCharacters.PAGE_BREAK;
+
+/*土日にスタイルを適用*/
+
+// const applyParaStyle = (page: any) => {
+// 	const sunNameList = ["txf1a", "txf2a", "txf3a", "txf4a", "txf5a"];
+// 	const satNameList = ["txf1g", "txf2g", "txf3g", "txf4g", "txf5g"];
+// 	let [sunItemList, satItemList] = [[], []];
+// 	for (let i = 0; i < sunNameList.length; i++) {
+// 		const sunItem = page.pageItems.itemByName(sunNameList[i]);
+// 		const sunTextFrames: any = sunItem.getElements();
+// 		sunTextFrames[0].characters.everyItem().appliedCharacterStyle = app.activeDocument.characterStyles[2];
+// 	}
+// 	for (let i = 0; i < satNameList.length; i++) {
+// 		const satItem = page.pageItems.itemByName(satNameList[i]);
+// 		const satTextFrames: any = satItem.getElements();
+// 		satTextFrames[0].characters.everyItem().appliedCharacterStyle = app.activeDocument.characterStyles[3];
+// 	}
+// };
+// applyParaStyle(page);
+//
+
+/*入力のダイアログを表示*/
+
+// class myDialogInputTxt {
+// 	row: any;
+// 	inputObj: any;
+// 	input: any;
+// 	constructor(targetObj: any, inputTitle: string, editText: string) {
+// 		this.row = targetObj.dialogRows.add();
+// 		let inputDiscription = this.row.dialogColumns.add();
+// 		inputDiscription.staticTexts.add({ staticLabel: `${inputTitle}` });
+// 		this.inputObj = this.row.textEditboxes.add({ editContents: `${editText}`, minWidth: 80 });
+// 	}
+// 	getInput() {
+// 		this.input = this.inputObj.editContents;
+// 	}
+// }
+// class myDialog {
+// 	obj: any;
+// 	temp: any;
+// 	input1: string;
+// 	constructor(title: string) {
+// 		this.obj = app.dialogs.add({ name: `${title}` });
+// 		this.temp = this.obj.dialogColumns.add();
+// 		let _input1 = new myDialogInputTxt(this.temp, "祝日 :", "");
+// 		this.obj.show();
+// 		_input1.getInput();
+// 		this.input1 = _input1.input;
+// 	}
+// }
+// class Input {
+// 	inputDataArray: string[];
+// 	constructor(myinput: string) {
+// 		let input = myinput;
+// 		input = input.replace(new RegExp(/^[\r\n]+/gm), "");
+// 		const regex = new RegExp(/[\r\n]+/);
+// 		//inputに改行文字が含まれているかチェックする正規表現を使って
+// 		/*@ts-ignore*/
+// 		if (!regex.test(input)) throw new Error("改行文字が含まれていません");
+// 		const inputArr = input.split(regex); //入力を改行文字で分割
+
+// 		this.inputDataArray = inputArr;
+// 	}
+// 	removeRokuyou(target: string[]) {
+// 		/*@ts-ignore*/
+// 		return target.map((v, i) => {
+// 			if (v.match(/先勝|友引|先負|仏滅|大安|赤口/)) {
+// 				//後ろから三文字を削除
+// 				target[i] = v.slice(0, -3);
+// 			}
+// 		});
+// 	}
+// }
+
+// const dialog = new myDialog("祝日を入力");
+// const dialogInput = dialog.input1;
+// if (dialogInput === "") {
+// 	/*@ts-ignore*/
+// 	exit();
+// }
+// const inputArray = new Input(dialogInput).inputDataArray;
+// /*@ts-ignore*/
+// $.writeln(inputArray.length);
+// // //文字データを改行で分割して配列に格納
+// // /*@ts-ignore*/
+// // $.writeln(inputArray);

@@ -11,6 +11,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"es5-shim": "^4.6.7",
 		"eslint": "^8.57.0",
 		"prettier": "^3.2.5",
 		"types-for-adobe": "^7.2.0",
