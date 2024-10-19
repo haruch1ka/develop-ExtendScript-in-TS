@@ -1,59 +1,11 @@
 "use strict";
+import polyfill from "./polyfill/polyfill";
+import calendar from "./calendar";
+import { myDialogInputTxt, myDialog, Input } from "./dialog/dialog";
+import Styles from "./Props/Styles";
 const grobalYear = 2025;
 
-/*es3準拠のためのポリフィル*/
-
-/*@ts-ignore*/
-Array.prototype.map = function (callback: Function, thisArg: any) {
-	if (typeof this.length != "number") return;
-	if (typeof callback != "function") return;
-	var newArr = [];
-	if (typeof this == "object") {
-		for (var i = 0; i < this.length; i++) {
-			if (i in this) {
-				/*@ts-ignore*/
-				newArr[i] = callback.call(thisArg || this, this[i], i, this);
-			} else {
-				return;
-			}
-		}
-	}
-	return newArr;
-};
-/*@ts-ignore*/
-Array.prototype.indexOf = function (obj, start) {
-	for (var i = start || 0, j = this.length; i < j; i++) {
-		if (this[i] === obj) {
-			return i;
-		}
-	}
-	return -1;
-};
-
-/*ここまでポリフィル*/
-
-class calendar {
-	year: number;
-	monthDays: number[];
-	constructor(year: number) {
-		this.year = year;
-		this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数
-		if (this.isLeapYear()) this.monthDays[1] = 29; // うるう年
-	}
-	isLeapYear(): boolean {
-		if (this.year % 400 === 0) return true;
-		if (this.year % 100 === 0) return false;
-		if (this.year % 4 === 0) return true;
-		return false;
-	}
-	getYoubi(year: number, month: number, day: number): number {
-		const d = new Date(year, month - 1, day);
-		return d.getDay();
-	}
-	getMonthText(year: number, month: number) {
-		const youbi = this.getYoubi(year, month, 1);
-	}
-}
+polyfill();
 //月ごとのテキストデータを生成するクラス
 class monthText {
 	youbi: number;
@@ -127,9 +79,6 @@ class stockPlace {
 	placeArrayArray: number[][] = [];
 	stockPlace(_monthTextInstance: monthText) {
 		this.placeArrayArray.push(_monthTextInstance.dividedNumArray);
-	}
-	getPlaceArrayArray() {
-		return this.placeArrayArray;
 	}
 }
 //月ごとの日付リストをストックするクラス
@@ -263,24 +212,6 @@ class masterPageItem {
 	}
 	getItemByName(name: string) {
 		return this.master.pageItems.itemByName(name);
-	}
-}
-//スタイル管理のクラス
-class Styles {
-	doc = app.activeDocument;
-	styles: any[];
-	constructor(styles: any) {
-		this.styles = styles;
-	}
-	getStyle(name: string) {
-		for (let i = 0; i < this.styles.length; i++) {
-			if (this.styles[i].name === name) return this.styles[i];
-		}
-	}
-	disp() {
-		for (let i = 0; i < this.styles.length; i++) {
-			$.writeln(this.styles[i].name);
-		}
 	}
 }
 
@@ -462,48 +393,6 @@ const applyParaStyle = (calTexts: calTextData) => {
 
 /*入力のダイアログ関連のクラス*/
 
-class myDialogInputTxt {
-	row: any;
-	inputObj: any;
-	input: any;
-	constructor(targetObj: any, inputTitle: string, editText: string) {
-		this.row = targetObj.dialogRows.add();
-		let inputDiscription = this.row.dialogColumns.add();
-		inputDiscription.staticTexts.add({ staticLabel: `${inputTitle}` });
-		this.inputObj = this.row.textEditboxes.add({ editContents: `${editText}`, minWidth: 80 });
-	}
-	getInput() {
-		this.input = this.inputObj.editContents;
-	}
-}
-class myDialog {
-	obj: any;
-	temp: any;
-	input1: string;
-	constructor(title: string) {
-		this.obj = app.dialogs.add({ name: `${title}` });
-		this.temp = this.obj.dialogColumns.add();
-		let _input1 = new myDialogInputTxt(this.temp, "祝日 :", "");
-		this.obj.show();
-		_input1.getInput();
-		this.input1 = _input1.input;
-	}
-}
-
-class Input {
-	inputDataArray: string[];
-	constructor(myinput: string) {
-		let input = myinput;
-		input = input.replace(new RegExp(/^[\r\n]+/gm), "");
-		const regex = new RegExp(/[\r\n]+/);
-		//inputに改行文字が含まれているかチェックする正規表現を使って
-		/*@ts-ignore*/
-		if (!regex.test(input)) throw new Error("改行文字が含まれていません");
-		const inputArr = input.split(regex); //入力を改行文字で分割
-
-		this.inputDataArray = inputArr;
-	}
-}
 class shukujitsuInput extends Input {
 	calTexts: calTextData;
 	sliceByMonthArray: string[][];

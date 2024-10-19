@@ -2,19 +2,23 @@
 	"name": "script",
 	"version": "1.0.0",
 	"description": "",
-	"main": "foo.ts",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"build": "rollup -c --silent"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"es5-shim": "^4.6.7",
-		"eslint": "^8.57.0",
 		"prettier": "^3.2.5",
-		"types-for-adobe": "^7.2.0",
 		"typescript": "^5.4.3"
+	},
+	"devDependencies": {
+		"eslint": "^8.57.0",
+		"rollup": "^4.24.0",
+		"tslib": "^2.8.0",
+		"types-for-adobe": "^7.2.0"
 	}
 }
