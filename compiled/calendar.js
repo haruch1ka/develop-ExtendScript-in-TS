@@ -1,25 +1,38 @@
-var calendar = /** @class */ (function () {
-    function calendar(year) {
-        this.year = year;
-        this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数
-        if (this.isLeapYear())
-            this.monthDays[1] = 29; // うるう年
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
     }
-    calendar.prototype.isLeapYear = function () {
-        if (this.year % 400 === 0)
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+var calendar = /** @class */ (function () {
+    function calendar() {
+        this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数
+    }
+    calendar.prototype.isLeapYear = function (year) {
+        if (year % 400 === 0)
             return true;
-        if (this.year % 100 === 0)
+        if (year % 100 === 0)
             return false;
-        if (this.year % 4 === 0)
+        if (year % 4 === 0)
             return true;
         return false;
     };
+    calendar.prototype.changeLeapYear = function (year) {
+        if (this.isLeapYear(year))
+            this.monthDays[1] = 29; // うるう年
+    };
     calendar.prototype.getYoubi = function (year, month, day) {
+        this.changeLeapYear(year);
         var d = new Date(year, month - 1, day);
         return d.getDay();
     };
-    calendar.prototype.getMonthText = function (year, month) {
-        var youbi = this.getYoubi(year, month, 1);
+    calendar.prototype.getMonthDays = function (year, month) {
+        this.changeLeapYear(year);
+        /*@ts-ignore*/
+        return __spreadArray([], Array(this.monthDays[month - 1]), true).map(function (_, i) { return i + 1; });
     };
     return calendar;
 }());

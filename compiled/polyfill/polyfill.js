@@ -1,3 +1,4 @@
+/*es3準拠のためのポリフィル*/
 var polyfill = function () {
     /*@ts-ignore*/
     Array.prototype.map = function (callback, thisArg) {
