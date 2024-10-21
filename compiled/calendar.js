@@ -9,6 +9,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 var calendar = /** @class */ (function () {
     function calendar() {
+        this.weekNameList = { "0": "日", "1": "月", "2": "火", "3": "水", "4": "木", "5": "金", "6": "土" };
         this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数
     }
     calendar.prototype.isLeapYear = function (year) {

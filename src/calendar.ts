@@ -1,4 +1,5 @@
 class calendar {
+	weekNameList = { "0": "日", "1": "月", "2": "火", "3": "水", "4": "木", "5": "金", "6": "土" };
 	monthDays: number[];
 	constructor() {
 		this.monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // 月の日数

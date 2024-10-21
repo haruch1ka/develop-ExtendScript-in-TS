@@ -11,6 +11,7 @@ test("isLeapYear", () => {
 test("getYoubi", () => {
 	// 曜日を取得
 	const cal = new calendar();
+	console.log(cal.getYoubi(2025, 4, 1));
 	expect(cal.getYoubi(2020, 2, 1)).toBe(6);
 });
 
