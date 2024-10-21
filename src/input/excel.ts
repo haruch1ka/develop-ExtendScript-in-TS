@@ -1,4 +1,4 @@
-class myExcel {
+export class excel {
 	excelFilePath: string;
 	splitChar: string;
 	sheetNumber: string;
@@ -13,7 +13,6 @@ class myExcel {
 			if (typeof this.sheetNumber === "undefined") this.sheetNumber = "1";
 			let appVersionNum = Number(String(app.version).split(".")[0]),
 				data: any = [];
-
 			let vbs = "Public s, excelFilePath\r";
 			vbs += "Function ReadFromExcel()\r";
 			vbs += "On Error Resume Next\r";
@@ -87,6 +86,5 @@ class myExcel {
 		}
 	}
 }
-let excelfile = new File(excelFilePath);
-let excel_instance = new myExcel(excelfile.fsName, ";", String(excel_tab_num));
-	let excel_data = excel_instance.GetDataFromExcelPC();
+
+export default excel;
