@@ -1,10 +1,9 @@
 import { expect, test } from "vitest";
 import calendar from "./../calendar";
-import diaryHonshiStocker from "./../diaryHonshiStocker";
 
-const year = 2026;
+const year = 2025;
 const cal = new calendar();
-const _diaryHonshiStocker = new diaryHonshiStocker(); //diaryHonshiStockerクラスのインスタンスを生成する。
+
 const youbiToDaysGap: { [key: string]: number } = { "0": 6, "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5 }; //0:日曜日,1:月曜日,2:火曜日,3:水曜日,4:木曜日,5:金曜日,6:土曜日
 
 test("days gap", () => {
@@ -19,15 +18,6 @@ test("days gap", () => {
 	expect(youbiToDaysGap[0]).toBe(6);
 });
 
-test("get March gap days", () => {
-	const youbiNum = cal.getYoubi(year, 4, 1);
-	const gap = youbiToDaysGap[youbiNum];
-	const march = cal.getMonthDays(year - 1, 3);
-	const marchArray = [...Array(gap)].map((_, i) => march[march.length - (gap - i)]);
-	console.log(marchArray);
-	expect(march.length).toBe(31);
-});
-
 test("createarray ", () => {
 	const arrayLength = 3;
 	const collectArray = [-3, -2, -1];
@@ -35,6 +25,73 @@ test("createarray ", () => {
 		const array = [...Array(input)].map((_, i) => -(input - i));
 		return array;
 	};
-	console.log(thisArray(arrayLength));
 	expect(thisArray(arrayLength)).toStrictEqual(collectArray);
+});
+
+test("createarray ", () => {
+	const calAfterGap = (input: number) => {
+		if (input % 7 !== 0) {
+			return (Math.floor(input / 7) + 1) * 7 - input;
+		} else {
+			return 0;
+		}
+	};
+	expect(calAfterGap(7)).toBe(0);
+	expect(calAfterGap(8)).toBe(6);
+	expect(calAfterGap(9)).toBe(5);
+	expect(calAfterGap(10)).toBe(4);
+	expect(calAfterGap(11)).toBe(3);
+	expect(calAfterGap(12)).toBe(2);
+	expect(calAfterGap(13)).toBe(1);
+	expect(calAfterGap(14)).toBe(0);
+	expect(calAfterGap(15)).toBe(6);
+});
+test("getBeforeGap", () => {
+	const getBeforeGap = (year: number) => {
+		const youbiNum = cal.getYoubi(year, 4, 1);
+		const gap: number = youbiToDaysGap[youbiNum];
+		return gap;
+	};
+});
+test("getAfterGap", () => {
+	const getAfterGap = () => {
+		const youbiNum = cal.getYoubi(year, 3, 1);
+		const gap: number = youbiToDaysGap[youbiNum];
+
+		const getAfterGap = (beforePlusYearLength: number) => {
+			const input = beforePlusYearLength;
+			if (input % 7 !== 0) {
+				return (Math.floor(input / 7) + 1) * 7 - input;
+			} else {
+				return 0;
+			}
+			throw new Error("error");
+		};
+	};
+});
+
+test("doAfterGap", () => {
+	const getBeforeGap = () => {
+		const youbiNum = cal.getYoubi(year, 4, 1);
+		const gap: number = youbiToDaysGap[youbiNum];
+		return gap;
+	};
+	const getAfterGap = (input: number) => {
+		if (input % 7 !== 0) {
+			return (Math.floor(input / 7) + 1) * 7 - input;
+		} else {
+			return 0;
+		}
+		throw new Error("error");
+	};
+
+	const beforeGap = getBeforeGap();
+	const yearLength = cal.isLeapYear(year + 1) ? 366 : 365;
+	const AfterGap = getAfterGap(beforeGap + yearLength);
+});
+
+test("getMonthLength", () => {
+	const monthLength = cal.getMonthLength(1, 3);
+	const reslength = 31 + (cal.isLeapYear(year) ? 29 : 28) + 31;
+	expect(monthLength).toBe(reslength);
 });

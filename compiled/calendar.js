@@ -35,6 +35,17 @@ var calendar = /** @class */ (function () {
         /*@ts-ignore*/
         return __spreadArray([], Array(this.monthDays[month - 1]), true).map(function (_, i) { return i + 1; });
     };
+    calendar.prototype.getMonthLength = function (from, to) {
+        if (from > to)
+            throw new Error("from is bigger than to");
+        if (from < 1 || from > 12)
+            throw new Error("from is out of range");
+        var monthLength = 0;
+        for (var i = from - 1; i < to; i++) {
+            monthLength += this.monthDays[i];
+        }
+        return monthLength;
+    };
     return calendar;
 }());
 export default calendar;

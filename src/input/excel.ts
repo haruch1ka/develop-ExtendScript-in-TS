@@ -2,15 +2,18 @@ export class excel {
 	excelFilePath: string;
 	splitChar: string;
 	sheetNumber: string;
-	constructor(excelFilePath: any, splitChar: string, sheetNumber: string) {
+	targetRow: number;
+	constructor(excelFilePath: any, splitChar: string, sheetNumber: string, targetRow: number) {
 		this.excelFilePath = excelFilePath;
 		this.splitChar = splitChar;
 		this.sheetNumber = sheetNumber;
+		this.targetRow = targetRow;
 	}
 	GetDataFromExcelPC() {
 		try {
 			if (typeof this.splitChar === "undefined") this.splitChar = ";";
 			if (typeof this.sheetNumber === "undefined") this.sheetNumber = "1";
+			if (typeof this.targetRow === "undefined") this.targetRow = 3;
 			let appVersionNum = Number(String(app.version).split(".")[0]),
 				data: any = [];
 			let vbs = "Public s, excelFilePath\r";
@@ -26,7 +29,7 @@ export class excel {
 			vbs += "maxDim0 = UBound(matrix, 1)\r";
 			vbs += "maxDim1 = UBound(matrix, 2)\r";
 			vbs += "For i = 1 To maxDim0\r";
-			vbs += "For j = 1 To 3\r";
+			vbs += "For j = 1 To " + this.targetRow + "\r";
 			vbs += "If j = maxDim1 Then\r";
 			vbs += "s = s & matrix(i, j)\r";
 			vbs += "Else\r";

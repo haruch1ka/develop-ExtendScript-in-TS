@@ -1,8 +1,9 @@
 var excel = /** @class */ (function () {
-    function excel(excelFilePath, splitChar, sheetNumber) {
+    function excel(excelFilePath, splitChar, sheetNumber, targetRow) {
         this.excelFilePath = excelFilePath;
         this.splitChar = splitChar;
         this.sheetNumber = sheetNumber;
+        this.targetRow = targetRow;
     }
     excel.prototype.GetDataFromExcelPC = function () {
         try {
@@ -10,6 +11,8 @@ var excel = /** @class */ (function () {
                 this.splitChar = ";";
             if (typeof this.sheetNumber === "undefined")
                 this.sheetNumber = "1";
+            if (typeof this.targetRow === "undefined")
+                this.targetRow = 3;
             var appVersionNum = Number(String(app.version).split(".")[0]), data = [];
             var vbs = "Public s, excelFilePath\r";
             vbs += "Function ReadFromExcel()\r";
@@ -24,7 +27,7 @@ var excel = /** @class */ (function () {
             vbs += "maxDim0 = UBound(matrix, 1)\r";
             vbs += "maxDim1 = UBound(matrix, 2)\r";
             vbs += "For i = 1 To maxDim0\r";
-            vbs += "For j = 1 To 3\r";
+            vbs += "For j = 1 To " + this.targetRow + "\r";
             vbs += "If j = maxDim1 Then\r";
             vbs += "s = s & matrix(i, j)\r";
             vbs += "Else\r";
