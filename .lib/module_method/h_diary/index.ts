@@ -4,7 +4,8 @@ import polyfill from "./polyfill/polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
 import { diaryPageStracture, diaryDayStracture } from "./diaryPageStructure";
 import myMasterPageItem from "./Props/myMasterItem";
-import { formatText } from "./Props/TextFrameWrapper";
+import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
+import Styles from "./Props/Styles";
 
 polyfill();
 
@@ -108,24 +109,17 @@ for (let i = 0; i < allPageStracture.length; i++) {
 	duplicatedSengetsu.move([2.58, 40.5], undefined);
 }
 
-// /*@ts-ignore*/
-// allPageStracture.map((v, i) => {
-// 	const _diaryPageStracture = v;
-// 	$.writeln(v.monthText);
-// 	$.writeln(v.monthEnglishText);
-// 	$.writeln("sengetsuText : " + v.sengetsuText);
-// 	$.writeln("---page---");
-// 	/*@ts-ignore*/
-// 	v.dayStractureArray.map((t) => {
-// 		$.writeln(t.youbiText);
-// 		$.writeln(t.holidayText);
-// 		$.writeln(t.isGlay);
-// 		$.writeln("------------");
-// 	});
-// 	$.writeln("------------");
-// });
+//それぞれのページに流し込む/スタイルを適用する
 
-//それぞれのページに流し込む
+
+const characterStyles = new Styles(app.activeDocument.characterStyles);
+const paragraphStyles = new Styles(app.activeDocument.paragraphStyles);
+const p_style_left_up = paragraphStyles.getStyle("日毎予定表_左肩数字");
+const c_style_glay = characterStyles.getStyle("Black30");
+const c_style_sat = characterStyles.getStyle("aka50");
+const c_style_sun = characterStyles.getStyle("aka100");
+
+$.writeln(p_style_left_up.name);
 
 for (let i = 0; i < allPageStracture.length; i++) {
 	const diff = 11;
@@ -136,8 +130,35 @@ for (let i = 0; i < allPageStracture.length; i++) {
 	pageEntity.monthTextFrame.contents = pageStracture.monthText;
 	pageEntity.monthEnglishTextFrame.contents = pageStracture.monthEnglishText;
 	pageEntity.sengetsuTextFrame.contents = pageStracture.sengetsuText;
+	changeParagraphStyle(pageEntity.sengetsuTextFrame, p_style_left_up);
+	if (pageStracture.sengetsuText !== "" && pageStracture.dayStractureArray[0].isGlay) {
+		changeCharacterStyle(pageEntity.sengetsuTextFrame, c_style_glay);
+	}
+
 	/*@ts-ignore*/
-	// pageEntity.dayEntityList.map((v, i) => {
-	// 	const dayStracture = pageStracture.dayStractureArray[i];
-	// });
+	pageEntity.dayEntityList.map((v, j) => {
+		const dayStracture = pageStracture.dayStractureArray[j];
+		const isHoliday = dayStracture.holidayText !== "";
+		if (dayStracture.isGlay) {
+			changeCharacterStyle(v.dayTextFrame, c_style_glay);
+			changeCharacterStyle(v.weekTextFrame, c_style_glay);
+			changeCharacterStyle(v.rokuyouTextFrame, c_style_glay);
+		} else {
+			if (dayStracture.youbiText === "土") {
+				changeCharacterStyle(v.weekTextFrame, c_style_sat);
+				if (!isHoliday) {
+					changeCharacterStyle(v.dayTextFrame, c_style_sat);
+				} else {
+					changeCharacterStyle(v.dayTextFrame, c_style_sun);
+				}
+			} else if (dayStracture.youbiText === "日") {
+				changeCharacterStyle(v.weekTextFrame, c_style_sun);
+				changeCharacterStyle(v.dayTextFrame, c_style_sun);
+			} else {
+				if (isHoliday) {
+					changeCharacterStyle(v.dayTextFrame, c_style_sun);
+				}
+			}
+		}
+	});
 }
