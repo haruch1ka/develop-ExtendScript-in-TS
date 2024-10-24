@@ -8,21 +8,10 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 import diaryDayEntity from "./diaryDayEntity";
-var diaryPageStracture = /** @class */ (function () {
-    function diaryPageStracture(pageNum, month, year, dayList, rokuyouList, holidayList) {
-        this.pageNum = pageNum;
-        this.month = month;
-        this.year = year;
-        this.dayList = __spreadArray([], dayList, true);
-        this.rokuyouList = __spreadArray([], rokuyouList, true);
-        this.holidayList = __spreadArray([], holidayList, true);
-    }
-    return diaryPageStracture;
-}());
-export { diaryPageStracture };
 var diaryPageEntity = /** @class */ (function () {
     function diaryPageEntity(page) {
         var textFrames = page.textFrames;
+        this.sengetsuTextFrame = textFrames.itemByName("sengetsu");
         this.monthTextFrame = textFrames.itemByName("tuki");
         this.monthEnglishTextFrame = textFrames.itemByName("tukieng");
         /*@ts-ignore*/
