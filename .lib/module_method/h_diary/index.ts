@@ -2,7 +2,7 @@ import diaryInputData from "./diaryInputData";
 import calendar from "./calendar";
 import polyfill from "./polyfill/polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
-import { diaryPageStracture, diaryDayStracture } from "./diaryPageStructure";
+import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
 import myMasterPageItem from "./Props/myMasterItem";
 import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
 import Styles from "./Props/Styles";
@@ -38,7 +38,7 @@ const beforeGap = getBeforeGap(year);
 const yearLength = cal.isLeapYear(year + 1) ? 366 : 365;
 const AfterGap = getAfterGap(beforeGap + yearLength);
 //1月から3月までの日数を取得
-const monthLength = cal.getMonthLength(1, 3);
+const monthLength = cal.getMonthLength(1, 3, year);
 
 //すべてのデータを取得(2行目からなのでindexは常に+1)
 const beforeData = diary.data.slice(monthLength - beforeGap + 1, monthLength + 1);
@@ -66,39 +66,39 @@ _firstPageEntity.holidayStory.contents = holidayText;
 
 //前年度、今年度、来年度のデータ構造をそれぞれ作成
 /*@ts-ignore*/
-const _diaryDayStractureBefore = beforeData.map((v) => {
-	const _instance = new diaryDayStracture(v);
+const _diaryDayStructureBefore = beforeData.map((v) => {
+	const _instance = new diaryDayStructure(v);
 	_instance.setGlayActivate();
 	return _instance;
 });
 /*@ts-ignore*/
-const _diaryDayStractureMain = mainData.map((v) => {
-	return new diaryDayStracture(v);
+const _diaryDayStructureMain = mainData.map((v) => {
+	return new diaryDayStructure(v);
 });
 /*@ts-ignore*/
-const _diaryDayStractureAfter = afterData.map((v) => {
-	const _instance = new diaryDayStracture(v);
+const _diaryDayStructureAfter = afterData.map((v) => {
+	const _instance = new diaryDayStructure(v);
 	_instance.setGlayActivate();
 	return _instance;
 });
 
 //すべてのデータを結合した後、ページごとに分割する
-const allDayStracture = [..._diaryDayStractureBefore, ..._diaryDayStractureMain, ..._diaryDayStractureAfter];
-$.writeln(allDayStracture.length);
+const allDayStructure = [..._diaryDayStructureBefore, ..._diaryDayStructureMain, ..._diaryDayStructureAfter];
+$.writeln(allDayStructure.length);
 
-const allPageStracture = (function (array) {
+const allPageStructure = (function (array) {
 	const length = Math.ceil(array.length / 7);
 	/*@ts-ignore*/
 	const res = [...Array(length)].map((_, i) => {
 		const _pageItem = array.slice(i * 7, i * 7 + 7);
-		const _daiaryPageStracture = new diaryPageStracture(_pageItem);
-		return _daiaryPageStracture;
+		const _daiaryPageStructure = new diaryPageStructure(_pageItem);
+		return _daiaryPageStructure;
 	});
 	return res;
-})(allDayStracture);
+})(allDayStructure);
 
 //肩の数字の複製を作成
-for (let i = 0; i < allPageStracture.length; i++) {
+for (let i = 0; i < allPageStructure.length; i++) {
 	const diff = 11;
 	const page = app.activeDocument.pages[i * 2 + diff];
 	const duplicatedSengetsu = (function (masterPageItem: myMasterPageItem, to: Page) {
@@ -120,37 +120,37 @@ const c_style_sun = characterStyles.getStyle("aka100");
 $.writeln(p_style_left_up.name);
 
 //それぞれのページに流し込む/スタイルを適用する
-for (let i = 0; i < allPageStracture.length; i++) {
+for (let i = 0; i < allPageStructure.length; i++) {
 	const diff = 11;
 	const page = app.activeDocument.pages[i * 2 + diff];
-	const pageStracture = allPageStracture[i];
+	const pageStructure = allPageStructure[i];
 	const pageEntity = new diaryPageEntity(page);
 
-	pageEntity.monthTextFrame.contents = pageStracture.monthText;
-	pageEntity.monthEnglishTextFrame.contents = pageStracture.monthEnglishText;
-	pageEntity.sengetsuTextFrame.contents = pageStracture.sengetsuText;
+	pageEntity.monthTextFrame.contents = pageStructure.monthText;
+	pageEntity.monthEnglishTextFrame.contents = pageStructure.monthEnglishText;
+	pageEntity.sengetsuTextFrame.contents = pageStructure.sengetsuText;
 	changeParagraphStyle(pageEntity.sengetsuTextFrame, p_style_left_up);
-	if (pageStracture.sengetsuText !== "" && pageStracture.dayStractureArray[0].isGlay) {
+	if (pageStructure.sengetsuText !== "" && pageStructure.dayStructureArray[0].isGlay) {
 		changeCharacterStyle(pageEntity.sengetsuTextFrame, c_style_glay);
 	}
 	//スタイルを条件に応じて適用する
 	/*@ts-ignore*/
 	pageEntity.dayEntityList.map((v, j) => {
-		const dayStracture = pageStracture.dayStractureArray[j];
-		const isHoliday = dayStracture.holidayText !== "";
-		if (dayStracture.isGlay) {
+		const dayStructure = pageStructure.dayStructureArray[j];
+		const isHoliday = dayStructure.holidayText !== "";
+		if (dayStructure.isGlay) {
 			changeCharacterStyle(v.dayTextFrame, c_style_glay);
 			changeCharacterStyle(v.weekTextFrame, c_style_glay);
 			changeCharacterStyle(v.rokuyouTextFrame, c_style_glay);
 		} else {
-			if (dayStracture.youbiText === "土") {
+			if (dayStructure.youbiText === "土") {
 				changeCharacterStyle(v.weekTextFrame, c_style_sat);
 				if (!isHoliday) {
 					changeCharacterStyle(v.dayTextFrame, c_style_sat);
 				} else {
 					changeCharacterStyle(v.dayTextFrame, c_style_sun);
 				}
-			} else if (dayStracture.youbiText === "日") {
+			} else if (dayStructure.youbiText === "日") {
 				changeCharacterStyle(v.weekTextFrame, c_style_sun);
 				changeCharacterStyle(v.dayTextFrame, c_style_sun);
 			} else {

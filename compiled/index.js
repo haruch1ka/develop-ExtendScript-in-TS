@@ -7,443 +7,153 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import polyfill from "./polyfill/polyfill";
-import calendar from "./calendar";
-import Styles from "./Props/Styles";
 import diaryInputData from "./diaryInputData";
-import { firstPageEntity } from "./diaryCalenderPageEntity";
-//月ごとのテキストデータを生成するクラス
-var monthText = /** @class */ (function () {
-    function monthText(month, year, cal) {
-        var _this = this;
-        this.daysTextArray = [];
-        this.beforeDashArray = [];
-        this.afterDashArray = [];
-        this.dividedNumArray = [];
-        this.youbi = cal.getYoubi(year, month, 1); //数字で曜日を取得
-        /*@ts-ignore*/
-        if (this.youbi !== 0)
-            __spreadArray([], Array(this.youbi), true).map(function () { return _this.beforeDashArray.push("..."); });
-        if (this.youbi === 0)
-            this.beforeDashArray.push("-1");
-        /*@ts-ignore*/
-        __spreadArray([], Array(cal.monthDays[month - 1]), true).map(function (_, i) { return _this.daysTextArray.push(String(i + 1)); });
-        this.swapDate();
-    }
-    monthText.prototype.swapDate = function () {
-        var _this = this;
-        var length = this.daysTextArray.length;
-        var diff = 35 - (this.youbi + length);
-        if (diff > 0) {
-            /*@ts-ignore*/
-            __spreadArray([], Array(diff), true).map(function () { return _this.afterDashArray.push("..."); });
-            this.dividedNumArray.push(-1);
-        }
-        else if (diff < 0) {
-            /*@ts-ignore*/
-            var diffArray = __spreadArray([], Array(-diff), true).map(function () { return _this.daysTextArray.pop(); });
-            diffArray.reverse();
-            /*@ts-ignore*/
-            diffArray.map(function (v, i) {
-                var place = 29 - _this.youbi + i * 2;
-                _this.daysTextArray.splice(place, 0, v);
-                _this.dividedNumArray.push(place);
-            });
-            this.afterDashArray.push("-1");
-        }
-        else {
-            this.afterDashArray.push("-1");
-            this.dividedNumArray.push(-1);
-        }
-    };
-    return monthText;
-}());
-//月ごとのテキストデータをストックするクラス
-var stockText = /** @class */ (function () {
-    function stockText() {
-        this.beforeTextArray = [];
-        this.mainTextArray = [];
-        this.afterTextArray = [];
-    }
-    stockText.prototype.stockText = function (_monthTextInstance) {
-        var beforeText = this.makeText(_monthTextInstance.beforeDashArray).slice(0, -1); //beforeTextの最後の改行を削除
-        var mainText = this.makeText(_monthTextInstance.daysTextArray).slice(0, -1); //mainTextの最後の改行を削除
-        var afterText = this.makeTextReverce(_monthTextInstance.afterDashArray); //afterTextの最後の改行を削除
-        this.beforeTextArray.push(beforeText);
-        this.mainTextArray.push(mainText);
-        this.afterTextArray.push(afterText);
-    };
-    stockText.prototype.makeText = function (textArray) {
-        var text = "";
-        for (var i = 0; i < textArray.length; i++) {
-            text += textArray[i] + "\r";
-        }
-        return text;
-    };
-    stockText.prototype.makeTextReverce = function (textArray) {
-        var text = "";
-        for (var i = textArray.length; i < textArray.length; i++) {
-            text += "\r" + textArray[i];
-        }
-        return text;
-    };
-    return stockText;
-}());
-//月ごとのテキストデータの配置場所をストックするクラス
-var stockPlace = /** @class */ (function () {
-    function stockPlace() {
-        this.placeArrayArray = [];
-    }
-    stockPlace.prototype.stockPlace = function (_monthTextInstance) {
-        this.placeArrayArray.push(_monthTextInstance.dividedNumArray);
-    };
-    stockPlace.prototype.getPlaceArrayArray = function () {
-        return this.placeArrayArray;
-    };
-    return stockPlace;
-}());
-//月ごとの日付リストをストックするクラス
-var stockDaysList = /** @class */ (function () {
-    function stockDaysList() {
-        this.daysListArray = [];
-    }
-    stockDaysList.prototype.stockDaysList = function (_monthTextInstance) {
-        this.daysListArray.push(_monthTextInstance.daysTextArray);
-    };
-    return stockDaysList;
-}());
-//月ごとのダッシュテキストをストックするクラス
-var stockDashArray = /** @class */ (function () {
-    function stockDashArray() {
-        this.beforeDashArray = [];
-        this.afterDashArray = [];
-    }
-    stockDashArray.prototype.stockDashArray = function (_monthTextInstance) {
-        this.beforeDashArray.push(_monthTextInstance.beforeDashArray);
-        this.afterDashArray.push(_monthTextInstance.afterDashArray);
-    };
-    return stockDashArray;
-}());
-//すべてのストックされたデータをまとめるクラス
-var calTextData = /** @class */ (function () {
-    function calTextData(pages, year) {
-        this.stockText = new stockText();
-        this.stockPlace = new stockPlace();
-        this.stockDaysList = new stockDaysList();
-        this.stockDashArray = new stockDashArray();
-        for (var j = 0; j < pages.length; j++) {
-            var pageIndex = j;
-            var tarYear = j > 11 ? year + 1 : year;
-            var tarMonth = j > 11 ? j - 11 : j + 1;
-            /*月のテキストデータを取得 */
-            var _monthText = new monthText(tarMonth, tarYear, new calendar());
-            this.stockText.stockText(_monthText);
-            this.stockPlace.stockPlace(_monthText);
-            this.stockDaysList.stockDaysList(_monthText);
-            this.stockDashArray.stockDashArray(_monthText);
-        }
-    }
-    return calTextData;
-}());
-//ページアイテムをストックするクラス
-var pageItemStoker = /** @class */ (function () {
-    function pageItemStoker(page) {
-        this.sunNameList = ["txf1a", "txf2a", "txf3a", "txf4a", "txf5a"];
-        this.satNameList = ["txf1g", "txf2g", "txf3g", "txf4g", "txf5g"];
-        this.allNameList = [
-            "txf1a",
-            "txf1b",
-            "txf1c",
-            "txf1d",
-            "txf1e",
-            "txf1f",
-            "txf1g",
-            "txf2a",
-            "txf2b",
-            "txf2c",
-            "txf2d",
-            "txf2e",
-            "txf2f",
-            "txf2g",
-            "txf3a",
-            "txf3b",
-            "txf3c",
-            "txf3d",
-            "txf3e",
-            "txf3f",
-            "txf3g",
-            "txf4a",
-            "txf4b",
-            "txf4c",
-            "txf4d",
-            "txf4e",
-            "txf4f",
-            "txf4g",
-            "txf5a",
-            "txf5b",
-            "txf5c",
-            "txf5d",
-            "txf5e",
-            "txf5f",
-            "txf5g",
-        ];
-        this.allName = [];
-        this.page = page;
-    }
-    pageItemStoker.prototype.getSunItemList = function () {
-        /*@ts-ignore*/
-        return this.getListItems(this.sunNameList);
-    };
-    pageItemStoker.prototype.getSatItemList = function () {
-        return this.getListItems(this.satNameList);
-    };
-    pageItemStoker.prototype.getListItems = function (list) {
-        var itemList = [];
-        for (var i = 0; i < list.length; i++) {
-            var item = this.page.pageItems.itemByName(list[i]);
-            itemList.push(item);
-        }
-        return itemList;
-    };
-    pageItemStoker.prototype.getItemByName = function (name) {
-        return this.page.pageItems.itemByName(name);
-    };
-    return pageItemStoker;
-}());
-//マスターページのアイテムをストックするクラス
-var masterPageItem = /** @class */ (function () {
-    function masterPageItem() {
-        this.itemNameList = ["赤円_小", "赤円_大", "スラッシュ_赤小", "スラッシュ_黒小"];
-        this.itemPropertyNameList = ["sCircle", "lCircle", "rSlash", "bSlash"];
-        this.itemList = [];
-        this.master = app.activeDocument.masterSpreads[0];
-        var _pageItemStoker = new pageItemStoker(this.master);
-        this.allName = _pageItemStoker.allName;
-        /*@ts-ignore*/
-        this.itemList = this.itemNameList.map(function (v) { return _pageItemStoker.getItemByName(v).getElements(); });
-        for (var i = 0; i < this.itemList.length; i++) {
-            /*@ts-ignore*/
-            this[this.itemPropertyNameList[i]] = this.itemList[i];
-        }
-    }
-    masterPageItem.prototype.getItemByName = function (name) {
-        return this.master.pageItems.itemByName(name);
-    };
-    return masterPageItem;
-}());
+import calendar from "./calendar";
+import polyfill from "./polyfill/polyfill";
+import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
+import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
+import myMasterPageItem from "./Props/myMasterItem";
+import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
+import Styles from "./Props/Styles";
 polyfill();
 var diary = new diaryInputData();
 var cal = new calendar();
-var grobalYear = parseInt(diary.data[1][1]);
+var year = parseInt(diary.data[1][1]);
+var youbiToDaysGap = { "0": 6, "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5 }; //0:日曜日,1:月曜日,2:火曜日,3:水曜日,4:木曜日,5:金曜日,6:土曜日
+//曜日に応じて、穴埋めで入る前年度の日にちを取得する。
+var getBeforeGap = function (year) {
+    var youbiNum = cal.getYoubi(year, 4, 1);
+    var gap = youbiToDaysGap[youbiNum];
+    return gap;
+};
+//前年度と今年度の日数から、穴埋めで入る来年度の日数を取得する。
+var getAfterGap = function (beforePlusYearLength) {
+    var input = beforePlusYearLength;
+    if (input % 7 !== 0) {
+        return (Math.floor(input / 7) + 1) * 7 - input;
+    }
+    else {
+        return 0;
+    }
+    throw new Error("error");
+};
+//要素の数を取得
+var beforeGap = getBeforeGap(year);
+var yearLength = cal.isLeapYear(year + 1) ? 366 : 365;
+var AfterGap = getAfterGap(beforeGap + yearLength);
+//1月から3月までの日数を取得
+var monthLength = cal.getMonthLength(1, 3, year);
+//すべてのデータを取得(2行目からなのでindexは常に+1)
+var beforeData = diary.data.slice(monthLength - beforeGap + 1, monthLength + 1);
+var mainData = diary.data.slice(monthLength + 1, monthLength + yearLength + 1);
+var afterData = diary.data.slice(monthLength + yearLength + 1, monthLength + yearLength + AfterGap + 1);
 /*@ts-ignore*/
-var holidayData = diary.data.map(function (v) { return v[0]; });
-holidayData.shift();
-/*グローバル変数の設定*/
-var pages = app.activeDocument.pages;
-var calTexts = new calTextData(pages, grobalYear);
-var master = new masterPageItem();
-//スタイルの定義
-var paraStyles = new Styles(app.activeDocument.paragraphStyles);
-var charStyles = new Styles(app.activeDocument.characterStyles);
-//エンティティの定義
-var _firstPageEntity = new firstPageEntity(app.activeDocument.pages[0]);
-var createHolidayIndex = function (inputDataArray, calTexts) {
-    var daysListArray = calTexts.stockDaysList.daysListArray;
-    /*@ts-ignore*/
-    var sliceByMonthArray = daysListArray.map(function (_, i) {
-        return inputDataArray.splice(0, daysListArray[i].length);
-    });
-    /*@ts-ignore*/
-    return sliceByMonthArray.map(function (v, i) {
-        var monthData = v;
-        var monthHolidayIndexArray = [];
-        for (var j = 0; j < monthData.length; j++) {
-            if (monthData[j] === "h")
-                monthHolidayIndexArray.push(j);
-        }
-        if (monthHolidayIndexArray.length === 0)
-            monthHolidayIndexArray.push(-1);
-        return monthHolidayIndexArray;
-    });
-};
-var insertText = function (calTexts) {
-    _firstPageEntity.dayInsertionPoint.appliedParagraphStyle = paraStyles.getStyle("Calendar_平日");
-    for (var i = 0; i < calTexts.stockText.mainTextArray.length; i++) {
-        _firstPageEntity.dayStory.insertionPoints[-1].contents = calTexts.stockText.mainTextArray[i];
-        _firstPageEntity.dayStory.insertionPoints[-1].contents = SpecialCharacters.PAGE_BREAK;
-    }
-    /*@ts-ignore*/
-    _firstPageEntity.dayStory.characters.everyItem().appliedCharacterStyle = charStyles.getStyle("[なし]");
-    _firstPageEntity.dayStory.clearOverrides(); //Story上のオーバーライドを一括消去
-};
-var insertHolidayText = function (pages, holidayIndex, master, calTex) {
-    for (var i = 0; i < holidayIndex.length; i++) {
-        $.writeln(holidayIndex[i]);
-    }
-    var _loop_1 = function (i) {
-        var _pageItemStoker = new pageItemStoker(pages[i]);
-        var indexArray = holidayIndex[i];
-        if (indexArray[0] === -1)
-            return "continue";
-        /*@ts-ignore*/
-        var fixedIndexArray = indexArray.map(function (v) { return calTex.stockDaysList.daysListArray[i].indexOf(String(v + 1)); });
-        /*@ts-ignore*/
-        var tf = fixedIndexArray.map(function (v) { return _pageItemStoker.getItemByName(_pageItemStoker.allNameList[v]).getElements(); });
-        for (var j = 0; j < tf.length; j++) {
-            tf[j][0].characters.everyItem().appliedParagraphStyle = paraStyles.getStyle("Calendar_日祝");
-            var insertionPoint = tf[j][0].insertionPoints[0];
-            var oval = master.lCircle[0].duplicate([0, 0], [0, 0]);
-            oval.anchoredObjectSettings.insertAnchoredObject(insertionPoint, AnchorPosition.ANCHORED);
-            oval.clearObjectStyleOverrides();
-        }
-    };
-    for (var i = 0; i < holidayIndex.length; i++) {
-        _loop_1(i);
-    }
-};
-/*上下を分けるスタイルの適用*/
-var jougeStyle = function (calTexts) {
-    var _loop_2 = function (i) {
-        var indexArray = calTexts.stockPlace.placeArrayArray[i];
-        if (indexArray[0] === -1)
-            return "continue";
-        var page = app.activeDocument.pages[i];
-        var _pageItemStoker = new pageItemStoker(page);
-        var getItem = function (indexArray, _pageItemStoker, num1) {
-            /*@ts-ignore*/
-            var item = __spreadArray([], Array(2), true).map(function (_, i) {
-                return _pageItemStoker.getItemByName(_pageItemStoker.allNameList[indexArray[num1] - 1 + i]);
-            });
-            /*@ts-ignore*/
-            var tf = item.map(function (v) { return v.getElements(); });
-            return tf;
-        };
-        var _a = [6, 4], akaStyleNum = _a[0], bkStyleNum = _a[1];
-        if (indexArray.length === 1 || indexArray.length === 2) {
-            /*@ts-ignore*/
-            getItem(indexArray, _pageItemStoker, 0).map(function (v, i) {
-                v[0].characters[-3].appliedCharacterStyle = app.activeDocument.characterStyles[i + akaStyleNum];
-                v[0].characters[-2].appliedCharacterStyle = app.activeDocument.characterStyles[i + akaStyleNum];
-            });
-        }
-        if (indexArray.length === 2) {
-            /*@ts-ignore*/
-            getItem(indexArray, _pageItemStoker, 1).map(function (v, i) {
-                v[0].characters[-3].appliedCharacterStyle = app.activeDocument.characterStyles[i + bkStyleNum];
-                v[0].characters[-2].appliedCharacterStyle = app.activeDocument.characterStyles[i + bkStyleNum];
-            });
-        }
-    };
-    for (var i = 0; i < calTexts.stockPlace.placeArrayArray.length; i++) {
-        _loop_2(i);
-    }
-};
-var removeBreak = function (calTexs, master) {
-    for (var i = 0; i < calTexts.stockPlace.placeArrayArray.length; i++) {
-        var indexArray = calTexts.stockPlace.placeArrayArray[i];
-        if (indexArray[0] === -1)
-            continue;
-        var page = app.activeDocument.pages[i];
-        var _pageItemStoker = new pageItemStoker(page);
-        if (indexArray.length === 1 || indexArray.length === 2) {
-            var tarChars = _pageItemStoker.getItemByName(_pageItemStoker.allNameList[indexArray[0] - 1]).getElements()[0].characters;
-            //slashの挿入
-            var slash = master.rSlash[0].duplicate([0, 0], [0, 0]);
-            slash.anchoredObjectSettings.insertAnchoredObject(tarChars.firstItem().insertionPoints[0], AnchorPosition.ANCHORED);
-            slash.clearObjectStyleOverrides();
-            tarChars.firstItem().characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
-            //breakの削除
-            tarChars.lastItem().remove();
-        }
-        if (indexArray.length === 2) {
-            var tarChars = _pageItemStoker.getItemByName(_pageItemStoker.allNameList[indexArray[1] - 2]).getElements()[0].characters;
-            //slashの挿入
-            var slash = master.bSlash[0].duplicate([0, 0], [0, 0]);
-            slash.anchoredObjectSettings.insertAnchoredObject(tarChars.firstItem().insertionPoints[0], AnchorPosition.ANCHORED);
-            slash.clearObjectStyleOverrides();
-            tarChars.firstItem().characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
-            //breakの削除
-            tarChars.lastItem().remove();
-        }
-    }
-};
-var insertDash = function (calTexts) {
-    var _daysListArray = calTexts.stockDaysList.daysListArray;
-    var _stockDashArray = calTexts.stockDashArray;
-    for (var i = 0; i < _daysListArray.length; i++) {
-        var page = app.activeDocument.pages[i];
-        var _pageItemStoker = new pageItemStoker(page);
-        if (_stockDashArray.afterDashArray[i][0] !== "-1") {
-            var lastItem = _pageItemStoker.allNameList[_daysListArray[i].length - 1];
-            var lastItemObj = _pageItemStoker.getItemByName(lastItem).getElements()[0];
-            var lastInsertionPoint = lastItemObj.insertionPoints[-2];
-            /*@ts-ignore*/
-            lastInsertionPoint.appliedCharacterStyle = charStyles.getStyle("黒100");
-            var afterText = "";
-            for (var j = 0; j < _stockDashArray.afterDashArray[i].length; j++) {
-                afterText += "\r" + _stockDashArray.afterDashArray[i][j];
-            }
-            lastInsertionPoint.contents = afterText;
-        }
-        if (_stockDashArray.beforeDashArray[i][0] !== "-1") {
-            var firstItem = _pageItemStoker.allNameList[0];
-            var firstItemObj = _pageItemStoker.getItemByName(firstItem);
-            var firstInsertionPoint = firstItemObj.getElements()[0].insertionPoints[0];
-            /*@ts-ignore*/
-            firstInsertionPoint.appliedCharacterStyle = charStyles.getStyle("黒100");
-            var beforeText = "";
-            for (var j = 0; j < _stockDashArray.beforeDashArray[i].length; j++) {
-                beforeText += _stockDashArray.beforeDashArray[i][j] + "\r";
-            }
-            firstInsertionPoint.contents = beforeText;
-        }
-    }
-};
-/*土日にスタイルを適用*/
-var applyParaStyle = function (calTexts) {
-    var sunNameList = ["txf1a", "txf2a", "txf3a", "txf4a", "txf5a"];
-    var satNameList = ["txf1g", "txf2g", "txf3g", "txf4g", "txf5g"];
-    for (var i = 0; i < calTexts.stockDaysList.daysListArray.length; i++) {
-        var page = app.activeDocument.pages[i];
-        var _pageItemStoker = new pageItemStoker(page);
-        var sunTextFrames = _pageItemStoker.getSunItemList();
-        var satTextFrames = _pageItemStoker.getSatItemList();
-        var containEllipsis = function (test) {
-            var regex = new RegExp(/\.\.\./);
-            return regex.test(test);
-        };
-        var getNonDigitOrDotLength = function (text) {
-            var regex = new RegExp(/[^0-9]/g);
-            var matches = text.match(regex);
-            return matches ? matches.length : 0;
-        };
-        for (var i_1 = 0; i_1 < sunTextFrames.length; i_1++) {
-            var sunEveryItem = sunTextFrames[i_1].characters.everyItem();
-            sunEveryItem.appliedParagraphStyle = paraStyles.getStyle("Calendar_日祝");
-            //上下のスタイルを壊さないために、最初のテキストフレームのみaka100を適用
-            if (containEllipsis(sunTextFrames[i_1].contents))
-                sunEveryItem.appliedCharacterStyle = charStyles.getStyle("aka100");
-        }
-        for (var i_2 = 0; i_2 < satTextFrames.length; i_2++) {
-            var satEveryItem = satTextFrames[i_2].characters.everyItem();
-            satEveryItem.appliedParagraphStyle = paraStyles.getStyle("Calendar_土曜");
-            if (getNonDigitOrDotLength(satTextFrames[i_2].contents) > 1) {
-                satEveryItem.appliedParagraphStyle = paraStyles.getStyle("Calendar_日祝");
-            }
-            if (containEllipsis(satTextFrames[i_2].contents) && i_2 === 4)
-                satEveryItem.appliedCharacterStyle = charStyles.getStyle("aka50");
-        }
-    }
-};
-//初期化処理
+var daysText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[3]; }), true), mainData.map(function (v) { return v[3]; }), true), afterData.map(function (v) { return v[3]; }), true).join("\r");
 /*@ts-ignore*/
-app.activeDocument.pages[0].textFrames[0].parentStory.characters.everyItem().remove(); //Story上のテキストを一括削除
-//データの挿入
-var holidayIndex = createHolidayIndex(holidayData, calTexts);
-insertText(calTexts);
-if (holidayIndex)
-    insertHolidayText(pages, holidayIndex, master, calTexts);
-jougeStyle(calTexts);
-removeBreak(calTexts, master);
-insertDash(calTexts);
-applyParaStyle(calTexts);
+var rokuyouText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[8]; }), true), mainData.map(function (v) { return v[8]; }), true), afterData.map(function (v) { return v[8]; }), true).join("\r");
+/*@ts-ignore*/
+var holidayText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[7]; }), true), mainData.map(function (v) { return v[7]; }), true), afterData.map(function (v) { return v[7]; }), true).join("\r");
+//入力先のエンティティを取得
+var _firstPageEntity = new firstPageEntity(app.activeDocument.pages[11]);
+var _masterItem = new myMasterPageItem(2);
+_firstPageEntity.dayStory.contents = daysText;
+_firstPageEntity.rokuyouStory.contents = rokuyouText;
+_firstPageEntity.holidayStory.contents = holidayText;
+//流し込むデータの構造を作成
+//前年度、今年度、来年度のデータ構造をそれぞれ作成
+/*@ts-ignore*/
+var _diaryDayStructureBefore = beforeData.map(function (v) {
+    var _instance = new diaryDayStructure(v);
+    _instance.setGlayActivate();
+    return _instance;
+});
+/*@ts-ignore*/
+var _diaryDayStructureMain = mainData.map(function (v) {
+    return new diaryDayStructure(v);
+});
+/*@ts-ignore*/
+var _diaryDayStructureAfter = afterData.map(function (v) {
+    var _instance = new diaryDayStructure(v);
+    _instance.setGlayActivate();
+    return _instance;
+});
+//すべてのデータを結合した後、ページごとに分割する
+var allDayStructure = __spreadArray(__spreadArray(__spreadArray([], _diaryDayStructureBefore, true), _diaryDayStructureMain, true), _diaryDayStructureAfter, true);
+$.writeln(allDayStructure.length);
+var allPageStructure = (function (array) {
+    var length = Math.ceil(array.length / 7);
+    /*@ts-ignore*/
+    var res = __spreadArray([], Array(length), true).map(function (_, i) {
+        var _pageItem = array.slice(i * 7, i * 7 + 7);
+        var _daiaryPageStructure = new diaryPageStructure(_pageItem);
+        return _daiaryPageStructure;
+    });
+    return res;
+})(allDayStructure);
+//肩の数字の複製を作成
+for (var i = 0; i < allPageStructure.length; i++) {
+    var diff = 11;
+    var page = app.activeDocument.pages[i * 2 + diff];
+    var duplicatedSengetsu = (function (masterPageItem, to) {
+        var textFrame = masterPageItem.getTextFrame("sengetsu", to);
+        return formatText(textFrame);
+    })(_masterItem, page);
+    /*@ts-ignore*/
+    duplicatedSengetsu.move([2.58, 40.5], undefined);
+}
+//スタイルを取得
+var characterStyles = new Styles(app.activeDocument.characterStyles);
+var paragraphStyles = new Styles(app.activeDocument.paragraphStyles);
+var p_style_left_up = paragraphStyles.getStyle("日毎予定表_左肩数字");
+var c_style_glay = characterStyles.getStyle("Black30");
+var c_style_sat = characterStyles.getStyle("aka50");
+var c_style_sun = characterStyles.getStyle("aka100");
+$.writeln(p_style_left_up.name);
+var _loop_1 = function (i) {
+    var diff = 11;
+    var page = app.activeDocument.pages[i * 2 + diff];
+    var pageStructure = allPageStructure[i];
+    var pageEntity = new diaryPageEntity(page);
+    pageEntity.monthTextFrame.contents = pageStructure.monthText;
+    pageEntity.monthEnglishTextFrame.contents = pageStructure.monthEnglishText;
+    pageEntity.sengetsuTextFrame.contents = pageStructure.sengetsuText;
+    changeParagraphStyle(pageEntity.sengetsuTextFrame, p_style_left_up);
+    if (pageStructure.sengetsuText !== "" && pageStructure.dayStructureArray[0].isGlay) {
+        changeCharacterStyle(pageEntity.sengetsuTextFrame, c_style_glay);
+    }
+    //スタイルを条件に応じて適用する
+    /*@ts-ignore*/
+    pageEntity.dayEntityList.map(function (v, j) {
+        var dayStructure = pageStructure.dayStructureArray[j];
+        var isHoliday = dayStructure.holidayText !== "";
+        if (dayStructure.isGlay) {
+            changeCharacterStyle(v.dayTextFrame, c_style_glay);
+            changeCharacterStyle(v.weekTextFrame, c_style_glay);
+            changeCharacterStyle(v.rokuyouTextFrame, c_style_glay);
+        }
+        else {
+            if (dayStructure.youbiText === "土") {
+                changeCharacterStyle(v.weekTextFrame, c_style_sat);
+                if (!isHoliday) {
+                    changeCharacterStyle(v.dayTextFrame, c_style_sat);
+                }
+                else {
+                    changeCharacterStyle(v.dayTextFrame, c_style_sun);
+                }
+            }
+            else if (dayStructure.youbiText === "日") {
+                changeCharacterStyle(v.weekTextFrame, c_style_sun);
+                changeCharacterStyle(v.dayTextFrame, c_style_sun);
+            }
+            else {
+                if (isHoliday) {
+                    changeCharacterStyle(v.dayTextFrame, c_style_sun);
+                }
+            }
+        }
+    });
+};
+//それぞれのページに流し込む/スタイルを適用する
+for (var i = 0; i < allPageStructure.length; i++) {
+    _loop_1(i);
+}

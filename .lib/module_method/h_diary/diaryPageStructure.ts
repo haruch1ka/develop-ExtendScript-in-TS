@@ -1,16 +1,16 @@
-export class diaryPageStracture {
-	dayStractureArray: diaryDayStracture[];
+export class diaryPageStructure {
+	dayStructureArray: diaryDayStructure[];
 	monthText: string;
 	monthEnglishText: string;
 	sengetsuText: string;
-	constructor(dayStractureArray: diaryDayStracture[]) {
-		const first = dayStractureArray[0];
-		const last = dayStractureArray[6];
+	constructor(dayStructureArray: diaryDayStructure[]) {
+		const first = dayStructureArray[0];
+		const last = dayStructureArray[6];
 		const isMonthTextDifferent = first.monthText !== last.monthText ? true : false;
 		const isLastGlay = last.isGlay ? true : false;
 		const isSengetsu = isMonthTextDifferent && !isLastGlay ? true : false;
-		this.dayStractureArray = dayStractureArray;
-		this.monthText = !isLastGlay ? last.monthText : dayStractureArray[0].monthText;
+		this.dayStructureArray = dayStructureArray;
+		this.monthText = !isLastGlay ? last.monthText : dayStructureArray[0].monthText;
 		this.monthEnglishText = this.getEng(last.monthText);
 		this.sengetsuText = isSengetsu ? first.monthText + "/" : "";
 	}
@@ -33,7 +33,7 @@ export class diaryPageStracture {
 	}
 }
 
-export class diaryDayStracture {
+export class diaryDayStructure {
 	monthText: string;
 	youbiText: string;
 	holidayText: string;

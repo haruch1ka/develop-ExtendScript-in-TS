@@ -1,16 +1,16 @@
-var diaryPageStracture = /** @class */ (function () {
-    function diaryPageStracture(dayStractureArray) {
-        var first = dayStractureArray[0];
-        var last = dayStractureArray[6];
+var diaryPageStructure = /** @class */ (function () {
+    function diaryPageStructure(dayStructureArray) {
+        var first = dayStructureArray[0];
+        var last = dayStructureArray[6];
         var isMonthTextDifferent = first.monthText !== last.monthText ? true : false;
         var isLastGlay = last.isGlay ? true : false;
         var isSengetsu = isMonthTextDifferent && !isLastGlay ? true : false;
-        this.dayStractureArray = dayStractureArray;
-        this.monthText = !isLastGlay ? last.monthText : dayStractureArray[0].monthText;
+        this.dayStructureArray = dayStructureArray;
+        this.monthText = !isLastGlay ? last.monthText : dayStructureArray[0].monthText;
         this.monthEnglishText = this.getEng(last.monthText);
         this.sengetsuText = isSengetsu ? first.monthText + "/" : "";
     }
-    diaryPageStracture.prototype.getEng = function (string) {
+    diaryPageStructure.prototype.getEng = function (string) {
         var monthEnglishTextList = {
             "1": "January",
             "2": "February",
@@ -27,19 +27,19 @@ var diaryPageStracture = /** @class */ (function () {
         };
         return monthEnglishTextList[string];
     };
-    return diaryPageStracture;
+    return diaryPageStructure;
 }());
-export { diaryPageStracture };
-var diaryDayStracture = /** @class */ (function () {
-    function diaryDayStracture(data) {
+export { diaryPageStructure };
+var diaryDayStructure = /** @class */ (function () {
+    function diaryDayStructure(data) {
         this.monthText = data[2];
         this.youbiText = data[6];
         this.holidayText = data[7];
         this.isGlay = false;
     }
-    diaryDayStracture.prototype.setGlayActivate = function () {
+    diaryDayStructure.prototype.setGlayActivate = function () {
         this.isGlay = true;
     };
-    return diaryDayStracture;
+    return diaryDayStructure;
 }());
-export { diaryDayStracture };
+export { diaryDayStructure };

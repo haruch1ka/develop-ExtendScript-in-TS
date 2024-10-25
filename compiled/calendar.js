@@ -35,7 +35,8 @@ var calendar = /** @class */ (function () {
         /*@ts-ignore*/
         return __spreadArray([], Array(this.monthDays[month - 1]), true).map(function (_, i) { return i + 1; });
     };
-    calendar.prototype.getMonthLength = function (from, to) {
+    calendar.prototype.getMonthLength = function (from, to, year) {
+        this.changeLeapYear(year);
         if (from > to)
             throw new Error("from is bigger than to");
         if (from < 1 || from > 12)

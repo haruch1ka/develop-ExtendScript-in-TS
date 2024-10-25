@@ -23,7 +23,8 @@ class calendar {
 		/*@ts-ignore*/
 		return [...Array(this.monthDays[month - 1])].map((_, i) => i + 1);
 	}
-	getMonthLength(from: number, to: number): number {
+	getMonthLength(from: number, to: number, year: number): number {
+		this.changeLeapYear(year);
 		if (from > to) throw new Error("from is bigger than to");
 		if (from < 1 || from > 12) throw new Error("from is out of range");
 		let monthLength = 0;
