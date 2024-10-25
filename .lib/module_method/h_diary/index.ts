@@ -109,9 +109,7 @@ for (let i = 0; i < allPageStracture.length; i++) {
 	duplicatedSengetsu.move([2.58, 40.5], undefined);
 }
 
-//それぞれのページに流し込む/スタイルを適用する
-
-
+//スタイルを取得
 const characterStyles = new Styles(app.activeDocument.characterStyles);
 const paragraphStyles = new Styles(app.activeDocument.paragraphStyles);
 const p_style_left_up = paragraphStyles.getStyle("日毎予定表_左肩数字");
@@ -121,6 +119,7 @@ const c_style_sun = characterStyles.getStyle("aka100");
 
 $.writeln(p_style_left_up.name);
 
+//それぞれのページに流し込む/スタイルを適用する
 for (let i = 0; i < allPageStracture.length; i++) {
 	const diff = 11;
 	const page = app.activeDocument.pages[i * 2 + diff];
@@ -134,7 +133,7 @@ for (let i = 0; i < allPageStracture.length; i++) {
 	if (pageStracture.sengetsuText !== "" && pageStracture.dayStractureArray[0].isGlay) {
 		changeCharacterStyle(pageEntity.sengetsuTextFrame, c_style_glay);
 	}
-
+	//スタイルを条件に応じて適用する
 	/*@ts-ignore*/
 	pageEntity.dayEntityList.map((v, j) => {
 		const dayStracture = pageStracture.dayStractureArray[j];
