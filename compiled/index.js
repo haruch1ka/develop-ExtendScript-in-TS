@@ -220,7 +220,7 @@ var pageItemNames = [
                     tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
                     tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
                     var slash = master.rSlash[0].duplicate([0, 0], [0, 0]);
-                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[0], AnchorPosition.ANCHORED);
                     slash.clearObjectStyleOverrides();
                     tf.insertionPoints[-2].contents = pageStructure[i_2].afterText;
                     tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付aka");
@@ -244,7 +244,7 @@ var pageItemNames = [
                     tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
                     tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
                     var slash = master.bSlash[0].duplicate([0, 0], [0, 0]);
-                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[0], AnchorPosition.ANCHORED);
                     slash.clearObjectStyleOverrides();
                     tf.insertionPoints[-2].contents = pageStructure[i_2].afterText;
                     tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付BK");
