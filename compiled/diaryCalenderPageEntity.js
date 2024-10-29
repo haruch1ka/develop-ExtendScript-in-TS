@@ -1,48 +1,17 @@
 var diaryCalenderPageEntity = /** @class */ (function () {
     function diaryCalenderPageEntity(page) {
-        var allNameList = [
-            "txf1a",
-            "txf1b",
-            "txf1c",
-            "txf1d",
-            "txf1e",
-            "txf1f",
-            "txf1g",
-            "txf2a",
-            "txf2b",
-            "txf2c",
-            "txf2d",
-            "txf2e",
-            "txf2f",
-            "txf2g",
-            "txf3a",
-            "txf3b",
-            "txf3c",
-            "txf3d",
-            "txf3e",
-            "txf3f",
-            "txf3g",
-            "txf4a",
-            "txf4b",
-            "txf4c",
-            "txf4d",
-            "txf4e",
-            "txf4f",
-            "txf4g",
-            "txf5a",
-            "txf5b",
-            "txf5c",
-            "txf5d",
-            "txf5e",
-            "txf5f",
-            "txf5g",
-        ];
-        var textFrames = page.textFrames;
+        var _this = this;
+        var sundayNameList = ["txf1a", "txf2a", "txf3a", "txf4a", "txf5a"];
+        var saturdayNameList = ["txf1g", "txf2g", "txf3g", "txf4g", "txf5g"];
+        this.textFrames = page.textFrames;
         /*@ts-ignore*/
-        this.allDayEntityArray = allNameList.map(function (_, i) {
-            return textFrames.itemByName(allNameList[i]);
-        });
+        this.sundayItemList = sundayNameList.map(function (name) { return _this.textFrames.itemByName(name); });
+        /*@ts-ignore*/
+        this.saturdayItemList = saturdayNameList.map(function (name) { return _this.textFrames.itemByName(name); });
     }
+    diaryCalenderPageEntity.prototype.getByName = function (name) {
+        return this.textFrames.itemByName(name);
+    };
     return diaryCalenderPageEntity;
 }());
 export { diaryCalenderPageEntity };

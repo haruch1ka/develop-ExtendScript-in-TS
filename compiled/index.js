@@ -7,153 +7,269 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-import diaryInputData from "./diaryInputData";
-import calendar from "./calendar";
+import { diaryCalenderDayStructure } from "./diaryCalenderPageStructure";
 import polyfill from "./polyfill/polyfill";
-import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
-import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
-import myMasterPageItem from "./Props/myMasterItem";
-import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
+import calendar from "./calendar";
 import Styles from "./Props/Styles";
+import diaryInputData from "./diaryInputData";
+import { firstPageEntity, diaryCalenderPageEntity } from "./diaryCalenderPageEntity";
 polyfill();
-var diary = new diaryInputData();
-var cal = new calendar();
-var year = parseInt(diary.data[1][1]);
-var youbiToDaysGap = { "0": 6, "1": 0, "2": 1, "3": 2, "4": 3, "5": 4, "6": 5 }; //0:日曜日,1:月曜日,2:火曜日,3:水曜日,4:木曜日,5:金曜日,6:土曜日
-//曜日に応じて、穴埋めで入る前年度の日にちを取得する。
-var getBeforeGap = function (year) {
-    var youbiNum = cal.getYoubi(year, 4, 1);
-    var gap = youbiToDaysGap[youbiNum];
-    return gap;
-};
-//前年度と今年度の日数から、穴埋めで入る来年度の日数を取得する。
-var getAfterGap = function (beforePlusYearLength) {
-    var input = beforePlusYearLength;
-    if (input % 7 !== 0) {
-        return (Math.floor(input / 7) + 1) * 7 - input;
-    }
-    else {
-        return 0;
-    }
-    throw new Error("error");
-};
-//要素の数を取得
-var beforeGap = getBeforeGap(year);
-var yearLength = cal.isLeapYear(year + 1) ? 366 : 365;
-var AfterGap = getAfterGap(beforeGap + yearLength);
-//1月から3月までの日数を取得
-var monthLength = cal.getMonthLength(1, 3, year);
-//すべてのデータを取得(2行目からなのでindexは常に+1)
-var beforeData = diary.data.slice(monthLength - beforeGap + 1, monthLength + 1);
-var mainData = diary.data.slice(monthLength + 1, monthLength + yearLength + 1);
-var afterData = diary.data.slice(monthLength + yearLength + 1, monthLength + yearLength + AfterGap + 1);
-/*@ts-ignore*/
-var daysText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[3]; }), true), mainData.map(function (v) { return v[3]; }), true), afterData.map(function (v) { return v[3]; }), true).join("\r");
-/*@ts-ignore*/
-var rokuyouText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[8]; }), true), mainData.map(function (v) { return v[8]; }), true), afterData.map(function (v) { return v[8]; }), true).join("\r");
-/*@ts-ignore*/
-var holidayText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[7]; }), true), mainData.map(function (v) { return v[7]; }), true), afterData.map(function (v) { return v[7]; }), true).join("\r");
-//入力先のエンティティを取得
-var _firstPageEntity = new firstPageEntity(app.activeDocument.pages[11]);
-var _masterItem = new myMasterPageItem(2);
-_firstPageEntity.dayStory.contents = daysText;
-_firstPageEntity.rokuyouStory.contents = rokuyouText;
-_firstPageEntity.holidayStory.contents = holidayText;
-//流し込むデータの構造を作成
-//前年度、今年度、来年度のデータ構造をそれぞれ作成
-/*@ts-ignore*/
-var _diaryDayStructureBefore = beforeData.map(function (v) {
-    var _instance = new diaryDayStructure(v);
-    _instance.setGlayActivate();
-    return _instance;
-});
-/*@ts-ignore*/
-var _diaryDayStructureMain = mainData.map(function (v) {
-    return new diaryDayStructure(v);
-});
-/*@ts-ignore*/
-var _diaryDayStructureAfter = afterData.map(function (v) {
-    var _instance = new diaryDayStructure(v);
-    _instance.setGlayActivate();
-    return _instance;
-});
-//すべてのデータを結合した後、ページごとに分割する
-var allDayStructure = __spreadArray(__spreadArray(__spreadArray([], _diaryDayStructureBefore, true), _diaryDayStructureMain, true), _diaryDayStructureAfter, true);
-$.writeln(allDayStructure.length);
-var allPageStructure = (function (array) {
-    var length = Math.ceil(array.length / 7);
-    /*@ts-ignore*/
-    var res = __spreadArray([], Array(length), true).map(function (_, i) {
-        var _pageItem = array.slice(i * 7, i * 7 + 7);
-        var _daiaryPageStructure = new diaryPageStructure(_pageItem);
-        return _daiaryPageStructure;
-    });
-    return res;
-})(allDayStructure);
-//肩の数字の複製を作成
-for (var i = 0; i < allPageStructure.length; i++) {
-    var diff = 11;
-    var page = app.activeDocument.pages[i * 2 + diff];
-    var duplicatedSengetsu = (function (masterPageItem, to) {
-        var textFrame = masterPageItem.getTextFrame("sengetsu", to);
-        return formatText(textFrame);
-    })(_masterItem, page);
-    /*@ts-ignore*/
-    duplicatedSengetsu.move([2.58, 40.5], undefined);
-}
-//スタイルを取得
-var characterStyles = new Styles(app.activeDocument.characterStyles);
-var paragraphStyles = new Styles(app.activeDocument.paragraphStyles);
-var p_style_left_up = paragraphStyles.getStyle("日毎予定表_左肩数字");
-var c_style_glay = characterStyles.getStyle("Black30");
-var c_style_sat = characterStyles.getStyle("aka50");
-var c_style_sun = characterStyles.getStyle("aka100");
-$.writeln(p_style_left_up.name);
-var _loop_1 = function (i) {
-    var diff = 11;
-    var page = app.activeDocument.pages[i * 2 + diff];
-    var pageStructure = allPageStructure[i];
-    var pageEntity = new diaryPageEntity(page);
-    pageEntity.monthTextFrame.contents = pageStructure.monthText;
-    pageEntity.monthEnglishTextFrame.contents = pageStructure.monthEnglishText;
-    pageEntity.sengetsuTextFrame.contents = pageStructure.sengetsuText;
-    changeParagraphStyle(pageEntity.sengetsuTextFrame, p_style_left_up);
-    if (pageStructure.sengetsuText !== "" && pageStructure.dayStructureArray[0].isGlay) {
-        changeCharacterStyle(pageEntity.sengetsuTextFrame, c_style_glay);
-    }
-    //スタイルを条件に応じて適用する
-    /*@ts-ignore*/
-    pageEntity.dayEntityList.map(function (v, j) {
-        var dayStructure = pageStructure.dayStructureArray[j];
-        var isHoliday = dayStructure.holidayText !== "";
-        if (dayStructure.isGlay) {
-            changeCharacterStyle(v.dayTextFrame, c_style_glay);
-            changeCharacterStyle(v.weekTextFrame, c_style_glay);
-            changeCharacterStyle(v.rokuyouTextFrame, c_style_glay);
+//マスターページのアイテムをストックするクラス
+var masterPageItem = /** @class */ (function () {
+    function masterPageItem() {
+        var _this = this;
+        this.itemNameList = ["赤円_小", "赤円_大", "スラッシュ_赤小", "スラッシュ_黒小"];
+        this.itemPropertyNameList = ["sCircle", "lCircle", "rSlash", "bSlash"];
+        this.itemList = [];
+        this.master = app.activeDocument.masterSpreads[0];
+        /*@ts-ignore*/
+        this.itemList = this.itemNameList.map(function (name) { return _this.master.pageItems.itemByName(name).getElements(); });
+        for (var i = 0; i < this.itemList.length; i++) {
+            /*@ts-ignore*/
+            this[this.itemPropertyNameList[i]] = this.itemList[i];
         }
-        else {
-            if (dayStructure.youbiText === "土") {
-                changeCharacterStyle(v.weekTextFrame, c_style_sat);
-                if (!isHoliday) {
-                    changeCharacterStyle(v.dayTextFrame, c_style_sat);
+    }
+    return masterPageItem;
+}());
+var pages = app.activeDocument.pages;
+////////////////////////////////////////
+//	データの取得
+////////////////////////////////////////
+//エクセルから入手下データ
+var diary = new diaryInputData();
+//カレンダークラスのインスタンス
+var cal = new calendar();
+//年の取得
+var grobalYear = parseInt(diary.data[1][1]);
+////////////////////////////////////////
+// データの整形
+////////////////////////////////////////
+//データ変換関数
+var getArrangedDataArray = function (inputData) {
+    var _a = [
+        [inputData[1][1], inputData[1][2]],
+        [inputData[inputData.length - 1][1], inputData[inputData.length - 1][2]],
+    ], from = _a[0], to = _a[1];
+    var cal = new calendar();
+    var weekNumList = { 日: 0, 月: 1, 火: 2, 水: 3, 木: 4, 金: 5, 土: 6 };
+    var allMonthDaysLength = __spreadArray(__spreadArray([], cal.getMonthDaysLengths(grobalYear), true), cal.getMonthDaysLengths(grobalYear + 1).slice(0, 4), true);
+    // $.writeln(allMonthDaysLength);
+    var allMonthDataArray = []; //月ごとにデータを格納する配列
+    var counter = 0;
+    for (var i = 0; i < allMonthDaysLength.length; i++) {
+        /*@ts-ignore*/
+        var monthData = __spreadArray([], inputData.slice(counter + 1, allMonthDaysLength[i] + counter + 1), true);
+        allMonthDataArray.push(monthData);
+        counter += allMonthDaysLength[i];
+    }
+    //
+    //
+    /*@ts-ignore*/
+    var allArangedData = allMonthDataArray.map(function (month, i) {
+        var monthData = month;
+        var firstYoubi = month[0][6];
+        var youbiNum = weekNumList[firstYoubi];
+        // $.writeln(youbiNum);
+        var createBeforeDayStructureArray = function () {
+            var beforeGap = youbiNum;
+            /*@ts-ignore*/
+            var beforeDayStructureArray = __spreadArray([], Array(beforeGap), true).map(function () {
+                var dot = new diaryCalenderDayStructure("...");
+                dot.isDot = true;
+                return dot;
+            });
+            if (beforeDayStructureArray.length > 0)
+                beforeDayStructureArray[0].isSunday = true;
+            return beforeDayStructureArray;
+        };
+        var beforeDayStructureArray = createBeforeDayStructureArray();
+        var createMainDayStructureArray = function () {
+            var mainDayStructureArray = monthData.map(function (day) {
+                var _dayStructure = new diaryCalenderDayStructure(day[3]);
+                if (day[0] === "h")
+                    _dayStructure.isHoliday = true;
+                if (day[6] === "日")
+                    _dayStructure.isSunday = true;
+                if (day[6] === "土")
+                    _dayStructure.isSaturday = true;
+                return _dayStructure;
+            });
+            return mainDayStructureArray;
+        };
+        var mainDayStructureArray = createMainDayStructureArray();
+        var createAfterStructureArray = function () {
+            /*@ts-ignore*/
+            var afterDayStructureArray = __spreadArray([], Array(afterGap), true).map(function () {
+                var dot = new diaryCalenderDayStructure("...");
+                dot.isDot = true;
+                return dot;
+            });
+            if (afterDayStructureArray.length > 0)
+                afterDayStructureArray[afterDayStructureArray.length - 1].isSaturday = true;
+            return afterDayStructureArray;
+        };
+        var afterGap = 35 - (youbiNum + monthData.length);
+        var afterDayStructureArray = afterGap > 0 ? createAfterStructureArray() : [];
+        if (afterGap < 0) {
+            (function (gap) {
+                /*@ts-ignore*/
+                var diffArray = __spreadArray([], Array(-gap), true).map(function () { return mainDayStructureArray.pop(); });
+                diffArray.reverse();
+                for (var i_1 = 0; i_1 < diffArray.length; i_1++) {
+                    var place = 28 - youbiNum + i_1;
+                    mainDayStructureArray[place].afterText = diffArray[i_1].dayText;
+                    mainDayStructureArray[place].isSeparated = true;
+                    if (diffArray[i_1].isHoliday) {
+                        mainDayStructureArray[place].isRightHoliday = true;
+                    }
+                    if (mainDayStructureArray[place].isHoliday) {
+                        mainDayStructureArray[place].isLeftHoliday = true;
+                    }
+                }
+            })(afterGap);
+        }
+        return __spreadArray(__spreadArray(__spreadArray([], beforeDayStructureArray, true), mainDayStructureArray, true), afterDayStructureArray, true);
+    });
+    return allArangedData;
+};
+//変換されたデータ
+var arrangedDataArray = getArrangedDataArray(diary.data);
+////////////////////////////////////////
+//	エンティティの定義
+////////////////////////////////////////
+//エンティティの定義
+var _firstPageEntity = new firstPageEntity(app.activeDocument.pages[0]);
+/*@ts-ignore*/
+var allCalenderPageEntity = __spreadArray([], Array(app.activeDocument.pages.length), true).map(function (_, i) {
+    var page = pages[i];
+    return new diaryCalenderPageEntity(page);
+});
+//マスターページのアイテムをストック
+var master = new masterPageItem();
+//スタイルの定義
+var paraStyles = new Styles(app.activeDocument.paragraphStyles);
+var charStyles = new Styles(app.activeDocument.characterStyles);
+////////////////////////////////////////
+//処理の開始
+////////////////////////////////////////
+//初期化処理
+/* @ts-ignore */
+pages[0].textFrames[0].parentStory.characters.everyItem().remove();
+//テキストの挿入
+(function (arrangedDataArray) {
+    /*@ts-ignore*/
+    var dayString = arrangedDataArray.map(function (v) { return v.map(function (v) { return v.dayText; }).join("\r"); });
+    _firstPageEntity.dayInsertionPoint.appliedParagraphStyle = paraStyles.getStyle("Calendar_平日");
+    for (var i = 0; i < dayString.length; i++) {
+        _firstPageEntity.dayStory.insertionPoints[-1].contents = dayString[i];
+        if (i !== dayString.length - 1)
+            _firstPageEntity.dayStory.insertionPoints[-1].contents = SpecialCharacters.PAGE_BREAK;
+    }
+    /*@ts-ignore*/
+    _firstPageEntity.dayStory.characters.everyItem().appliedCharacterStyle = charStyles.getStyle("[なし]");
+    _firstPageEntity.dayStory.clearOverrides(); //Story上のオーバーライドを一括消去
+})(arrangedDataArray);
+var pageItemNames = [
+    "txf1a",
+    "txf1b",
+    "txf1c",
+    "txf1d",
+    "txf1e",
+    "txf1f",
+    "txf1g",
+    "txf2a",
+    "txf2b",
+    "txf2c",
+    "txf2d",
+    "txf2e",
+    "txf2f",
+    "txf2g",
+    "txf3a",
+    "txf3b",
+    "txf3c",
+    "txf3d",
+    "txf3e",
+    "txf3f",
+    "txf3g",
+    "txf4a",
+    "txf4b",
+    "txf4c",
+    "txf4d",
+    "txf4e",
+    "txf4f",
+    "txf4g",
+    "txf5a",
+    "txf5b",
+    "txf5c",
+    "txf5d",
+    "txf5e",
+    "txf5f",
+    "txf5g",
+];
+//スタイルの適用
+(function (arrangedDataArray) {
+    for (var i = 0; i < app.activeDocument.pages.length; i++) {
+        var page = app.activeDocument.pages[i];
+        var pageEntity = new diaryCalenderPageEntity(page);
+        var pageStructure = arrangedDataArray[i];
+        // $.writeln(`page ${i + 1}`);
+        for (var i_2 = 0; i_2 < pageStructure.length; i_2++) {
+            var tf = pageEntity.getByName(pageItemNames[i_2]);
+            if (pageStructure[i_2].isSeparated) {
+                if (pageStructure[i_2].isSunday || pageStructure[i_2].isHoliday) {
+                    tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
+                    tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
+                    var slash = master.rSlash[0].duplicate([0, 0], [0, 0]);
+                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+                    slash.clearObjectStyleOverrides();
+                    tf.insertionPoints[-2].contents = pageStructure[i_2].afterText;
+                    tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付aka");
+                    tf.characters[-3].appliedCharacterStyle = charStyles.getStyle("小数字_下付aka");
+                    if (pageStructure[i_2].isLeftHoliday) {
+                        $.writeln("left holiday");
+                        var circleInsertionPoint = tf.insertionPoints[0];
+                        var circleSmall = master.sCircle[0].duplicate([0, 0], [0, 0]);
+                        circleSmall.anchoredObjectSettings.insertAnchoredObject(circleInsertionPoint, AnchorPosition.ANCHORED);
+                        circleSmall.clearObjectStyleOverrides();
+                    }
+                    if (pageStructure[i_2].isRightHoliday) {
+                        $.writeln("right holiday");
+                        var circleInsertionPoint = tf.insertionPoints[-4];
+                        var circleSmall = master.sCircle[0].duplicate([0, 0], [0, 0]);
+                        circleSmall.anchoredObjectSettings.insertAnchoredObject(circleInsertionPoint, AnchorPosition.ANCHORED);
+                        circleSmall.clearObjectStyleOverrides();
+                    }
                 }
                 else {
-                    changeCharacterStyle(v.dayTextFrame, c_style_sun);
+                    tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
+                    tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
+                    var slash = master.bSlash[0].duplicate([0, 0], [0, 0]);
+                    slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+                    slash.clearObjectStyleOverrides();
+                    tf.insertionPoints[-2].contents = pageStructure[i_2].afterText;
+                    tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付BK");
+                    tf.characters[-3].appliedCharacterStyle = charStyles.getStyle("小数字_下付BK");
                 }
             }
-            else if (dayStructure.youbiText === "日") {
-                changeCharacterStyle(v.weekTextFrame, c_style_sun);
-                changeCharacterStyle(v.dayTextFrame, c_style_sun);
-            }
             else {
-                if (isHoliday) {
-                    changeCharacterStyle(v.dayTextFrame, c_style_sun);
+                if (pageStructure[i_2].isHoliday) {
+                    var insertionPoint = tf.insertionPoints[0];
+                    var oval = master.lCircle[0].duplicate([0, 0], [0, 0]);
+                    oval.anchoredObjectSettings.insertAnchoredObject(insertionPoint, AnchorPosition.ANCHORED);
+                    oval.clearObjectStyleOverrides();
+                }
+                if (pageStructure[i_2].isHoliday || pageStructure[i_2].isSunday) {
+                    /*@ts-ignore*/
+                    tf.characters.everyItem().appliedParagraphStyle = paraStyles.getStyle("Calendar_日祝");
+                    // $.writeln(tf.contents + " is holiday");
+                }
+                else if (pageStructure[i_2].isSaturday) {
+                    /*@ts-ignore*/
+                    tf.characters.everyItem().appliedParagraphStyle = paraStyles.getStyle("Calendar_土曜");
+                    // $.writeln(tf.contents + " is saturday");
                 }
             }
         }
-    });
-};
-//それぞれのページに流し込む/スタイルを適用する
-for (var i = 0; i < allPageStructure.length; i++) {
-    _loop_1(i);
-}
+        $.writeln("------------");
+    }
+})(arrangedDataArray);

@@ -47,6 +47,10 @@ var calendar = /** @class */ (function () {
         }
         return monthLength;
     };
+    calendar.prototype.getMonthDaysLengths = function (year) {
+        this.changeLeapYear(year);
+        return this.monthDays;
+    };
     return calendar;
 }());
 export default calendar;

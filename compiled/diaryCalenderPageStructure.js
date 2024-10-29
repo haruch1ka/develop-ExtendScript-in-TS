@@ -1,11 +1,15 @@
 var diaryCalenderDayStructure = /** @class */ (function () {
-    //祝日かどうか
-    function diaryCalenderDayStructure(daytext) {
+    function diaryCalenderDayStructure(daytext, aftertext) {
+        if (aftertext === void 0) { aftertext = ""; }
         this.dayText = daytext;
+        this.afterText = aftertext;
         this.isHoliday = false;
         this.isSeparated = false;
         this.isSunday = false;
         this.isSaturday = false;
+        this.isDot = false;
+        this.isLeftHoliday = false;
+        this.isRightHoliday = false;
     }
     return diaryCalenderDayStructure;
 }());

@@ -33,6 +33,10 @@ class calendar {
 		}
 		return monthLength;
 	}
+	getMonthDaysLengths(year: number): number[] {
+		this.changeLeapYear(year);
+		return this.monthDays;
+	}
 }
 
 export default calendar;
