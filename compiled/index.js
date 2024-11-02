@@ -54,6 +54,7 @@ var getArrangedDataArray = function (inputData) {
     var weekNumList = { 日: 0, 月: 1, 火: 2, 水: 3, 木: 4, 金: 5, 土: 6 };
     var allMonthDaysLength = __spreadArray(__spreadArray([], cal.getMonthDaysLengths(grobalYear), true), cal.getMonthDaysLengths(grobalYear + 1).slice(0, 4), true);
     // $.writeln(allMonthDaysLength);
+    //エクセルの前月のデータを、[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 , 31, 28, 31, 30]のように分ける
     var allMonthDataArray = []; //月ごとにデータを格納する配列
     var counter = 0;
     for (var i = 0; i < allMonthDaysLength.length; i++) {

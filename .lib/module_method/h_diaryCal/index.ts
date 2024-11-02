@@ -53,6 +53,7 @@ const getArrangedDataArray = (inputData: String[][]) => {
 	const allMonthDaysLength = [...cal.getMonthDaysLengths(grobalYear), ...cal.getMonthDaysLengths(grobalYear + 1).slice(0, 4)];
 	// $.writeln(allMonthDaysLength);
 
+	//エクセルの前月のデータを、[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 , 31, 28, 31, 30]のように分ける
 	const allMonthDataArray = []; //月ごとにデータを格納する配列
 	let counter = 0;
 	for (let i = 0; i < allMonthDaysLength.length; i++) {
@@ -217,13 +218,12 @@ const pageItemNames = [
 		// $.writeln(`page ${i + 1}`);
 		for (let i = 0; i < pageStructure.length; i++) {
 			const tf = pageEntity.getByName(pageItemNames[i]);
-
 			if (pageStructure[i].isSeparated) {
 				if (pageStructure[i].isSunday || pageStructure[i].isHoliday) {
 					tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
 					tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付aka");
 					const slash = master.rSlash[0].duplicate([0, 0], [0, 0]);
-					slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+					slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[0], AnchorPosition.ANCHORED);
 					slash.clearObjectStyleOverrides();
 					tf.insertionPoints[-2].contents = pageStructure[i].afterText;
 					tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付aka");
@@ -246,7 +246,7 @@ const pageItemNames = [
 					tf.characters[0].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
 					tf.characters[1].appliedCharacterStyle = charStyles.getStyle("小数字_上付BK");
 					const slash = master.bSlash[0].duplicate([0, 0], [0, 0]);
-					slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[-2], AnchorPosition.ANCHORED);
+					slash.anchoredObjectSettings.insertAnchoredObject(tf.insertionPoints[0], AnchorPosition.ANCHORED);
 					slash.clearObjectStyleOverrides();
 					tf.insertionPoints[-2].contents = pageStructure[i].afterText;
 					tf.characters[-2].appliedCharacterStyle = charStyles.getStyle("小数字_下付BK");
