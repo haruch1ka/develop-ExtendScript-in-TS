@@ -9,9 +9,11 @@ export class diaryGekkanEvenPageEntity {
 }
 export class diaryGekkanOddPageEntity {
 	yearTextFrame: TextFrame;
+	dayTextFrame: TextFrame;
 	constructor(page: Page) {
 		const textFrames = page.textFrames;
 		this.yearTextFrame = textFrames.itemByName("nen");
+		this.dayTextFrame = textFrames.itemByName("niti2");
 	}
 }
 

@@ -123,15 +123,16 @@ for (var i = 0; i < pages[0].textFrames.length; i++) {
         oddPageEntity.yearTextFrame.contents = targetArray[i].yearText;
     }
 })(allArangedData);
-// ((arrangedDataArray: diaryGekkanPageStructure[]) => {
-// 	//indexが3以上のデータを取得
-// 	const targetArray = arrangedDataArray.slice(3);
-// 	//ページの祝日の文字にスタイルを適用
-// 	for (let i = 0; i < app.activeDocument.pages.length / 2; i++) {
-// 		const even = i * 2;
-// 		const odd = i * 2 + 1;
-// 		const evenPageEntity = new diaryGekkanEvenPageEntity(pages[even]); // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18...
-// 		const oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
-// 		$.writeln(evenPageEntity.dayTextFrame.contents);
-// 	}
-// })(allArangedData);
+(function (arrangedDataArray) {
+    //indexが3以上のデータを取得
+    var targetArray = arrangedDataArray.slice(3);
+    //ページの祝日の文字にスタイルを適用
+    for (var i = 0; i < app.activeDocument.pages.length / 2; i++) {
+        var even = i * 2;
+        var odd = i * 2 + 1;
+        var evenPageEntity = new diaryGekkanEvenPageEntity(pages[even]); // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18...
+        var oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
+        $.writeln(targetArray[i].leftPageHolidayArray);
+        $.writeln(targetArray[i].rightPageHolidayArray);
+    }
+});

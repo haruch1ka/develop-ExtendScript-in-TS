@@ -82,7 +82,8 @@ const charStyles = new Styles(app.activeDocument.characterStyles);
 /*@ts-ignore*/
 for (let i = 0; i < pages[0].textFrames.length; i++) {
 	const textFrame = pages[0].textFrames[i];
-	formatText(textFrame);
+	/*@ts-ignore */
+	textFrame.parentStory.characters.everyItem().remove();
 }
 
 //テキストの挿入
@@ -127,7 +128,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 	}
 })(allArangedData);
 
-((arrangedDataArray: diaryGekkanPageStructure[]) => {
+(arrangedDataArray: diaryGekkanPageStructure[]) => {
 	//indexが3以上のデータを取得
 	const targetArray = arrangedDataArray.slice(3);
 	//ページの祝日の文字にスタイルを適用
@@ -137,6 +138,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 		const evenPageEntity = new diaryGekkanEvenPageEntity(pages[even]); // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18...
 		const oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
 
-		$.writeln(evenPageEntity.dayTextFrame.contents);
+		$.writeln(targetArray[i].leftPageHolidayArray);
+		$.writeln(targetArray[i].rightPageHolidayArray);
 	}
-})(allArangedData);
+};

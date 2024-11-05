@@ -11,6 +11,7 @@ var diaryGekkanOddPageEntity = /** @class */ (function () {
     function diaryGekkanOddPageEntity(page) {
         var textFrames = page.textFrames;
         this.yearTextFrame = textFrames.itemByName("nen");
+        this.dayTextFrame = textFrames.itemByName("niti2");
     }
     return diaryGekkanOddPageEntity;
 }());
