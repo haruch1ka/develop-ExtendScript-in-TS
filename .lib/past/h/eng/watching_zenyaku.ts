@@ -211,6 +211,7 @@ function main() {
 
 	////////////////////テキストフレームにテキストを流し込む//////////////////////////////
 
+	$.writeln("myNumberTextFrames " + myNumberTextFrames.length);
 	//頭数字のテキストフレームにテキストを流し込む
 	forloop(myNumberTextFrames.length, (i) => {
 		myNumberTextFrames[i].contents = (i + 1).toString();
