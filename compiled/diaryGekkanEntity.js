@@ -1,14 +1,20 @@
-var diaryGekkanPageEntity = /** @class */ (function () {
-    function diaryGekkanPageEntity(page) {
+var diaryGekkanEvenPageEntity = /** @class */ (function () {
+    function diaryGekkanEvenPageEntity(page) {
         var textFrames = page.textFrames;
         this.monthTextFrame = textFrames.itemByName("tuki");
-        this.yearTextFrame = textFrames.itemByName("nen");
-        $.writeln(this.monthTextFrame);
-        $.writeln(this.yearTextFrame);
+        this.dayTextFrame = textFrames.itemByName("niti1");
     }
-    return diaryGekkanPageEntity;
+    return diaryGekkanEvenPageEntity;
 }());
-export { diaryGekkanPageEntity };
+export { diaryGekkanEvenPageEntity };
+var diaryGekkanOddPageEntity = /** @class */ (function () {
+    function diaryGekkanOddPageEntity(page) {
+        var textFrames = page.textFrames;
+        this.yearTextFrame = textFrames.itemByName("nen");
+    }
+    return diaryGekkanOddPageEntity;
+}());
+export { diaryGekkanOddPageEntity };
 var firstPageEntity = /** @class */ (function () {
     function firstPageEntity(page) {
         this.page = page;

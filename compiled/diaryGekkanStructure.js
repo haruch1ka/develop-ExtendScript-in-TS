@@ -16,9 +16,18 @@ var diaryGekkanPageStructure = /** @class */ (function () {
     function diaryGekkanPageStructure(dayStructureArray) {
         this.yearText = "";
         this.monthText = "";
+        this.monthHolidayArray = [];
         this.dayStructureArray = dayStructureArray;
         this.yearText = dayStructureArray[0].yearText;
         this.monthText = dayStructureArray[0].monthText;
+        for (var i = 0; i < dayStructureArray.length; i++) {
+            if (dayStructureArray[i].isHoliday) {
+                this.monthHolidayArray.push(true);
+            }
+            else {
+                this.monthHolidayArray.push(false);
+            }
+        }
     }
     return diaryGekkanPageStructure;
 }());
