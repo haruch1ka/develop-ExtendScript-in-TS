@@ -29,5 +29,20 @@ var polyfill = function () {
         }
         return -1;
     };
+    /*@ts-ignore*/
+    Array.prototype.reduce = function (callback, initialValue) {
+        if (typeof callback !== "function") {
+            throw new Error("Callback must be a function");
+        }
+        var array = this;
+        var length = array.length;
+        var accumulator = initialValue !== undefined ? initialValue : array[0];
+        for (var i = initialValue !== undefined ? 0 : 1; i < length; i++) {
+            if (i in array) {
+                accumulator = callback.call(undefined, accumulator, array[i], i, array);
+            }
+        }
+        return accumulator;
+    };
 };
 export default polyfill;

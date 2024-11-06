@@ -11,7 +11,6 @@ import { diaryGekkanDayStructure, diaryGekkanPageStructure } from "./diaryGekkan
 import polyfill from "./polyfill/polyfill";
 import calendar from "./calendar";
 import Styles from "./Props/Styles";
-import { formatText } from "./Props/TextFrameWrapper";
 import diaryInputData from "./diaryInputData";
 import { diaryGekkanEvenPageEntity, diaryGekkanOddPageEntity, firstPageEntity } from "./diaryGekkanEntity";
 polyfill();
@@ -81,7 +80,8 @@ var charStyles = new Styles(app.activeDocument.characterStyles);
 /*@ts-ignore*/
 for (var i = 0; i < pages[0].textFrames.length; i++) {
     var textFrame = pages[0].textFrames[i];
-    formatText(textFrame);
+    /*@ts-ignore */
+    textFrame.parentStory.characters.everyItem().remove();
 }
 //テキストの挿入
 (function (arrangedDataArray) {
@@ -124,9 +124,9 @@ for (var i = 0; i < pages[0].textFrames.length; i++) {
     }
 })(allArangedData);
 (function (arrangedDataArray) {
-    //indexが3以上のデータを取得
-    var targetArray = arrangedDataArray.slice(3);
     //ページの祝日の文字にスタイルを適用
+    var targetArray = arrangedDataArray.slice(3);
+    // $.writeln(targetArray);
     for (var i = 0; i < app.activeDocument.pages.length / 2; i++) {
         var even = i * 2;
         var odd = i * 2 + 1;
@@ -134,5 +134,6 @@ for (var i = 0; i < pages[0].textFrames.length; i++) {
         var oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
         $.writeln(targetArray[i].leftPageHolidayArray);
         $.writeln(targetArray[i].rightPageHolidayArray);
+        // $.writeln(evenPageEntity.dayTextFrame.contents);
     }
-});
+})(allArangedData);

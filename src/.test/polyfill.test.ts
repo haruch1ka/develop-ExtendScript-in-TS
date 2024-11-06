@@ -24,3 +24,11 @@ test("polyfill", () => {
 	const index = arr.indexOf(4);
 	expect(index).toBe(-1);
 });
+
+test("polyfill", () => {
+	// es3準拠のポリフィル
+	polyfill();
+	const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+	const sum = arr.reduce((acc, cur) => acc + cur);
+	expect(sum).toBe(45);
+});

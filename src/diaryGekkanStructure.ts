@@ -40,3 +40,17 @@ export class diaryGekkanPageStructure {
 		}
 	}
 }
+
+export const getTextframeIndex = (from: Number, to: Number, index: Number) => {
+	/*@ts-ignore*/
+	const txtFrameArray = [...Array(to - from + 1)].map((_, i) => from + i + 1);
+
+	const tarArray = txtFrameArray
+		/*@ts-ignore*/
+		.map((v) => v.toString().length + 1);
+	const res = tarArray
+		/*@ts-ignore*/
+		.map((v, i) => [tarArray.slice(0, i + 1).reduce((acc, cur) => acc + cur) - 1, v]);
+
+	return res[index];
+};
