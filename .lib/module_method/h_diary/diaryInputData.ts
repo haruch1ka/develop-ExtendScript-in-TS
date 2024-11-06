@@ -5,7 +5,7 @@ class diaryInputData {
 	data = [];
 	constructor() {
 		const config = [{ type: "file", disc: "excelファイルを選んでください" }];
-		const setting = new myFileSetting(false, "diary_honshi_setting.txt", config);
+		const setting = new myFileSetting(false, "diary_setting.txt", config);
 		const tab = 1;
 
 		const excelfile = new File(setting.my_save_folder_path[1]);
