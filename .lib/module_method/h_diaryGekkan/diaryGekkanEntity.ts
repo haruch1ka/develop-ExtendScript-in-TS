@@ -1,13 +1,19 @@
-export class diaryGekkanPageEntity {
-	yearTextFrame: TextFrame;
+export class diaryGekkanEvenPageEntity {
 	monthTextFrame: TextFrame;
+	dayTextFrame: TextFrame;
 	constructor(page: Page) {
 		const textFrames = page.textFrames;
 		this.monthTextFrame = textFrames.itemByName("tuki");
+		this.dayTextFrame = textFrames.itemByName("niti1");
+	}
+}
+export class diaryGekkanOddPageEntity {
+	yearTextFrame: TextFrame;
+	dayTextFrame: TextFrame;
+	constructor(page: Page) {
+		const textFrames = page.textFrames;
 		this.yearTextFrame = textFrames.itemByName("nen");
-
-		$.writeln(this.monthTextFrame);
-		$.writeln(this.yearTextFrame);
+		this.dayTextFrame = textFrames.itemByName("niti2");
 	}
 }
 
