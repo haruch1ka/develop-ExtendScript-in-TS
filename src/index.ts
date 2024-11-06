@@ -94,7 +94,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 // 	}
 // }
 
-// //テキストの挿入
+//ストーリーへテキストの挿入
 ((arrangedDataArray: diaryGekkanPageStructure[]) => {
 	//indexが3以上のデータを取得
 	const targetArray = arrangedDataArray.slice(3);
@@ -119,6 +119,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 	}
 })(allArangedData);
 
+// ページごとにテキストを挿入
 ((arrangedDataArray: diaryGekkanPageStructure[]) => {
 	//indexが3以上のデータを取得
 	const targetArray = arrangedDataArray.slice(3);
@@ -136,22 +137,22 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 	}
 })(allArangedData);
 
+// ページごとにスタイルを適用
 ((arrangedDataArray: diaryGekkanPageStructure[]) => {
-	//ページの祝日の文字にスタイルを適用
+	//indexが3以上のデータを取得(4月以降のデータ)
 	const targetArray = arrangedDataArray.slice(3);
-	// $.writeln(targetArray);
 	for (let i = 0; i < app.activeDocument.pages.length / 2; i++) {
+		//左ページと右ページのインデックスを取得
 		const even = i * 2;
 		const odd = i * 2 + 1;
+		//左ページのエンティティを取得
 		const evenPageEntity = new diaryGekkanEvenPageEntity(pages[even]); // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18...
+		//右ページのエンティティを取得
 		const oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
 
 		const leftDayTextFrame = evenPageEntity.dayTextFrame;
 		const rightDayTextFrame = oddPageEntity.dayTextFrame;
-		// $.writeln(targetArray[i].leftPageHolidayArray);
-		// $.writeln(targetArray[i].rightPageHolidayArray);
-		$.writeln("i : " + i);
-		$.writeln("-----------------");
+		//左ページの土曜日の文字にスタイルを適用
 		for (let j = 0; j < targetArray[i].leftPageSaturdayArray.length; j++) {
 			const index = targetArray[i].leftPageSaturdayArray[j];
 			if (index) {
@@ -163,6 +164,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 				}
 			}
 		}
+		//右ページの土曜日の文字にスタイルを適用
 		for (let j = 0; j < targetArray[i].rightPageSaturdayArray.length; j++) {
 			const index = targetArray[i].rightPageSaturdayArray[j];
 			if (index) {
@@ -174,6 +176,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 				}
 			}
 		}
+		//左ページの日曜日、祝日の文字にスタイルを適用
 		for (let j = 0; j < targetArray[i].leftPageHolidayArray.length; j++) {
 			const index = targetArray[i].leftPageHolidayArray[j];
 			if (index) {
@@ -185,7 +188,7 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 				}
 			}
 		}
-
+		//右ページの日曜日、祝日の文字にスタイルを適用
 		for (let j = 0; j < targetArray[i].rightPageHolidayArray.length; j++) {
 			const index = targetArray[i].rightPageHolidayArray[j];
 			if (index) {
@@ -197,7 +200,5 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 				}
 			}
 		}
-
-		$.writeln("-----------------");
 	}
 })(allArangedData);
