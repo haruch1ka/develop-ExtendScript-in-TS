@@ -85,8 +85,16 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 	/*@ts-ignore */
 	textFrame.parentStory.characters.everyItem().remove();
 }
+//format all
+// for (let j = 0; j < pages.length; j++) {
+// 	for (let i = 0; i < pages[j].textFrames.length; i++) {
+// 		const textFrame = pages[j].textFrames[i];
+// 		/*@ts-ignore */
+// 		textFrame.parentStory.characters.everyItem().remove();
+// 	}
+// }
 
-//テキストの挿入
+// //テキストの挿入
 ((arrangedDataArray: diaryGekkanPageStructure[]) => {
 	//indexが3以上のデータを取得
 	const targetArray = arrangedDataArray.slice(3);
@@ -137,9 +145,59 @@ for (let i = 0; i < pages[0].textFrames.length; i++) {
 		const odd = i * 2 + 1;
 		const evenPageEntity = new diaryGekkanEvenPageEntity(pages[even]); // 0, 2, 4, 6, 8, 10, 12, 14, 16, 18...
 		const oddPageEntity = new diaryGekkanOddPageEntity(pages[odd]); // 1, 3, 5, 7, 9, 11, 13, 15, 17, 19...
-		$.writeln(targetArray[i].leftPageHolidayArray);
-		$.writeln(targetArray[i].rightPageHolidayArray);
+
+		const leftDayTextFrame = evenPageEntity.dayTextFrame;
+		const rightDayTextFrame = oddPageEntity.dayTextFrame;
+		// $.writeln(targetArray[i].leftPageHolidayArray);
+		// $.writeln(targetArray[i].rightPageHolidayArray);
+		$.writeln("i : " + i);
 		$.writeln("-----------------");
-		
+		for (let j = 0; j < targetArray[i].leftPageSaturdayArray.length; j++) {
+			const index = targetArray[i].leftPageSaturdayArray[j];
+			if (index) {
+				const charIndex = getTextframeIndex(0, 15, j)[0];
+				const charLength = getTextframeIndex(0, 15, j)[1];
+				for (let k = charIndex; k > charIndex - charLength; k--) {
+					$.writeln(leftDayTextFrame.characters[k].contents);
+					leftDayTextFrame.characters[k].appliedCharacterStyle = charStyles.getStyle("aka50");
+				}
+			}
+		}
+		for (let j = 0; j < targetArray[i].rightPageSaturdayArray.length; j++) {
+			const index = targetArray[i].rightPageSaturdayArray[j];
+			if (index) {
+				const charIndex = getTextframeIndex(16, 30, j)[0];
+				const charLength = getTextframeIndex(16, 30, j)[1];
+				for (let k = charIndex; k > charIndex - charLength; k--) {
+					$.writeln(rightDayTextFrame.characters[k].contents);
+					rightDayTextFrame.characters[k].appliedCharacterStyle = charStyles.getStyle("aka50");
+				}
+			}
+		}
+		for (let j = 0; j < targetArray[i].leftPageHolidayArray.length; j++) {
+			const index = targetArray[i].leftPageHolidayArray[j];
+			if (index) {
+				const charIndex = getTextframeIndex(0, 15, j)[0];
+				const charLength = getTextframeIndex(0, 15, j)[1];
+				for (let k = charIndex; k > charIndex - charLength; k--) {
+					$.writeln(leftDayTextFrame.characters[k].contents);
+					leftDayTextFrame.characters[k].appliedCharacterStyle = charStyles.getStyle("aka100");
+				}
+			}
+		}
+
+		for (let j = 0; j < targetArray[i].rightPageHolidayArray.length; j++) {
+			const index = targetArray[i].rightPageHolidayArray[j];
+			if (index) {
+				const charIndex = getTextframeIndex(16, 30, j)[0];
+				const charLength = getTextframeIndex(16, 30, j)[1];
+				for (let k = charIndex; k > charIndex - charLength; k--) {
+					$.writeln(rightDayTextFrame.characters[k].contents);
+					rightDayTextFrame.characters[k].appliedCharacterStyle = charStyles.getStyle("aka100");
+				}
+			}
+		}
+
+		$.writeln("-----------------");
 	}
 })(allArangedData);
