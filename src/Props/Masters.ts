@@ -1,4 +1,4 @@
-export class myMasterPageItem {
+export class Masters {
 	master: any;
 	constructor(pageNum: number) {
 		this.master = app.activeDocument.masterSpreads[pageNum];
@@ -11,4 +11,4 @@ export class myMasterPageItem {
 	}
 }
 
-export default myMasterPageItem;
+export default Masters;

@@ -3,7 +3,7 @@ import calendar from "./calendar";
 import polyfill from "./polyfill/polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
 import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
-import myMasterPageItem from "./Props/myMasterItem";
+import Masters from "./Props/Masters";
 import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
 import Styles from "./Props/Styles";
 
@@ -56,7 +56,7 @@ const holidayText = [...beforeData.map((v) => v[7]), ...mainData.map((v) => v[7]
 
 const _firstPageEntity = new firstPageEntity(app.activeDocument.pages[11]);
 
-const _masterItem = new myMasterPageItem(2);
+const _masterItem = new Masters(2);
 
 _firstPageEntity.dayStory.contents = daysText;
 _firstPageEntity.rokuyouStory.contents = rokuyouText;
@@ -101,7 +101,7 @@ const allPageStructure = (function (array) {
 for (let i = 0; i < allPageStructure.length; i++) {
 	const diff = 11;
 	const page = app.activeDocument.pages[i * 2 + diff];
-	const duplicatedSengetsu = (function (masterPageItem: myMasterPageItem, to: Page) {
+	const duplicatedSengetsu = (function (masterPageItem: Masters, to: Page) {
 		const textFrame = masterPageItem.getTextFrame("sengetsu", to);
 		return formatText(textFrame);
 	})(_masterItem, page);

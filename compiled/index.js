@@ -12,7 +12,7 @@ import calendar from "./calendar";
 import polyfill from "./polyfill/polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
 import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
-import myMasterPageItem from "./Props/myMasterItem";
+import Masters from "./Props/Masters";
 import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
 import Styles from "./Props/Styles";
 polyfill();
@@ -55,7 +55,7 @@ var rokuyouText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(f
 var holidayText = __spreadArray(__spreadArray(__spreadArray([], beforeData.map(function (v) { return v[7]; }), true), mainData.map(function (v) { return v[7]; }), true), afterData.map(function (v) { return v[7]; }), true).join("\r");
 //入力先のエンティティを取得
 var _firstPageEntity = new firstPageEntity(app.activeDocument.pages[11]);
-var _masterItem = new myMasterPageItem(2);
+var _masterItem = new Masters(2);
 _firstPageEntity.dayStory.contents = daysText;
 _firstPageEntity.rokuyouStory.contents = rokuyouText;
 _firstPageEntity.holidayStory.contents = holidayText;
