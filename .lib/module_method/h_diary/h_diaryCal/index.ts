@@ -1,10 +1,10 @@
 import { diaryCalenderPageStructure, diaryCalenderDayStructure } from "./diaryCalenderPageStructure";
-import polyfill from "./polyfill/polyfill";
+import Polyfill from "./Polyfill/Polyfill";
 import calendar from "./calendar";
 import Styles from "./props/Styles";
 import diaryInputData from "./diaryInputData";
 import { firstPageEntity, diaryCalenderPageEntity } from "./diaryCalenderPageEntity";
-polyfill();
+Polyfill();
 //マスターページのアイテムをストックするクラス
 class masterPageItem {
 	master: any;

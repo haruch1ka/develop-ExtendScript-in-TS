@@ -1,10 +1,10 @@
-import polyfill from "./../polyfill/polyfill";
+import Polyfill from "./../Polyfill/Polyfill";
 
 import { getTextframeIndex } from "./../diaryGekkanStructure";
 import { expect, test } from "vitest";
 
 test("hoge", () => {
-	polyfill();
+	Polyfill();
 	expect(getTextframeIndex(0, 15, 0)[0]).toBe(1);
 	expect(getTextframeIndex(0, 15, 0)[1]).toBe(2);
 

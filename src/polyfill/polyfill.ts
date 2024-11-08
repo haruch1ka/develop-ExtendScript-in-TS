@@ -1,5 +1,5 @@
 /*es3準拠のためのポリフィル*/
-const polyfill = () => {
+const Polyfill = () => {
 	/*@ts-ignore*/
 	Array.prototype.map = function (callback: Function, thisArg: any) {
 		if (typeof this.length != "number") return;
@@ -46,4 +46,4 @@ const polyfill = () => {
 	};
 };
 
-export default polyfill;
+export default Polyfill;

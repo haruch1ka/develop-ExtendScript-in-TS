@@ -1,12 +1,12 @@
 import { diaryGekkanDayStructure, diaryGekkanPageStructure, getTextframeIndex } from "./diaryGekkanStructure";
-import polyfill from "./polyfill/polyfill";
+import Polyfill from "./Polyfill/Polyfill";
 import calendar from "./calendar";
 import Styles from "./props/Styles";
 import { formatText, changeCharacterStyle, changeParagraphStyle } from "./props/TextFrameWrapper";
 import diaryInputData from "./diaryInputData";
 import { diaryGekkanEvenPageEntity, diaryGekkanOddPageEntity, firstPageEntity } from "./diaryGekkanEntity";
 
-polyfill();
+Polyfill();
 
 const pages = app.activeDocument.pages;
 

@@ -1,11 +1,11 @@
 // スラッシュ訳を流し込むスクリプト
 // UTF-8 with BOM で保存されるか確認すること
 
-import polyfill from "./polyfill/polyfill";
+import Polyfill from "./Polyfill/Polyfill";
 import { MyDialog, MyDialogInputTxt } from "./props/Dialog";
 import { formatText } from "./props/TextFrameWrapper";
 
-polyfill();
+Polyfill();
 
 class Selection {
 	length: number = 0;

@@ -1,13 +1,13 @@
 import diaryInputData from "./diaryInputData";
 import calendar from "./calendar";
-import polyfill from "./polyfill/polyfill";
+import Polyfill from "./Polyfill/Polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
 import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
 import Masters from "./props/Masters";
 import { formatText, changeCharacterStyle, changeParagraphStyle } from "./props/TextFrameWrapper";
 import Styles from "./props/Styles";
 
-polyfill();
+Polyfill();
 
 const diary = new diaryInputData();
 
