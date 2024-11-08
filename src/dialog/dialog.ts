@@ -55,18 +55,3 @@ export class myDialog {
 		this.input1 = _input1.input;
 	}
 }
-
-export class Input {
-	inputDataArray: string[];
-	constructor(myinput: string) {
-		let input = myinput;
-		input = input.replace(new RegExp(/^[\r\n]+/gm), "");
-		const regex = new RegExp(/[\r\n]+/);
-		//inputに改行文字が含まれているかチェックする正規表現を使って
-		/*@ts-ignore*/
-		if (!regex.test(input)) throw new Error("改行文字が含まれていません");
-		const inputArr = input.split(regex); //入力を改行文字で分割
-
-		this.inputDataArray = inputArr;
-	}
-}
