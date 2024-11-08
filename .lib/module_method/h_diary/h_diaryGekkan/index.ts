@@ -1,8 +1,8 @@
 import { diaryGekkanDayStructure, diaryGekkanPageStructure, getTextframeIndex } from "./diaryGekkanStructure";
 import polyfill from "./polyfill/polyfill";
 import calendar from "./calendar";
-import Styles from "./Props/Styles";
-import { formatText, changeCharacterStyle, changeParagraphStyle } from "./Props/TextFrameWrapper";
+import Styles from "./props/Styles";
+import { formatText, changeCharacterStyle, changeParagraphStyle } from "./props/TextFrameWrapper";
 import diaryInputData from "./diaryInputData";
 import { diaryGekkanEvenPageEntity, diaryGekkanOddPageEntity, firstPageEntity } from "./diaryGekkanEntity";
 

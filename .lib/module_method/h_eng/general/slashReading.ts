@@ -2,8 +2,8 @@
 // UTF-8 with BOM で保存されるか確認すること
 
 import polyfill from "./polyfill/polyfill";
-import { MyDialog, MyDialogInputTxt } from "./Props/Dialog";
-import { formatText } from "./Props/TextFrameWrapper";
+import { MyDialog, MyDialogInputTxt } from "./props/Dialog";
+import { formatText } from "./props/TextFrameWrapper";
 
 polyfill();
 

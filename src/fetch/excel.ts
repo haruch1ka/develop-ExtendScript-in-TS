@@ -1,4 +1,4 @@
-export class excel {
+export class Excel {
 	excelFilePath: string;
 	splitChar: string;
 	sheetNumber: string;
@@ -90,4 +90,4 @@ export class excel {
 	}
 }
 
-export default excel;
+export default Excel;

@@ -1,4 +1,4 @@
-export class myFileSetting {
+export class MyFileSetting {
 	//field
 	my_confirmation: boolean; //処理前に確認ダイアログを表示するかどうか
 	my_save_folder_path: string[] = []; //PDF保存フォルダ（あとで設定）
@@ -112,4 +112,4 @@ export class myFileSetting {
 	}
 }
 
-export default myFileSetting;
+export default MyFileSetting;
