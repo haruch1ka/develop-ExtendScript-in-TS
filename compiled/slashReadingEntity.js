@@ -1,58 +1,36 @@
-var textFrames = /** @class */ (function () {
-    function textFrames(TextFrames) {
-        this.textFrames = TextFrames;
-        this.contentsLength = this.textFrames.length;
-    }
-    textFrames.prototype.getStory = function () {
-        var story;
-        story = this.textFrames[0].parentStory;
-        return story;
-    };
-    return textFrames;
-}());
 var slashReadingEntity = /** @class */ (function () {
     function slashReadingEntity() {
+        var _this = this;
         this.myNumberTextFrames = [];
         this.myTranslateTextFrames = [];
-        //アンカーオブジェクトを取得
-        var _textFrames = new textFrames(app.activeDocument.selection);
-        var mystory = _textFrames.getStory();
-        var myAnchorItems = [];
-        for (var i = 0; i < mystory.pageItems.length; i++) {
-            myAnchorItems.push(mystory.pageItems[i]);
-        }
-        $.writeln("myAnchorItems " + myAnchorItems.length);
-        for (var i = 0; i < mystory.pageItems.length; i++) {
-            var anchorItem = myAnchorItems[i];
-            switch (anchorItem.getElements()[0].constructor.name) {
+        /*@ts-ignore*/
+        var mystory = app.activeDocument.selection[0].parentStory;
+        /*@ts-ignore*/
+        var myAnchorItems = mystory.pageItems.map(function (item) { return item; });
+        myAnchorItems.forEach(function (anchorItem) {
+            var element = anchorItem.getElements()[0];
+            switch (element.constructor.name) {
                 case "TextFrame":
-                    var textFrame = anchorItem.getElements()[0];
-                    // $.writeln("contents  " + textFrame.contents);
-                    var bounds = textFrame.geometricBounds;
-                    var width = bounds[3] - bounds[1];
-                    if (width < 5) {
-                        this.myNumberTextFrames.push(textFrame);
-                    }
-                    else {
-                        this.myTranslateTextFrames.push(textFrame);
-                    }
-                    break;
-                case "Rectangle":
-                    var rectangle = anchorItem.getElements()[0];
-                    // rectangle.remove();
-                    $.writeln("rectangle  " + rectangle);
+                    _this.processTextFrame(element);
                     break;
                 case "Group":
-                    var group = anchorItem.getElements()[0];
-                    this.myNumberTextFrames.push(group.textFrames[0]);
+                    _this.processGroup(element);
                     break;
                 default:
-                    $.writeln(anchorItem.getElements()[0].constructor.name);
+                    $.writeln("想定外のオブジェクトです " + element.constructor.name);
                     break;
             }
-        }
+        });
         $.writeln("--------------------");
     }
+    slashReadingEntity.prototype.processTextFrame = function (textFrame) {
+        var bounds = textFrame.geometricBounds;
+        var width = bounds[3] - bounds[1];
+        width < 5 ? this.myNumberTextFrames.push(textFrame) : this.myTranslateTextFrames.push(textFrame);
+    };
+    slashReadingEntity.prototype.processGroup = function (group) {
+        this.myNumberTextFrames.push(group.textFrames[0]);
+    };
     return slashReadingEntity;
 }());
 export { slashReadingEntity };

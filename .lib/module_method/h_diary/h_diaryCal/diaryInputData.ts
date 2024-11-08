@@ -7,7 +7,6 @@ class diaryInputData {
 		const config = [{ type: "file", disc: "excelファイルを選んでください" }];
 		const setting = new myFileSetting(false, "diary_setting.txt", config);
 		const tab = 1;
-
 		const excelfile = new File(setting.my_save_folder_path[1]);
 		const excel_instance = new excel(excelfile.fsName, ";", String(tab), 9);
 		this.data = excel_instance.GetDataFromExcelPC();
