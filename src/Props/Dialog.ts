@@ -1,4 +1,4 @@
-class myDialogInputTxtLarge {
+class MyDialogInputTxtLarge {
 	row: any;
 	inputObj: any;
 	input: any;
@@ -12,7 +12,7 @@ class myDialogInputTxtLarge {
 		this.input = this.inputObj.editContents;
 	}
 }
-class myDialogInputRadio {
+class MyDialogInputRadio {
 	row: any;
 	radioObj: any;
 	input: any;
@@ -28,7 +28,7 @@ class myDialogInputRadio {
 		this.input = this.radioObj.selectedButton;
 	}
 }
-export class myDialogInputTxt {
+export class MyDialogInputTxt {
 	row: any;
 	inputObj: any;
 	input: any;
@@ -42,14 +42,14 @@ export class myDialogInputTxt {
 		this.input = this.inputObj.editContents;
 	}
 }
-export class myDialog {
+export class MyDialog {
 	obj: any;
 	temp: any;
 	input1: string;
 	constructor(title: string) {
 		this.obj = app.dialogs.add({ name: `${title}` });
 		this.temp = this.obj.dialogColumns.add();
-		let _input1 = new myDialogInputTxt(this.temp, "祝日 :", "");
+		let _input1 = new MyDialogInputTxt(this.temp, "祝日 :", "");
 		this.obj.show();
 		_input1.getInput();
 		this.input1 = _input1.input;

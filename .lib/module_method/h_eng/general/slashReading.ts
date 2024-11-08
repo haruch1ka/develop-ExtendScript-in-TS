@@ -2,7 +2,7 @@
 // UTF-8 with BOM で保存されるか確認すること
 
 import polyfill from "./polyfill/polyfill";
-import { myDialog, myDialogInputTxt } from "./dialog/dialog";
+import { MyDialog, MyDialogInputTxt } from "./Props/Dialog";
 import { formatText } from "./Props/TextFrameWrapper";
 
 polyfill();
@@ -62,7 +62,7 @@ function main() {
 	const s = new Selection();
 	if (s.length <= 0) return alert("何も選択されていません テキストフレームを選択してください");
 	if (s.length !== 1 || s.type !== "TextFrame") return alert("テキストフレームを1つ選択してください");
-	const dialog = new myDialog("貼られたスラッシュ訳を流し込む");
+	const dialog = new MyDialog("貼られたスラッシュ訳を流し込む");
 
 	///////////////////////////
 	// データの加工
