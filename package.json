@@ -7,7 +7,7 @@
 		"test": "vitest",
 		"tsc": "tsc",
 		"rollup": "rollup -c --silent",
-		"build": "tsc"
+		"build": "tsc && rollup -c --silent"
 	},
 	"keywords": [],
 	"author": "",
