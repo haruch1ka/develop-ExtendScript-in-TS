@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "vitest",
 		"tsc": "tsc",
-		"build": "rollup -c --silent"
+		"rollup": "rollup -c --silent",
+		"build": "tsc"
 	},
 	"keywords": [],
 	"author": "",
