@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import Polyfill from "../Polyfill/Polyfill";
+import Polyfill from "../../_polyfill//Polyfill";
 
 test("Polyfill", () => {
 	// es3準拠のポリフィル

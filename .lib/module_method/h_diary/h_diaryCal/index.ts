@@ -1,7 +1,7 @@
 import { diaryCalenderPageStructure, diaryCalenderDayStructure } from "./diaryCalenderPageStructure";
-import Polyfill from "./Polyfill/Polyfill";
+import Polyfill from "./../_polyfill//Polyfill";
 import calendar from "./calendar";
-import Styles from "./props/Styles";
+import Styles from "./../_props//Styles";
 import diaryInputData from "./diaryInputData";
 import { firstPageEntity, diaryCalenderPageEntity } from "./diaryCalenderPageEntity";
 Polyfill();

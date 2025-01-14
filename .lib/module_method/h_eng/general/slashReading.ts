@@ -1,9 +1,9 @@
 // スラッシュ訳を流し込むスクリプト
 // UTF-8 with BOM で保存されるか確認すること
 
-import Polyfill from "./Polyfill/Polyfill";
-import { MyDialog, MyDialogInputTxt } from "./props/Dialog";
-import { formatText } from "./props/TextFrameWrapper";
+import Polyfill from "./../_polyfill//Polyfill";
+import { MyDialog, MyDialogInputTxt } from "./../_props//Dialog";
+import { formatText } from "./../_props//TextFrameWrapper";
 
 Polyfill();
 

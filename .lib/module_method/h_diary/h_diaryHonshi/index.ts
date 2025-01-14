@@ -1,11 +1,11 @@
 import diaryInputData from "./diaryInputData";
 import calendar from "./calendar";
-import Polyfill from "./Polyfill/Polyfill";
+import Polyfill from "./../_polyfill//Polyfill";
 import { diaryPageEntity, firstPageEntity } from "./diaryPageEntity";
 import { diaryPageStructure, diaryDayStructure } from "./diaryPageStructure";
-import Masters from "./props/Masters";
-import { formatText, changeCharacterStyle, changeParagraphStyle } from "./props/TextFrameWrapper";
-import Styles from "./props/Styles";
+import Masters from "./../_props//Masters";
+import { formatText, changeCharacterStyle, changeParagraphStyle } from "./../_props//TextFrameWrapper";
+import Styles from "./../_props//Styles";
 
 Polyfill();
 
