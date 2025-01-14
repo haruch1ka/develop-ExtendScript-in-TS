@@ -1,5 +1,5 @@
-import Excel from "./fetch/Excel";
-import MyFileSetting from "./fetch/MyFileSetting";
+import Excel from "./../_fetch/Excel";
+import MyFileSetting from "./../_fetch/MyFileSetting";
 
 class diaryInputData {
 	data = [];
