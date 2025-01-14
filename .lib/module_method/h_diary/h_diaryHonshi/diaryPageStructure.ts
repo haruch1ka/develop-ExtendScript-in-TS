@@ -11,7 +11,7 @@ export class diaryPageStructure {
 		const isSengetsu = isMonthTextDifferent && !isLastGlay ? true : false;
 		this.dayStructureArray = dayStructureArray;
 		this.monthText = !isLastGlay ? last.monthText : dayStructureArray[0].monthText;
-		this.monthEnglishText = this.getEng(last.monthText);
+		this.monthEnglishText = !isLastGlay ? this.getEng(last.monthText) : this.getEng("3");
 		this.sengetsuText = isSengetsu ? first.monthText + "/" : "";
 	}
 	getEng(string: string) {
