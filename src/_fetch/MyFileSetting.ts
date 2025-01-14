@@ -29,6 +29,7 @@ export class MyFileSetting {
 
 		//設定ファイルの読み出し
 		let my_data_list_string: string = this.read_file(this.my_config_path);
+		/* @ts-ignore */
 		let my_data_list: string[] = my_data_list_string.split(/[\r\n]+/);
 		for (let i = 0; i < my_data_list.length; i++) {
 			this.my_save_folder_path.push(my_data_list[i]);
