@@ -1,2 +1,2 @@
-import main from "./h_diaryCal/index";
+import main from "./h_diaryHonshi/index";
 main();
