@@ -386,10 +386,7 @@ function httpRequest(input: string): string {
 	vbsScriptText += "Public s\r";
 	vbsScriptText += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
 	vbsScriptText += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
-	vbsScriptText +=
-		'Dim data : data = "{ ""id"": ""1234-1"", ""jsonrpc"": ""2.0"", ""method"": ""jlp.furiganaservice.furigana"", ""params"": { ""q"": ""' +
-		kanji +
-		'"", ""grade"": ""1"" } }"\r';
+	vbsScriptText +=	'Dim data : data = "{ ""id"": ""1234-1"", ""jsonrpc"": ""2.0"", ""method"": ""jlp.furiganaservice.furigana"", ""params"": { ""q"": ""' +	kanji +		'"", ""grade"": ""1"" } }"\r';
 	vbsScriptText += "With http\r";
 	vbsScriptText += '.Open "POST", url, False\r';
 	vbsScriptText += '.SetRequestHeader "Content-Type", "application/json"\r';
