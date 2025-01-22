@@ -62,7 +62,7 @@ const main = () => {
 	const s = new Selection();
 	if (s.length <= 0) return alert("何も選択されていません テキストフレームを選択してください");
 	if (s.length !== 1 || s.type !== "TextFrame") return alert("テキストフレームを1つ選択してください");
-	const dialog = new MyDialog("貼られたスラッシュ訳を流し込む");
+	const dialog = new MyDialog("貼られたスラッシュ訳を流し込む", "訳 :");
 
 	///////////////////////////
 	// データの加工

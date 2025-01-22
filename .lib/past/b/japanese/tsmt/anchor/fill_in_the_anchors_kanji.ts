@@ -379,9 +379,6 @@ function main() {
 		}
 	}
 }
-
-
-
 function httpRequest(input: string): string {
 	let result = "";
 	let kanji = input;
