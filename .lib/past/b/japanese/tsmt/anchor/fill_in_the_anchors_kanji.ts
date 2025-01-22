@@ -382,24 +382,24 @@ function main() {
 function httpRequest(input: string): string {
 	let result = "";
 	let kanji = input;
-	let vbstotosute = "";
-	vbstotosute += "Public s\r";
-	vbstotosute += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
-	vbstotosute += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
-	vbstotosute +=
+	let vbsScriptText = "";
+	vbsScriptText += "Public s\r";
+	vbsScriptText += 'Dim http: Set http = CreateObject("WinHttp.WinHttpRequest.5.1")\r';
+	vbsScriptText += 'Dim url: url = "https://jlp.yahooapis.jp/FuriganaService/V2/furigana"\r';
+	vbsScriptText +=
 		'Dim data : data = "{ ""id"": ""1234-1"", ""jsonrpc"": ""2.0"", ""method"": ""jlp.furiganaservice.furigana"", ""params"": { ""q"": ""' +
 		kanji +
 		'"", ""grade"": ""1"" } }"\r';
-	vbstotosute += "With http\r";
-	vbstotosute += '.Open "POST", url, False\r';
-	vbstotosute += '.SetRequestHeader "Content-Type", "application/json"\r';
-	vbstotosute += '.SetRequestHeader "User-Agent" , "Yahoo AppID: dj00aiZpPVFwejVIbkt4RFJGVSZzPWNvbnN1bWVyc2VjcmV0Jng9NjE-"\r';
-	vbstotosute += ".Send data\r";
-	vbstotosute += "End With\r";
-	vbstotosute += "s = http.ResponseText\r";
-	vbstotosute += 'Set objInDesign = CreateObject("InDesign.Application")\r';
-	vbstotosute += 'objInDesign.ScriptArgs.SetValue "http_data", s\r';
-	app.doScript(vbstotosute, ScriptLanguage.VISUAL_BASIC, undefined, UndoModes.FAST_ENTIRE_SCRIPT);
+	vbsScriptText += "With http\r";
+	vbsScriptText += '.Open "POST", url, False\r';
+	vbsScriptText += '.SetRequestHeader "Content-Type", "application/json"\r';
+	vbsScriptText += '.SetRequestHeader "User-Agent" , "Yahoo AppID: dj00aiZpPVFwejVIbkt4RFJGVSZzPWNvbnN1bWVyc2VjcmV0Jng9NjE-"\r';
+	vbsScriptText += ".Send data\r";
+	vbsScriptText += "End With\r";
+	vbsScriptText += "s = http.ResponseText\r";
+	vbsScriptText += 'Set objInDesign = CreateObject("InDesign.Application")\r';
+	vbsScriptText += 'objInDesign.ScriptArgs.SetValue "http_data", s\r';
+	app.doScript(vbsScriptText, ScriptLanguage.VISUAL_BASIC, undefined, UndoModes.FAST_ENTIRE_SCRIPT);
 	result = app.scriptArgs.getValue("http_data");
 	app.scriptArgs.clear();
 	return result;
