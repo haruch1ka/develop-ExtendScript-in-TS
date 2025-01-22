@@ -1,2 +1,2 @@
-import main from "./h_diaryHonshi/index";
+import main from "./slashReading/slashReadingNoRect";
 main();

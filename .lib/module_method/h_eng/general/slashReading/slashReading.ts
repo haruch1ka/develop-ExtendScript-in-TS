@@ -55,7 +55,7 @@ class slashReadingEntity {
 		//何もしない
 	}
 }
-function main() {
+const main = () => {
 	///////////////////////////
 	// データの取得
 	///////////////////////////
@@ -103,6 +103,6 @@ function main() {
 			counter++;
 		}
 	}
-}
+};
 
-main();
+export default main;
