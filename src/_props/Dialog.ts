@@ -46,10 +46,10 @@ export class MyDialog {
 	obj: any;
 	temp: any;
 	input1: string;
-	constructor(title: string) {
+	constructor(title: string, inputTitle: string = "入力値 :") {
 		this.obj = app.dialogs.add({ name: `${title}` });
 		this.temp = this.obj.dialogColumns.add();
-		let _input1 = new MyDialogInputTxt(this.temp, "祝日 :", "");
+		let _input1 = new MyDialogInputTxt(this.temp, inputTitle, "");
 		this.obj.show();
 		_input1.getInput();
 		this.input1 = _input1.input;
