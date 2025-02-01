@@ -1,0 +1,24 @@
+{
+	"name": "script",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"test": "vitest",
+		"tsc": "tsc",
+		"rollup": "rollup -c --silent"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"prettier": "^3.2.5",
+		"typescript": "^5.4.3"
+	},
+	"devDependencies": {
+		"eslint": "^8.57.0",
+		"rollup": "^4.24.0",
+		"types-for-adobe": "^7.2.0",
+		"vitest": "^2.1.3"
+	}
+}
