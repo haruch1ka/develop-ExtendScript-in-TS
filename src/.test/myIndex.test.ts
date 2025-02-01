@@ -1,4 +1,4 @@
-import Polyfill from "./../Polyfill/Polyfill";
+import Polyfill from "./../../_polyfill//Polyfill";
 
 import { getTextframeIndex } from "./../diaryGekkanStructure";
 import { expect, test } from "vitest";
