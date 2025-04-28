@@ -3,7 +3,7 @@
 		"module": "es2015",
 		"strict": true,
 		"noLib": true,
-		"types": ["types-for-adobe/InDesign/2021"],
+		"types": ["types-for-adobe/InDesign/2021",""],
 		"rootDir": "./src",
 		"outDir": "./compiled"
 	},
