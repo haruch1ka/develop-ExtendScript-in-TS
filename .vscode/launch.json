@@ -9,6 +9,7 @@
 			"request": "launch",
 			"name": "スクリプト名を求める",
 			"script": "${workspaceFolder}/dist/index.js",
+			"engineName": "main",
 			"hostAppSpecifier": "indesign-20.064"
 		}
 	]
