@@ -8,10 +8,8 @@
 			"type": "extendscript-debug",
 			"request": "launch",
 			"name": "スクリプト名を求める",
-			// "program": "${file}",
-			"program": "${workspaceFolder}/dist/index.js",
-			// "program": "${workspaceFolder}/dist/watching_zenyaku_test.js",
-			"stopOnEntry": false
+			"script": "${workspaceFolder}/dist/index.js",
+			"hostAppSpecifier": "indesign-20.064"
 		}
 	]
 }
