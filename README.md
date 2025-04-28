@@ -7,8 +7,7 @@ typesを適宜変更すること。
 ## 使い方
 
 適宜gitcloneして必要な依存関係をインストールする。
-拡張機能、extendscript-debugのver0.2.0を使用中。
-updateしたい人はそのverの運用方法を調べて適用してください。
+vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。updateしたい人はそのverの運用方法を調べて適用してください。~~ ver2.0.3を利用中。アップデート済み。
 
 ## 仕様
 
