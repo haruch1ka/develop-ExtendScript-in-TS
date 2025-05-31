@@ -7,6 +7,7 @@ function addBOM() {
 					file.code = "\uFEFF" + file.code;
 				}
 			}
+			console.log("BOM added to the output files.");
 		},
 	};
 }

@@ -11,9 +11,9 @@ vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。update�
 
 ## 仕様
 
-1. pnpmを用いて、tscを実行してts→jsにコンパイル。compiledフォルダに出力
-2. pnpmを用いて、rollupを実行してバンドル。distフォルダに出力
-3. dist内に出力された、jsファイルはUTF-8 with BOMで保存してください。(AEの場合は気にしなくて良い。)
+1. pnpmを用いて、"pn build" を実行。
+2. build.js にて、npx tsc , npx rollup , UTF-8 with BOMへの変換が実行される。
+3. dist にファイルが出力される。
 
 コンパイラは、src以下のみを監視しているため、外においても反応しません。
 
@@ -22,6 +22,7 @@ vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。update�
 - 2025/02/01 センシティブなコードを除去した状態で公開範囲をpublicに変更。
 - 2025/02/01 制作したスクリプトの切り出し。別gitで管理をするようにする。
 - 2025/04/28 Polyfillのtypesを追加。
+- 2025/05/31 buildの方法をbuild.jsを利用したものに変更。
 
 ## memo
 
