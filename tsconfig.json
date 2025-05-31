@@ -5,7 +5,8 @@
 		"noLib": true,
 		"types": ["types-for-adobe/InDesign/2021"],
 		"rootDir": "./src",
-		"outDir": "./compiled"
+		"outDir": "./compiled",
+		"emitBOM": true
 	},
 	"include": ["./src/*.ts"],
 	"exclude": ["node_modules", "dist", ".lib", "test"]
