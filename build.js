@@ -4,11 +4,11 @@ import path from "path";
 try {
 	// TypeScriptのコンパイル
 	console.log("TypeScriptをコンパイル中...");
-	execSync("npx tsc", { stdio: "inherit" });
+	execSync("pnpm tsc", { stdio: "inherit" });
 
 	// Rollupでバンドル
 	console.log("Rollupでバンドル中...");
-	execSync("npx rollup -c", { stdio: "inherit" });
+	execSync("pnpm rollup", { stdio: "inherit" });
 
 	console.log("ビルドが完了しました。");
 } catch (error) {
