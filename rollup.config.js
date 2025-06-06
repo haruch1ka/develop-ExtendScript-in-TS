@@ -7,7 +7,7 @@ function addBOM() {
 					file.code = "\uFEFF" + file.code;
 				}
 			}
-			console.log("BOM added to the output files.");
+			console.log("\u001b[1;1m utf-8 BOM を追加。\u001b[0m");
 		},
 	};
 }

@@ -3,11 +3,11 @@ import path from "path";
 
 try {
 	// TypeScriptのコンパイル
-	console.log("TypeScriptをコンパイル中...");
+	console.log("\u001b[1;5;36m TypeScriptをコンパイル中... \u001b[0m");
 	execSync("pnpm tsc", { stdio: "inherit" });
 
 	// Rollupでバンドル
-	console.log("Rollupでバンドル中...");
+	console.log("\u001b[1;5;36m Rollupでバンドル中... \u001b[0m");
 	execSync("pnpm rollup", { stdio: "inherit" });
 
 	console.log("ビルドが完了しました。");
