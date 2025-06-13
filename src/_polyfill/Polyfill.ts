@@ -38,7 +38,7 @@ const Polyfill = () => {
 
 		for (let i = initialValue !== undefined ? 0 : 1; i < length; i++) {
 			if (i in array) {
-				accumulator = callback.call(undefined, accumulator, array[i], i, array);
+				accumulator = callback.call(Object(null), accumulator, array[i], i, array);
 			}
 		}
 
