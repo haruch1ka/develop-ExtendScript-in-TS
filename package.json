@@ -5,7 +5,7 @@
 	"description": "",
 	"type": "module",
 	"scripts": {
-		"build": "node build.js",
+		"build": "tsx build.ts",
 		"test": "vitest",
 		"tsc": "tsc",
 		"rollup": "rollup -c --silent"
@@ -20,6 +20,7 @@
 	"devDependencies": {
 		"eslint": "^8.57.0",
 		"rollup": "^4.24.0",
+		"tsx": "^4.20.4",
 		"types-for-adobe": "^7.2.2",
 		"vitest": "^2.1.3"
 	}
