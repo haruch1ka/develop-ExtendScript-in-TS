@@ -48,6 +48,7 @@ try {
 			console.warn(`警告: ${targetName}.ts または ${targetName}.tsx が存在しません。スキップします。\n`);
 			continue;
 		} else {
+			process.env.TARGET_FILENAME = targetName;
 			process.env.TARGET_FILE = foundFilePath;
 			executeBuild();
 		}

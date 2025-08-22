@@ -8,7 +8,7 @@
 			"type": "extendscript-debug",
 			"request": "launch",
 			"name": "スクリプト名を求める",
-			"script": "${workspaceFolder}/dist/index.js",
+			"script": "${workspaceFolder}/dist/${fileBasenameNoExtension}.js",
 			"engineName": "main",
 			// "hostAppSpecifier": "indesign-20.064"
 			"hostAppSpecifier": "indesign-19.064"
