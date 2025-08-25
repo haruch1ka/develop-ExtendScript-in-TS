@@ -1,2 +1,2 @@
-const targetFileList = ["generate_png", "piyo"];
+const targetFileList = ["generate_png"];
 export default targetFileList;
