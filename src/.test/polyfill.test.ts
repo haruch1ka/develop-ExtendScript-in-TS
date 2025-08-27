@@ -32,3 +32,4 @@ test("Polyfill", () => {
 	const sum = arr.reduce((acc, cur) => acc + cur);
 	expect(sum).toBe(45);
 });
+
