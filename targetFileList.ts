@@ -1,2 +1,2 @@
-const targetFileList = ["generate_png", "copyGroup", "png"];
+const targetFileList = ["createAsset"];
 export default targetFileList;

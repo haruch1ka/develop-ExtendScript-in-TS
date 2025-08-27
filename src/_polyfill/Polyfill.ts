@@ -122,7 +122,21 @@ const Polyfill = () => {
 			return A;
 		};
 	})();
-
+	/*@ts-ignore*/
+	Array.prototype.includes = function (searchElement) {
+		// Iterate through each element in the array
+		for (let i = 0; i < this.length; i++) {
+			// Check if the current element is equal to the search element
+			if (this[i] === searchElement) {
+				return true;
+			}
+		}
+		// Element not found
+		return false;
+	};
+	Array.isArray = function (arg) {
+		return Object.prototype.toString.call(arg) === "[object Array]";
+	};
 	Object.keys = (function () {
 		var hasOwnProperty = Object.prototype.hasOwnProperty,
 			hasDontEnumBug = !{ toString: null }.propertyIsEnumerable("toString"),
