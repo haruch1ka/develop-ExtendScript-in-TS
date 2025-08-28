@@ -1,2 +1,2 @@
-const targetFileList = ["createAsset", "InlineAnchorRemove"];
+const targetFileList = ["createAsset", "InlineAnchorRemove", "q_tenPitter"];
 export default targetFileList;
