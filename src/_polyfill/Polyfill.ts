@@ -134,6 +134,16 @@ const Polyfill = () => {
 		// Element not found
 		return false;
 	};
+	Array.prototype.filter = function (callBack) {
+		let output = [];
+		for (let i = 0; i < this.length; i++) {
+			if (callBack(this[i])) {
+				output.push(this[i]);
+			}
+		}
+		return output;
+	};
+
 	Array.isArray = function (arg) {
 		return Object.prototype.toString.call(arg) === "[object Array]";
 	};
