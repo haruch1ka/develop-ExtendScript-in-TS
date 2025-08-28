@@ -8,7 +8,8 @@
 		"build": "tsx build.ts",
 		"test": "vitest",
 		"tsc": "tsc",
-		"rollup": "rollup -c --silent"
+		"rollup": "rollup -c --silent",
+		"webp": "tsx createWebp.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -25,6 +26,7 @@
 		"dotenv": "^17.2.1",
 		"eslint": "^8.57.0",
 		"rollup": "^4.24.0",
+		"sharp": "^0.34.3",
 		"tsx": "^4.20.4",
 		"types-for-adobe": "^7.2.2",
 		"vite": "^7.1.3",
