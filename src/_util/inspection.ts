@@ -1,9 +1,9 @@
-export const getInddItemType = (item) => {
+export const getInddItemType = (item: PageItem) => {
 	return item.constructor.name;
 };
 
-export const getInddSwatchesNames = (doc) => {
-	const swatches: Inks = (<any>doc).swatches;
+export const getInddSwatchesNames = (doc: Document) => {
+	const swatches: Swatches = doc.swatches;
 	const len = swatches.length;
 	let res = "";
 	for (let i = 0; i < len; i++) {

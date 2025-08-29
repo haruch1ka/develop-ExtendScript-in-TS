@@ -8,7 +8,27 @@ declare global {
 		map<U>(callback: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
 		indexOf(searchElement: T, fromIndex?: number): number;
 		reduce<U>(callback: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue?: U): U;
+		/**
+		 * Determines whether an array includes a certain element, returning true or false as appropriate.
+		 * @param searchElement The element to search for.
+		 * @param fromIndex The position in this array at which to begin searching for searchElement.
+		 */
+		includes(searchElement: T, fromIndex?: number): boolean;
+		filter(callback: (value: T, index: number, array: T[]) => boolean): T[];
+
+
+	interface ArrayLike<T> {
+		length: number;
+		[index: number]: T;
+	}
+	interface ArrayConstructor {
+		from<T, U>(arrayLike: ArrayLike<T>, mapFn?: (v: T, k: number) => U, thisArg?: any): U[];
+		isArray(arg: any): arg is any[];
+	}
+
+	interface ObjectConstructor {
+		keys(o: object): string[];
 	}
 }
 
-export {};
+export default function Polyfill(): void;

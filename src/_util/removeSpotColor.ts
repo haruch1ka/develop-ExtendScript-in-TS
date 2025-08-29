@@ -1,5 +1,5 @@
-export const removeSpotColor = (doc, targetColorName: Array<string>, showDialog = true) => {
-	const items = doc.pages[0].allPageItems;
+export const removeSpotColor = (targetColorName: Array<string>, allPageItems: Array<any>) => {
+	const items = allPageItems;
 	const removedTextFrame = [];
 	for (let i = 0; i < items.length; i++) {
 		const item = items[i];
@@ -14,7 +14,7 @@ export const removeSpotColor = (doc, targetColorName: Array<string>, showDialog 
 	});
 };
 
-const remove = (pageItem, targetColorName) => {
+const remove = (pageItem: any, targetColorName: string[]): boolean => {
 	const characters = pageItem.characters;
 	if (!characters) return false;
 	for (let j = 0; j < characters.length; j++) {
