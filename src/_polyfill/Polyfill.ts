@@ -153,8 +153,8 @@ const Polyfill = () => {
 			dontEnums = ["toString", "toLocaleString", "valueOf", "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "constructor"],
 			dontEnumsLength = dontEnums.length;
 
-		return function (obj) {
-			if ((typeof obj !== "object" && typeof obj !== "function") || obj === null) throw new TypeError("Object.keys called on non-object");
+		return function (obj: any) {
+			if ((typeof obj !== "object" && typeof obj !== "function") || obj === null) throw new Error("Object.keys called on non-object");
 
 			var result = [];
 
