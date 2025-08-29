@@ -7,4 +7,7 @@ export function parseMarginToPt(inputText: string): number | null {
 }
 
 export const Q_mm = (q: number): number => q * 0.25;
+export const mm_Q = (mm: number): number => mm * 4;
+
 export const pt_mm = (pt: number): number => pt * 0.35278;
+export const mm_pt = (mm: number): number => mm * 2.83465;
