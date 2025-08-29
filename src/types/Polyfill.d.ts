@@ -15,11 +15,11 @@ declare global {
 		 */
 		includes(searchElement: T, fromIndex?: number): boolean;
 		filter(callback: (value: T, index: number, array: T[]) => boolean): T[];
-
+	}
 
 	interface ArrayLike<T> {
 		length: number;
-		[index: number]: T;
+		[n: number]: T;
 	}
 	interface ArrayConstructor {
 		from<T, U>(arrayLike: ArrayLike<T>, mapFn?: (v: T, k: number) => U, thisArg?: any): U[];

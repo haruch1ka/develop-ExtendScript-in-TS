@@ -9,5 +9,5 @@
 		"emitBOM": true
 	},
 	"include": ["./src/**/*.ts", "./src/types/**/*.d.ts"],
-	"exclude": ["node_modules", "dist", ".lib", "test"]
+	"exclude": ["node_modules", "dist", "test"]
 }
