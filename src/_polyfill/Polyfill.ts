@@ -46,10 +46,10 @@ const Polyfill = () => {
 	};
 	Array.from = (function () {
 		var toStr = Object.prototype.toString;
-		var isCallable = function (fn) {
+		var isCallable = function (fn: any) {
 			return typeof fn === "function" || toStr.call(fn) === "[object Function]";
 		};
-		var toInteger = function (value) {
+		var toInteger = function (value: any) {
 			var number = Number(value);
 			if (isNaN(number)) {
 				return 0;
@@ -60,13 +60,13 @@ const Polyfill = () => {
 			return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
 		};
 		var maxSafeInteger = Math.pow(2, 53) - 1;
-		var toLength = function (value) {
+		var toLength = function (value: any) {
 			var len = toInteger(value);
 			return Math.min(Math.max(len, 0), maxSafeInteger);
 		};
 
 		// The length property of the from method is 1.
-		return function from(arrayLike /*, mapFn, thisArg */) {
+		return function from(this: any, arrayLike /*, mapFn, thisArg */) {
 			// 1. Let C be the this value.
 			var C = this;
 
@@ -75,7 +75,7 @@ const Polyfill = () => {
 
 			// 3. ReturnIfAbrupt(items).
 			if (arrayLike == null) {
-				throw new TypeError("Array.from requires an array-like object - not null or undefined");
+				throw new Error("Array.from requires an array-like object - not null or undefined");
 			}
 
 			// 4. If mapfn is undefined, then let mapping be false.
@@ -85,7 +85,7 @@ const Polyfill = () => {
 				// 5. else
 				// 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
 				if (!isCallable(mapFn)) {
-					throw new TypeError("Array.from: when provided, the second argument must be a function");
+					throw new Error("Array.from: when provided, the second argument must be a function");
 				}
 
 				// 5. b. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -137,14 +137,14 @@ const Polyfill = () => {
 	Array.prototype.filter = function (callBack) {
 		let output = [];
 		for (let i = 0; i < this.length; i++) {
-			if (callBack(this[i])) {
+			if (callBack(this[i], i, this)) {
 				output.push(this[i]);
 			}
 		}
 		return output;
 	};
 
-	Array.isArray = function (arg) {
+	Array.isArray = function (arg: any): arg is any[] {
 		return Object.prototype.toString.call(arg) === "[object Array]";
 	};
 	Object.keys = (function () {
