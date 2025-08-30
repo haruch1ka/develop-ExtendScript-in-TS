@@ -21,10 +21,10 @@ class Execute {
 		this.execution("\nTypeScriptのコンパイル中...", `pnpm tsc --project tsconfig.json`);
 	}
 	rollup() {
-		this.execution("\nRollupでバンドル中...\n", `pnpm rollup`);
+		this.execution("\nRollupでバンドル中...\n", `pnpm rollup -c ./config/rollup.config.ts`);
 	}
 	vite() {
-		this.execution("\nviteでバンドル中...\n", `pnpm vite build --config vite.config.ts`);
+		this.execution("\nviteでバンドル中...\n", `pnpm vite build --config ./config/vite.config.ts`);
 	}
 	babel() {
 		this.execution("\nBabelでES3変換中...", `pnpm exec babel dist --out-dir dist --presets=@babel/preset-env`);
