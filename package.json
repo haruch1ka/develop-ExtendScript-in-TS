@@ -8,7 +8,7 @@
 		"build": "tsx build.ts",
 		"test": "vitest",
 		"tsc": "tsc",
-		"rollup": "rollup -c --silent",
+		"rollup": "rollup --silent",
 		"webp": "tsx createWebp.ts"
 	},
 	"keywords": [],
