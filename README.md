@@ -23,6 +23,7 @@ vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。update�
 - 2025/02/01 制作したスクリプトの切り出し。別gitで管理をするようにする。
 - 2025/04/28 Polyfillのtypesを追加。
 - 2025/05/31 buildの方法をbuild.jsを利用したものに変更。
+- 2025/08/22 buildをリファクタリング。build.tsへ変更。
 
 ## memo
 
