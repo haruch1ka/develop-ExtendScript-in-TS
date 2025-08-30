@@ -63,12 +63,10 @@ try {
 			const replacedPath = foundFilePath.replace("src/", "compiled/").replace(/\.tsx?$/, ".js");
 			process.env.TARGET_FILE = replacedPath;
 
-			// _execute.vite();
 			_execute.tsc();
 			_execute.rollup();
 		}
 	}
-	// _execute.babel();
 
 	logBlue(`\nビルドが完了しました`);
 } catch (error) {
