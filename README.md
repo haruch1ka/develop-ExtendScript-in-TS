@@ -10,10 +10,10 @@ typesを適宜変更すること。
 vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。updateしたい人はそのverの運用方法を調べて適用してください。~~ ver2.0.3を利用中。アップデート済み。
 
 ## 仕様
-
-1. pnpmを用いて、"pn build" を実行。
-2. build.js にて、npx tsc , npx rollup , UTF-8 with BOMへの変換が実行される。
-3. dist にファイルが出力される。
+1. 依存関係をインポート
+2. pnpmを用いて、"pnpm build" を実行。
+3. build.ts にて、npx tsc , npx rollup , UTF-8 with BOMへの変換が実行される。
+4. dist にファイルが出力される。
 
 コンパイラは、src以下のみを監視しているため、外においても反応しません。
 
