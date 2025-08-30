@@ -1,2 +1,2 @@
-const targetFileList = ["createAsset", "createAsset2", "テキストフレームアンカー解除", "句点ピッタリ", "テキストフレームをアウトライン化"];
+const targetFileList = ["sample"];
 export default targetFileList;
