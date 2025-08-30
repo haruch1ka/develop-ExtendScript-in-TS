@@ -1,37 +1,27 @@
 /*es3準拠のためのポリフィル*/
 const Polyfill = () => {
-	/*@ts-ignore*/
-	Array.prototype.map = function (callback: Function, thisArg: any) {
-		if (typeof this.length != "number") return;
-		if (typeof callback != "function") return;
-		var newArr = [];
-		if (typeof this == "object") {
-			for (var i = 0; i < this.length; i++) {
-				if (i in this) {
-					/*@ts-ignore*/
-					newArr[i] = callback.call(thisArg || this, this[i], i, this);
-				} else {
-					return;
-				}
+	Array.prototype.map = function <U>(callback: (value: any, index: number, array: any[]) => U, thisArg?: any): U[] {
+		if (typeof this.length !== "number" || typeof callback !== "function") return [];
+		let newArr: U[] = [];
+		for (let i = 0; i < this.length; i++) {
+			if (i in this) {
+				newArr[i] = callback.call(thisArg || this, this[i], i, this);
 			}
 		}
 		return newArr;
 	};
-	/*@ts-ignore*/
 	Array.prototype.indexOf = function (obj, start) {
-		for (var i = start || 0, j = this.length; i < j; i++) {
+		for (let i = start || 0, j = this.length; i < j; i++) {
 			if (this[i] === obj) {
 				return i;
 			}
 		}
 		return -1;
 	};
-	/*@ts-ignore*/
 	Array.prototype.reduce = function (callback, initialValue) {
 		if (typeof callback !== "function") {
 			throw new Error("Callback must be a function");
 		}
-
 		const array = this;
 		const length = array.length;
 		let accumulator = initialValue !== undefined ? initialValue : array[0];
@@ -41,16 +31,15 @@ const Polyfill = () => {
 				accumulator = callback.call(Object(null), accumulator, array[i], i, array);
 			}
 		}
-
 		return accumulator;
 	};
 	Array.from = (function () {
-		var toStr = Object.prototype.toString;
-		var isCallable = function (fn: any) {
+		let toStr = Object.prototype.toString;
+		let isCallable = function (fn: any) {
 			return typeof fn === "function" || toStr.call(fn) === "[object Function]";
 		};
-		var toInteger = function (value: any) {
-			var number = Number(value);
+		let toInteger = function (value: any) {
+			let number = Number(value);
 			if (isNaN(number)) {
 				return 0;
 			}
@@ -59,19 +48,19 @@ const Polyfill = () => {
 			}
 			return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
 		};
-		var maxSafeInteger = Math.pow(2, 53) - 1;
-		var toLength = function (value: any) {
-			var len = toInteger(value);
+		let maxSafeInteger = Math.pow(2, 53) - 1;
+		let toLength = function (value: any) {
+			let len = toInteger(value);
 			return Math.min(Math.max(len, 0), maxSafeInteger);
 		};
 
 		// The length property of the from method is 1.
 		return function from(this: any, arrayLike /*, mapFn, thisArg */) {
 			// 1. Let C be the this value.
-			var C = this;
+			let C = this;
 
 			// 2. Let items be ToObject(arrayLike).
-			var items = Object(arrayLike);
+			let items = Object(arrayLike);
 
 			// 3. ReturnIfAbrupt(items).
 			if (arrayLike == null) {
@@ -79,8 +68,8 @@ const Polyfill = () => {
 			}
 
 			// 4. If mapfn is undefined, then let mapping be false.
-			var mapFn = arguments.length > 1 ? arguments[1] : void undefined;
-			var T;
+			let mapFn = arguments.length > 1 ? arguments[1] : void undefined;
+			let T;
 			if (typeof mapFn !== "undefined") {
 				// 5. else
 				// 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
@@ -96,17 +85,17 @@ const Polyfill = () => {
 
 			// 10. Let lenValue be Get(items, "length").
 			// 11. Let len be ToLength(lenValue).
-			var len = toLength(items.length);
+			let len = toLength(items.length);
 
 			// 13. If IsConstructor(C) is true, then
 			// 13. a. Let A be the result of calling the [[Construct]] internal method of C with an argument list containing the single item len.
 			// 14. a. Else, Let A be ArrayCreate(len).
-			var A = isCallable(C) ? Object(new C(len)) : new Array(len);
+			let A = isCallable(C) ? Object(new C(len)) : new Array(len);
 
 			// 16. Let k be 0.
-			var k = 0;
+			let k = 0;
 			// 17. Repeat, while k < len… (also steps a - h)
-			var kValue;
+			let kValue;
 			while (k < len) {
 				kValue = items[k];
 				if (mapFn) {
@@ -122,7 +111,6 @@ const Polyfill = () => {
 			return A;
 		};
 	})();
-	/*@ts-ignore*/
 	Array.prototype.includes = function (searchElement) {
 		// Iterate through each element in the array
 		for (let i = 0; i < this.length; i++) {
@@ -131,15 +119,12 @@ const Polyfill = () => {
 				return true;
 			}
 		}
-		// Element not found
 		return false;
 	};
 	Array.prototype.filter = function (callBack) {
 		let output = [];
 		for (let i = 0; i < this.length; i++) {
-			if (callBack(this[i], i, this)) {
-				output.push(this[i]);
-			}
+			if (callBack(this[i], i, this)) output.push(this[i]);
 		}
 		return output;
 	};
@@ -148,22 +133,19 @@ const Polyfill = () => {
 		return Object.prototype.toString.call(arg) === "[object Array]";
 	};
 	Object.keys = (function () {
-		var hasOwnProperty = Object.prototype.hasOwnProperty,
+		let hasOwnProperty = Object.prototype.hasOwnProperty,
 			hasDontEnumBug = !{ toString: null }.propertyIsEnumerable("toString"),
 			dontEnums = ["toString", "toLocaleString", "valueOf", "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "constructor"],
 			dontEnumsLength = dontEnums.length;
 
 		return function (obj: any) {
 			if ((typeof obj !== "object" && typeof obj !== "function") || obj === null) throw new Error("Object.keys called on non-object");
-
-			var result = [];
-
-			for (var prop in obj) {
+			const result = [];
+			for (let prop in obj) {
 				if (hasOwnProperty.call(obj, prop)) result.push(prop);
 			}
-
 			if (hasDontEnumBug) {
-				for (var i = 0; i < dontEnumsLength; i++) {
+				for (let i = 0; i < dontEnumsLength; i++) {
 					if (hasOwnProperty.call(obj, dontEnums[i])) result.push(dontEnums[i]);
 				}
 			}
