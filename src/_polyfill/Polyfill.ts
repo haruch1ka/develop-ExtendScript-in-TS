@@ -33,6 +33,23 @@ const Polyfill = () => {
 		}
 		return accumulator;
 	};
+	Array.prototype.includes = function (searchElement) {
+		// Iterate through each element in the array
+		for (let i = 0; i < this.length; i++) {
+			// Check if the current element is equal to the search element
+			if (this[i] === searchElement) {
+				return true;
+			}
+		}
+		return false;
+	};
+	Array.prototype.filter = function (callBack) {
+		let output = [];
+		for (let i = 0; i < this.length; i++) {
+			if (callBack(this[i], i, this)) output.push(this[i]);
+		}
+		return output;
+	};
 	Array.from = (function () {
 		let toStr = Object.prototype.toString;
 		let isCallable = function (fn: any) {
@@ -111,26 +128,10 @@ const Polyfill = () => {
 			return A;
 		};
 	})();
-	Array.prototype.includes = function (searchElement) {
-		// Iterate through each element in the array
-		for (let i = 0; i < this.length; i++) {
-			// Check if the current element is equal to the search element
-			if (this[i] === searchElement) {
-				return true;
-			}
-		}
-		return false;
-	};
-	Array.prototype.filter = function (callBack) {
-		let output = [];
-		for (let i = 0; i < this.length; i++) {
-			if (callBack(this[i], i, this)) output.push(this[i]);
-		}
-		return output;
-	};
 	Array.isArray = function (arg: any): arg is any[] {
 		return Object.prototype.toString.call(arg) === "[object Array]";
 	};
+
 	Object.keys = (function () {
 		let hasOwnProperty = Object.prototype.hasOwnProperty,
 			hasDontEnumBug = !{ toString: null }.propertyIsEnumerable("toString"),
