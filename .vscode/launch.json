@@ -1,17 +1,17 @@
 {
-	// IntelliSense を使用して利用可能な属性を学べます。
-	// 既存の属性の説明をホバーして表示します。
-	// 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"type": "extendscript-debug",
-			"request": "launch",
-			"name": "スクリプト名を求める",
-			"script": "${workspaceFolder}/dist/${fileBasenameNoExtension}.js",
-			"engineName": "main",
-			// "hostAppSpecifier": "indesign-20.064"
-			"hostAppSpecifier": "indesign-17.064"
-		}
-	]
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "extendscript-debug",
+      "request": "launch",
+      "name": "スクリプト名を求める",
+      "script": "${workspaceFolder}/dist/${fileBasenameNoExtension}.js",
+      "engineName": "main",
+      "hostAppSpecifier": "indesign-20.064"
+      // "hostAppSpecifier": "indesign-17.064"
+    }
+  ]
 }
