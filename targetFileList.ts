@@ -1,2 +1,2 @@
-const targetFileList = ["sample"];
+const targetFileList = ["target"];
 export default targetFileList;
