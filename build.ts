@@ -38,6 +38,8 @@ const findFileRecursively = (dir: string, targetFiles: string[]): string | null 
   for (const entry of entries) {
     const fullPath = `${dir}/${entry.name}`;
     if (entry.isDirectory()) {
+      // "lib" を含むディレクトリは除外
+      if (entry.name.includes("_util")) continue;
       const found = findFileRecursively(fullPath, targetFiles);
       if (found) return found;
     } else if (targetFiles.includes(entry.name)) {
