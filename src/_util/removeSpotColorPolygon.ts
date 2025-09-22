@@ -1,8 +1,9 @@
 export const removeSpotColorPolygon = (targetColorName: Array<string>, allPageItems: Array<any>) => {
   const removePageItems = [] as any[];
+  const removeTextFrame = [] as any[];
   const removeTargets = (items: any[]) => {
     for (const item of items) {
-      if (item.constructor.name === "Polygon" || item.constructor.name === "GraphicLine") {
+      if (item.constructor.name === "Polygon" || item.constructor.name === "GraphicLine" || item.constructor.name === "Rectangle") {
         if (targetColorName.includes(item.strokeColor.name) || targetColorName.includes(item.fillColor.name)) {
           removePageItems.push(item);
         }
