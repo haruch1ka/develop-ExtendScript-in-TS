@@ -1,3 +1,2 @@
-const targetFileList = ["removeSpotColor","createAsset"]; 
-// ["分数変換", "outline", "kuten", "removeSpotColor", "checkSelectItem", "createAsset"];
+const targetFileList = ["removeSpotColor", "createAsset", "kuten", "removeAnchor","outline"];
 export default targetFileList;
