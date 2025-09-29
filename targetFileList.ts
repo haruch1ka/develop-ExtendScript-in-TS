@@ -1,3 +1,3 @@
 // const targetFileList = ["removeSpotColor", "createAsset", "kuten", "removeAnchor","outline"];
-const targetFileList = ["textFrameBarashi"];
+const targetFileList = ["textFrameBarashi_tashimato"];
 export default targetFileList;
