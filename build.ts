@@ -23,12 +23,12 @@ class Execute {
   rollup() {
     this.execution("\nRollupでバンドル中...\n", `pnpm rollup -c ./config/rollup.config.ts`);
   }
-  vite() {
-    this.execution("\nviteでバンドル中...\n", `pnpm vite build --config ./config/vite.config.ts`);
-  }
-  babel() {
-    this.execution("\nBabelでES3変換中...", `pnpm exec babel dist --out-dir dist --presets=@babel/preset-env`);
-  }
+  // vite() {
+  //   this.execution("\nviteでバンドル中...\n", `pnpm vite build --config ./config/vite.config.ts`);
+  // }
+  // babel() {
+  //   this.execution("\nBabelでES3変換中...", `pnpm exec babel dist --out-dir dist --presets=@babel/preset-env`);
+  // }
 }
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.resolve(__dirname, "dist");
