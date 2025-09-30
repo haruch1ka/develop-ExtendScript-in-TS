@@ -20,6 +20,7 @@ declare global {
      */
     includes(searchElement: T, fromIndex?: number): boolean;
     filter(callback: (value: T, index: number, array: T[]) => boolean): T[];
+    find(predicate: (value: T, index: number, obj: T[]) => boolean, thisArg?: any): T | undefined;
   }
 
   interface ArrayLike<T> {
