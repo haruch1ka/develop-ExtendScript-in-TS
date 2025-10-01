@@ -8,6 +8,7 @@ export const unLockGroup = () => {
     }
   }
   const selection = app.activeDocument.selection as any[];
+  if (selection.length < 1) return;
   $.writeln("selection.length:" + selection.length);
 
   /*@ts-ignore */

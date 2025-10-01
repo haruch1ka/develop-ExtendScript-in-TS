@@ -1,28 +1,23 @@
+import { getTextFrame } from "./fetchItem/iterationFetch";
 export const removeSpotColor = (targetColorName: Array<string>, allPageItems: Array<any>) => {
-  const removedTextFrame = [] as any[];
-  const traverse = (items: any[]) => {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.constructor.name === "TextFrame") {
-        const isRemoved = remove(item, targetColorName);
-        if (isRemoved) removedTextFrame.push(item);
-      } else if (item.constructor.name === "Group") {
-        traverse(item.pageItems);
-      }
+  const TextFrames: TextFrame[] | null = getTextFrame(allPageItems);
+  if (!TextFrames || TextFrames.length < 1) return;
+  const removedTextFrame = TextFrames.map((tf) => {
+    if (removeStory(tf, targetColorName)) return tf;
+  }).map((tf) => {
+    if (tf && tf.characters.count() < 1) {
+      const isNone = typeof tf.strokeColor === "object" && tf.strokeColor.name === "None";
+      const isTarget = typeof tf.strokeColor === "object" && targetColorName.includes(tf.strokeColor.name);
+      if (isNone || isTarget) tf.remove();
     }
-  };
-  traverse(allPageItems);
-  removedTextFrame.map((item) => {
-    const isSpotColorOrNone = [...targetColorName, "None"].includes(item.strokeColor.name);
-    if (isSpotColorOrNone) item.remove();
   });
 };
 
-const remove = (pageItem: any, targetColorName: string[]): boolean => {
-  const characters = pageItem.characters;
+const removeStory = (textFrame: any, targetColorName: string[]): boolean => {
+  const characters = textFrame.characters;
   if (!characters) return false;
-  for (let j = 0; j < characters.length; j++) {
-    if (targetColorName.includes(characters[j].fillColor.name)) {
+  for (let i = 0; i < characters.length; i++) {
+    if (targetColorName.includes(characters[i].fillColor.name)) {
       characters[0].parentStory.remove();
       return true;
     }
