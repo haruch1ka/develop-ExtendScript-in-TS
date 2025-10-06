@@ -4,7 +4,8 @@ export const removeSpotColor = (targetColorName: Array<string>, allPageItems: Ar
   if (!TextFrames || TextFrames.length < 1) return;
   const removedTextFrame = TextFrames.map((tf) => {
     if (removeStory(tf, targetColorName)) return tf;
-  }).map((tf) => {
+  })
+  .map((tf) => {
     if (tf && tf.characters.count() < 1) {
       const isNone = typeof tf.strokeColor === "object" && tf.strokeColor.name === "None";
       const isTarget = typeof tf.strokeColor === "object" && targetColorName.includes(tf.strokeColor.name);
