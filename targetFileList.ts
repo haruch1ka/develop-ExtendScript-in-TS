@@ -8,5 +8,6 @@ const targetFileList = [
   // "removeAnchor",
   // "brakeTextFrame",
   "kakeami",
+  "removeKaraTxFrame",
 ];
 export default targetFileList;

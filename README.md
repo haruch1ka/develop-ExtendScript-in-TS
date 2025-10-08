@@ -10,6 +10,7 @@ typesを適宜変更すること。
 vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。updateしたい人はそのverの運用方法を調べて適用してください。~~ ver2.0.3を利用中。アップデート済み。
 
 ## 仕様
+
 1. 依存関係をインポート
 2. pnpmを用いて、"pnpm build" を実行。
 3. build.ts にて、npx tsc , npx rollup , UTF-8 with BOMへの変換が実行される。
@@ -28,3 +29,4 @@ vscodeの拡張機能は、extendscript-debugの~~ver1.1.2を使用中。update�
 ## memo
 
 切り出した既制作スクリプトをサブモジュール化する。（出来たら）。
+Object.reflect.methodsで任意のオブジェクトに実装されているメソッド一覧を取得できる
