@@ -1,13 +1,16 @@
 // const targetFileList = ["removeSpotColor", "createAsset", "kuten", "removeAnchor","outline"];
 const targetFileList = [
-  "createAsset_tashimato",
+  // "createAsset_tashimato",
   // "createAsset_omote",
   // "createAsset_ura",
   // "textFrameBarashi_tashimato",
-  "removeSpotColor",
+  // "removeSpotColor",
   // "removeAnchor",
   // "brakeTextFrame",
-  "kakeami",
-  "removeKaraTxFrame",
+  // "kakeami",
+  // "brankTextFrame",
+  // "removeKaraTxFrame",
+  "changeOutputObjSize",
+  "checkSizeTop2Top",
 ];
 export default targetFileList;
