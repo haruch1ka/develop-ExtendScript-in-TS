@@ -1,16 +1,17 @@
 // const targetFileList = ["removeSpotColor", "createAsset", "kuten", "removeAnchor","outline"];
 const targetFileList = [
-  "brakeTextFrame_outline",
-  "changeTextFrame_outline",
+  "brakeTextFrame",
+  "change_outline",
   "createPng_omote",
   "createPng_ura",
   "createPng_tashimato",
-  "removeBlankTextFrame",
-  "resizeTextFrame_kuten",
-  "resizeTextFrame_output",
+  "removeBlank",
+  "resize_kuten",
+  "resize_output",
+  "textFrameBarashi_tashimato",
   //general
-  "createTextFrame_blank",
-  "createTextFrame_kakeami",
+  "create_blank",
+  "create_kakeami",
   "removeAnchor",
 ];
 export default targetFileList;
