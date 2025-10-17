@@ -10,5 +10,6 @@ const targetFileList = [
   "removeSpotColor",
   //other
   "colorChanger",
+  "moveDown",
 ];
 export default targetFileList;
