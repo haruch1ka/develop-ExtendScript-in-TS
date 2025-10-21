@@ -13,5 +13,7 @@ const targetFileList = [
   //other
   // "colorChanger",
   // "moveDown",
+  //png
+  "createPng_ura",
 ];
 export default targetFileList;
