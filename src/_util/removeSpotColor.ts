@@ -1,4 +1,5 @@
 import { getTextFrame } from "./fetchItem/iterationFetch";
+
 export const removeSpotColor = (targetColorName: Array<string>, allPageItems: Array<any>) => {
   const TextFrames: TextFrame[] | null = getTextFrame(allPageItems);
   if (!TextFrames || TextFrames.length < 1) return;
