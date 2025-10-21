@@ -1,8 +1,9 @@
-export const getGraphicItem = (items: any[]) => {
+export const getGraphicItem = (items: any[]): any[] | null => {
   const res = [] as any[];
+  const targetTypes = ["Polygon", "GraphicLine", "Rectangle", "Oval"];
   const iteration = (items: any[]) => {
     for (const item of items) {
-      if (item.constructor.name === "Polygon" || item.constructor.name === "GraphicLine" || item.constructor.name === "Rectangle") {
+      if (targetTypes.includes(item.constructor.name)) {
         res.push(item);
       } else if (item.constructor.name === "Group" && item.allPageItems) {
         iteration(item.pageItems);
@@ -10,7 +11,7 @@ export const getGraphicItem = (items: any[]) => {
     }
   };
   iteration(items);
-  return res;
+  return res.length > 0 ? res : null;
 };
 
 export const getTextFrame = (items: any[]): TextFrame[] | null => {
