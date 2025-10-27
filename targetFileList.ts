@@ -6,6 +6,7 @@ const targetFileList = [
   // "removeAnchor",
   // duplicate
   // "createTextFrame_blank",
+  "createPng_ura",
 
   // insideArrangement
   "removeSpotColor",
