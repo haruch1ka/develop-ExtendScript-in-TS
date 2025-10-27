@@ -1,3 +1,17 @@
+import fetchItemId from "./../fetchItem/fetchItemId";
+const getUniqueItems = (items: any[]): any[] => {
+  const itemIds = [] as any[];
+  const uniqueItems = items.filter((item) => {
+    const id = fetchItemId(item);
+    if (itemIds.includes(id)) {
+      return false;
+    }
+    itemIds.push(id);
+    return true;
+  });
+  return uniqueItems;
+};
+
 export const getGraphicItem = (items: any[]): any[] | null => {
   const res = [] as any[];
   const targetTypes = ["Polygon", "GraphicLine", "Rectangle", "Oval"];
@@ -26,11 +40,7 @@ export const getTextFrame = (items: any[]): TextFrame[] | null => {
     }
   };
   iteration(items);
-  return res.length > 0 ? res : null;
+  //重複するIDを除去
+  const uniqueRes = getUniqueItems(res);
+  return uniqueRes.length > 0 ? uniqueRes : null;
 };
-//   if (item.constructor.name === "TextFrame") {
-//     const isRemoved = remove(item, targetColorName);
-//     if (isRemoved) removedTextFrame.push(item);
-//   } else if (item.constructor.name === "Group") {
-//     iteration(item.pageItems);
-//   }
