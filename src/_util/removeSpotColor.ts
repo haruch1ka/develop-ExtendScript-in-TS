@@ -26,12 +26,14 @@ export const removeSpotColor = (targetColorName: Array<string>, allPageItems: Ar
 
 const removeStory = (textFrame: any, targetColorName: string[]): boolean => {
   const characters = textFrame.characters;
-  if (!characters) return false;
-  for (let i = 0; i < characters.length; i++) {
-    if (targetColorName.includes(characters[i].fillColor.name)) {
-      characters[0].parentStory.remove();
-      return true;
-    }
+  if (!textFrame || !characters) return false;
+  const characterArray = Array.from(characters) as any[];
+  const allItemIsTargetColor = characterArray.reduce((acc, c) => {
+    return acc && targetColorName.includes(c.fillColor.name);
+  }, true);
+  if (characters.length > 0 && targetColorName.includes(characters[0].fillColor.name) && allItemIsTargetColor) {
+    characters[0].parentStory.remove();
+    return true;
   }
   return false;
 };

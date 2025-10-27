@@ -6,7 +6,7 @@ const targetFileList = [
   // "removeAnchor",
   // duplicate
   // "createTextFrame_blank",
-  "createPng_ura",
+  // "createPng_ura",
 
   // insideArrangement
   "removeSpotColor",
@@ -15,6 +15,6 @@ const targetFileList = [
   // "colorChanger",
   // "moveDown",
   //png
-  "createPng_ura",
+  // "createPng_ura",
 ];
 export default targetFileList;
