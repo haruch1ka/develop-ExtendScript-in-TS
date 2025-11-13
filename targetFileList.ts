@@ -1,4 +1,3 @@
-// const targetFileList = ["removeSpotColor", "createAsset", "kuten", "removeAnchor","outline"];
 const targetFileList = [
   //convert
   // "textFrameBarashi_kaigyo",
@@ -6,7 +5,8 @@ const targetFileList = [
   // "removeAnchor",
   // duplicate
   // "createTextFrame_blank",
-  // "createPng_ura",
+  "createPng_ura",
+  "textFrameBarashi_kaigyo",
 
   // insideArrangement
   "removeSpotColor",
@@ -16,5 +16,7 @@ const targetFileList = [
   // "moveDown",
   //png
   // "createPng_ura",
+  "createPng_i",
+  "createPng_syu",
 ];
 export default targetFileList;
