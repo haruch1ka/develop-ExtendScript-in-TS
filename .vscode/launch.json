@@ -10,8 +10,8 @@
       "name": "スクリプト名を求める",
       "script": "${workspaceFolder}/dist/${fileBasenameNoExtension}.js",
       "engineName": "main",
-      // "hostAppSpecifier": "indesign-20.064"
-      "hostAppSpecifier": "indesign-17.064"
+      "hostAppSpecifier": "indesign-20.064"
+      // "hostAppSpecifier": "indesign-17.064"
     }
   ]
 }
