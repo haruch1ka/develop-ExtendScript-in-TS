@@ -12,4 +12,5 @@ searchFiles.ts
 # claude関連
 .claude
 CLAUDE.md
-docs/tasks/TASKS.mddocs/plans/video_translation_efficiency/
+docs/tasks/TASKS.md
+docs/plans/video_translation_efficiency/

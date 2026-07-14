@@ -1,4 +1,5 @@
 import addBOM from "./addBOM.ts";
+
 export default {
   input: `${process.env.TARGET_FILE}`,
   output: {

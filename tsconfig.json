@@ -1,13 +1,20 @@
 {
-	"compilerOptions": {
-		"module": "esnext",
-		"strict": true,
-		"noLib": true,
-		"types": ["types-for-adobe/InDesign/2021"],
-		"rootDir": "./src",
-		"outDir": "./compiled",
-		"emitBOM": true
-	},
-	"include": ["./src/**/*.ts", "./src/types/**/*.d.ts"],
-	"exclude": ["node_modules", "dist", "test"]
+  "compilerOptions": {
+    "module": "esnext",
+    "strict": true,
+    "noLib": true,
+    "types": ["types-for-adobe/InDesign/2021"],
+    "rootDir": "./src",
+    "outDir": "./compiled",
+    "emitBOM": true
+  },
+  "include": ["./src/**/*.ts", "./src/types/**/*.d.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "src/__lib/video_translation_efficiency/run.ts",
+    "src/__lib/video_translation_efficiency/config.node.ts",
+    "src/__lib/video_translation_efficiency/createSerifuPdf.test.ts"
+  ]
 }
