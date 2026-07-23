@@ -14,3 +14,6 @@ searchFiles.ts
 CLAUDE.md
 docs/tasks/TASKS.md
 docs/plans/video_translation_efficiency/
+
+# 案件名を含むためgit管理外
+targetFileList.ts
